@@ -1,0 +1,12 @@
+server:
+  port: 9002
+spring:
+  application:
+    name: ingredient-service
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8762/eureka
