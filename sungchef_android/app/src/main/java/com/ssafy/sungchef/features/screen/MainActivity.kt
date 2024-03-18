@@ -4,12 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.ssafy.sungchef.R
+import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.ui.theme.SungchefTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,7 +25,6 @@ class MainActivity : ComponentActivity() {
             SungchefTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Greeting("Android")
@@ -33,9 +36,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
+    ImageComponent(
+        modifier = Modifier.
+            size(120.dp),
+            imageResource = R.drawable.test_image,
+        isCircle = false
     )
 }
 
