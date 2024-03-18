@@ -23,7 +23,7 @@ import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
 import com.ssafy.sungchef.features.component.LazyVerticalGridComponent
 import com.ssafy.sungchef.features.component.OutlinedButtonComponent
-import com.ssafy.sungchef.features.component.SmallClickTextComponent
+import com.ssafy.sungchef.features.component.SmallTextButtonComponent
 import com.ssafy.sungchef.features.ui.theme.SungchefTheme
 import dagger.hilt.android.AndroidEntryPoint
 
