@@ -98,6 +98,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    ksp("com.github.bumptech.glide:glide:4.14.2")
 }
 
 fun getApiKey(propertyKey: String): String = gradleLocalProperties(rootDir).getProperty(propertyKey)

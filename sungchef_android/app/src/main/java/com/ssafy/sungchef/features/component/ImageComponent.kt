@@ -1,43 +1,34 @@
 package com.ssafy.sungchef.features.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.integration.compose.placeholder
+import com.ssafy.sungchef.R
+
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ImageComponent(
     modifier : Modifier,
     imageResource : Any,
-    isCircle : Boolean,
     contentDescription : String = ""
 ){
-    if (isCircle) {
-        GlideImage(
-            model = imageResource,
-            modifier = modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(CircleShape),
-            contentDescription = contentDescription,
-            contentScale = ContentScale.FillBounds
-        )
-    } else {
-        GlideImage(
-            model = imageResource,
-            modifier = modifier
-                .fillMaxWidth()
-                .aspectRatio(1f),
-            contentDescription = contentDescription,
-            contentScale = ContentScale.FillBounds
-        )
-    }
+    /**
+     * 원형 이미지를 load할 때는 modifier 인자에 .clip(CircleShape)을 붙혀야한다.
+     */
+    GlideImage(
+        model = imageResource,
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(1f),
+        contentDescription = contentDescription,
+        contentScale = ContentScale.FillBounds,
+        failure = placeholder(painterResource(id = R.drawable.icon_image_fail))
+    )
 }
