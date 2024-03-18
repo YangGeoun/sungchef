@@ -10,12 +10,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
+import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.ImageComponent
+import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
 import com.ssafy.sungchef.features.ui.theme.SungchefTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,11 +46,27 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
+
+    var textState by remember { mutableStateOf("") }
+
     TextFieldComponent(
         modifier = Modifier,
-        value = "",
-        onValueChange = {},
-        hintText = "닉네임"
+        value = textState,
+        onValueChange = {
+            textState = it
+        },
+        hintText = "닉네임",
+        supportingText = {
+            TextComponent(
+                text = "2~10자 제한"
+            )
+        },
+        trailingIcon = {
+            IconComponent(
+                painter = painterResource(id = R.drawable.icon_image_fail)
+            )
+        },
+
     )
 }
 

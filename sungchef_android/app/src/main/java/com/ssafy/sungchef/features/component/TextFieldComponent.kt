@@ -2,6 +2,7 @@ package com.ssafy.sungchef.features.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults.outlinedTextFieldColors
 import androidx.compose.material3.MaterialTheme
@@ -19,24 +20,32 @@ fun TextFieldComponent(
     modifier : Modifier = Modifier,
     value : String = "",
     onValueChange: (String) -> Unit,
-    hintText : String
+    hintText : String,
+    supportingText: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    singleLine: Boolean = true,
+    maxLines: Int = 1,
+    isError : Boolean = false,
+    keyboardAction : KeyboardActions = KeyboardActions()
 ) {
     OutlinedTextField(
-        modifier = Modifier
-            .height(56.dp)
+        modifier = modifier
             .fillMaxWidth(),
         value = value,
         onValueChange = onValueChange,
         colors = outlinedTextFieldColors(
-            cursorColor = Color.Blue,
+            focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = MaterialTheme.colorScheme.onPrimary,
+            cursorColor = MaterialTheme.colorScheme.primary,
             errorCursorColor = Color.Red,
-            focusedBorderColor = Color.Blue,
-            unfocusedBorderColor = Color.Gray,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
             disabledBorderColor = Color.LightGray,
             errorBorderColor = Color.Red,
-            focusedLabelColor = Color.Blue,
-            unfocusedLabelColor = Color.Gray,
-            disabledPlaceholderColor = Color.Gray,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.primaryContainer,
+            disabledPlaceholderColor = MaterialTheme.colorScheme.primary,
             errorLabelColor = Color.Red,
             errorLeadingIconColor = Color.Red,
             errorTrailingIconColor = Color.Red
@@ -44,8 +53,15 @@ fun TextFieldComponent(
         label = {
             TextComponent(
                 text = hintText,
+                color = MaterialTheme.colorScheme.primary
             )
-        }
+        },
+        singleLine = singleLine,
+        maxLines = maxLines,
+        trailingIcon = trailingIcon,
+        isError = isError,
+        supportingText = supportingText,
+        keyboardActions = keyboardAction
     )
 }
 
@@ -56,6 +72,6 @@ private fun BodyPreview() {
         modifier = Modifier,
         value = "",
         onValueChange = {},
-        hintText = "닉네임"
+        hintText = "닉네임",
     )
 }

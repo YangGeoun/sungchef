@@ -17,7 +17,7 @@ import com.ssafy.sungchef.R
 fun ImageComponent(
     modifier : Modifier,
     imageResource : Any,
-    contentDescription : String = ""
+    contentDescription : String = "",
 ){
     /**
      * 원형 이미지를 load할 때는 modifier 인자에 .clip(CircleShape)을 붙혀야한다.
