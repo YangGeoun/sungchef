@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
+import com.ssafy.sungchef.features.component.GenderButtonComponent
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.SearchTextFieldComponent
@@ -48,15 +49,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
 
-    var textState by remember { mutableStateOf("") }
-
-    SearchTextFieldComponent(
-        modifier = Modifier,
-        value = textState,
-        onValueChange = {
-            textState = it
-        },
-        hintText = "",
+    GenderButtonComponent(
+        modifier,
+        "남성",
+        R.drawable.gender_man
     )
 }
 
