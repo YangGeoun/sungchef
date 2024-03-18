@@ -1,24 +1,25 @@
 package com.ssafy.sungchef.features.component
 
+import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExposedDropdownMenuDefaults.outlinedTextFieldColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.ssafy.sungchef.commons.SEARCH_MENU_TEXT
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextFieldComponent(
+fun SearchTextFieldComponent(
     modifier : Modifier = Modifier,
     value : String = "",
+    shape : RoundedCornerShape = RoundedCornerShape(30),
     onValueChange: (String) -> Unit,
     hintText : String,
     supportingText: @Composable (() -> Unit)? = null,
@@ -32,18 +33,19 @@ fun TextFieldComponent(
         modifier = modifier
             .fillMaxWidth(),
         value = value,
+        shape = shape,
         onValueChange = onValueChange,
         colors = outlinedTextFieldColors(
-            focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = MaterialTheme.colorScheme.onPrimary,
-            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            disabledContainerColor = MaterialTheme.colorScheme.background,
+            cursorColor = Color.Black,
             errorCursorColor = Color.Red,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedBorderColor = Color.Black,
+            unfocusedBorderColor = Color.Black,
             disabledBorderColor = Color.LightGray,
             errorBorderColor = Color.Red,
-            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = Color.Black,
             unfocusedLabelColor = MaterialTheme.colorScheme.primaryContainer,
             disabledPlaceholderColor = MaterialTheme.colorScheme.primary,
             errorLabelColor = Color.Red,
@@ -62,16 +64,5 @@ fun TextFieldComponent(
         isError = isError,
         supportingText = supportingText,
         keyboardActions = keyboardAction
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun BodyPreview() {
-    TextFieldComponent(
-        modifier = Modifier,
-        value = "",
-        onValueChange = {},
-        hintText = "",
     )
 }

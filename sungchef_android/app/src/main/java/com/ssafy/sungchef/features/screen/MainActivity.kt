@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.ImageComponent
+import com.ssafy.sungchef.features.component.SearchTextFieldComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
 import com.ssafy.sungchef.features.ui.theme.SungchefTheme
@@ -49,24 +50,13 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
     var textState by remember { mutableStateOf("") }
 
-    TextFieldComponent(
+    SearchTextFieldComponent(
         modifier = Modifier,
         value = textState,
         onValueChange = {
             textState = it
         },
-        hintText = "닉네임",
-        supportingText = {
-            TextComponent(
-                text = "2~10자 제한"
-            )
-        },
-        trailingIcon = {
-            IconComponent(
-                painter = painterResource(id = R.drawable.icon_image_fail)
-            )
-        },
-
+        hintText = "",
     )
 }
 
