@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.features.component.ImageComponent
+import com.ssafy.sungchef.features.component.TextFieldComponent
 import com.ssafy.sungchef.features.ui.theme.SungchefTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,11 +39,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    ImageComponent(
-        modifier = Modifier.
-            size(120.dp)
-            .clip(CircleShape),
-            imageResource = R.drawable.test_image,
+    TextFieldComponent(
+        modifier = Modifier,
+        value = "",
+        onValueChange = {},
+        hintText = "닉네임"
     )
 }
 

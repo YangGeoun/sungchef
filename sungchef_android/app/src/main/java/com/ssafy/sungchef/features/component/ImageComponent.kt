@@ -29,6 +29,7 @@ fun ImageComponent(
             .aspectRatio(1f),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillBounds,
+        loading = placeholder(painterResource(id = R.drawable.icon_image_fail)),
         failure = placeholder(painterResource(id = R.drawable.icon_image_fail))
     )
 }
