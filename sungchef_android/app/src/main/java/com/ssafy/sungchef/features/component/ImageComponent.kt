@@ -18,6 +18,7 @@ fun ImageComponent(
     modifier : Modifier,
     imageResource : Any,
     contentDescription : String = "",
+
 ){
     /**
      * 원형 이미지를 load할 때는 modifier 인자에 .clip(CircleShape)을 붙혀야한다.
@@ -25,10 +26,11 @@ fun ImageComponent(
     GlideImage(
         model = imageResource,
         modifier = modifier
+            .fillMaxWidth()
             .aspectRatio(1f),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillBounds,
-//        loading = placeholder(painterResource(id = R.drawable.icon_image_fail)),
-//        failure = placeholder(painterResource(id = R.drawable.icon_image_fail))
+        loading = placeholder(R.drawable.icon_image_fail),
+        failure = placeholder(R.drawable.icon_image_fail)
     )
 }
