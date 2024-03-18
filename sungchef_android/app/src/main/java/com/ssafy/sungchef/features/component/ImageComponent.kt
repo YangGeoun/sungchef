@@ -25,7 +25,6 @@ fun ImageComponent(
     GlideImage(
         model = imageResource,
         modifier = modifier
-            .fillMaxWidth()
             .aspectRatio(1f),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillBounds,
