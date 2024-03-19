@@ -30,6 +30,7 @@ fun TextFieldComponent(
     maxLines: Int = 1,
     isError : Boolean = false,
     keyboardAction : KeyboardActions = KeyboardActions(),
+    disabledBorderColor: Color = Color.LightGray
 ) {
     OutlinedTextField(
         modifier = modifier
@@ -46,7 +47,7 @@ fun TextFieldComponent(
             errorCursorColor = Color.Red,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
-            disabledBorderColor = Color.LightGray,
+            disabledBorderColor = disabledBorderColor,
             errorBorderColor = Color.Red,
             focusedLabelColor = MaterialTheme.colorScheme.primary,
             unfocusedLabelColor = MaterialTheme.colorScheme.primaryContainer,

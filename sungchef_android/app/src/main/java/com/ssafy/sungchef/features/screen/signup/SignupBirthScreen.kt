@@ -97,6 +97,7 @@ fun SignupBirthScreen() {
                     text = NEXT_STEP
                 ) {
                     // TODO navigation으로 screen 이동
+                    // TODO 화면 넘길 때 Topbar 숫자 배경 바꾸기
                 }
             }
         }
@@ -138,7 +139,8 @@ fun SignupBirth(){
                 color = MaterialTheme.colorScheme.primary
             )
         },
-        enabled = false
+        enabled = false,
+        disabledBorderColor = MaterialTheme.colorScheme.primary
     )
 
     if (isOpen.value) {

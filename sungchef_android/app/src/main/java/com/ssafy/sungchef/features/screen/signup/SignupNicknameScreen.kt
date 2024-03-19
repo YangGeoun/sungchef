@@ -81,7 +81,10 @@ fun SignupScreen() {
                         .align(Alignment.BottomCenter), // Box 내에서 하단 중앙 정렬
                     text = DUPLICATE_CONFIRM
                 ) {
+                    // TODO 중복확인 API 달기
                     // TODO navigation으로 screen 이동
+                    // TODO 화면 넘길 때 Topbar 숫자 배경 바꾸기
+                    // TODO 로그인 화면 완성 시 뒤로 가기 구현 (onBackPressed 포함)
                 }
             }
         }
