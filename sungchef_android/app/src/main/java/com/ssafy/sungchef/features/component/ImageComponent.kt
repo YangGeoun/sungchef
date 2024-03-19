@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.features.component
 
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,7 +27,7 @@ fun ImageComponent(
     GlideImage(
         model = imageResource,
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .aspectRatio(1f),
         contentDescription = contentDescription,
         contentScale = ContentScale.FillBounds,
