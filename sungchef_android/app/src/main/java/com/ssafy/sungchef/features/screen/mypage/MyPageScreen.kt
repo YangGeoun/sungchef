@@ -1,4 +1,4 @@
-package com.ssafy.sungchef.features.screen.MyPage
+package com.ssafy.sungchef.features.screen.mypage
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -48,7 +48,7 @@ val TAG = "MyPage"
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun MyPage(){
+fun MyPageScreen(){
     // 현재 선택된 탭의 인덱스를 추적하는 상태 변수
     var selectedTabIndex by remember { mutableStateOf(0) }
 
