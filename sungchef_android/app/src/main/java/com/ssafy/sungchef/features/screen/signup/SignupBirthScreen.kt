@@ -106,9 +106,13 @@ fun SignupBirthScreen() {
     }
 }
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SignupBirth(){
+fun SignupBirth(
+    isClickable: Boolean = true,
+    disabledBorderColor : Color = MaterialTheme.colorScheme.primary
+){
     var birth by remember { mutableStateOf("") }
 
     val date = remember { mutableStateOf(LocalDate.now())}
@@ -116,9 +120,12 @@ fun SignupBirth(){
 
     TextFieldComponent(
         modifier = Modifier
-            .clickable {
-                isOpen.value = true
-            },
+            .then(
+                if (isClickable) Modifier.clickable {
+                    isOpen.value = true
+                }
+                else Modifier
+            ),
         value = birth,
         onValueChange = {
             birth = it
@@ -127,7 +134,7 @@ fun SignupBirth(){
         trailingIcon = {
             IconButton(
                 onClick = {
-                    isOpen.value = true
+                    if (isClickable) isOpen.value = true
                 }
             ) {
                 IconComponent(
@@ -142,7 +149,7 @@ fun SignupBirth(){
             )
         },
         enabled = false,
-        disabledBorderColor = MaterialTheme.colorScheme.primary
+        disabledBorderColor = disabledBorderColor
     )
 
     if (isOpen.value) {
