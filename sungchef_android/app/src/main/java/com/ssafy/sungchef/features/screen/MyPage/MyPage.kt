@@ -1,4 +1,4 @@
-package com.ssafy.sungchef.features.screen
+package com.ssafy.sungchef.features.screen.MyPage
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,7 +53,7 @@ fun MyPage(){
     var selectedTabIndex by remember { mutableStateOf(0) }
 
     // 탭의 제목을 나열
-    val tabTitles = listOf("Tab 1", "Tab 2")
+    val tabTitles = listOf("업로드", "즐겨찾기")
 
     Scaffold(
         topBar = { TopAppBarComponent()}
