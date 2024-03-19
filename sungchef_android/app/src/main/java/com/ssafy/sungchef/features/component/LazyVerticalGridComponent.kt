@@ -14,12 +14,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+/**
+ * @param photoUrls : 썸네일 링크 리스트
+ * @param onClick : 클릭했을 때 수행 함수
+ */
 @Composable
 fun LazyVerticalGridComponent(
+    modifier: Modifier = Modifier,
     photoUrls: List<String>,
     onClick:(String) -> (Unit)
 ){
     LazyVerticalGrid(
+        modifier = modifier,
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)
@@ -27,7 +33,9 @@ fun LazyVerticalGridComponent(
         items(photoUrls) { item ->
             ImageComponent(modifier = Modifier.clickable {
                 onClick(item)
-            }, imageResource = com.ssafy.sungchef.R.drawable.test_image_small)
+            },
+                //각 아이템 썸네일 이미지
+                imageResource = com.ssafy.sungchef.R.drawable.test_image_small)
         }
     }
 
