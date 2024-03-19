@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -33,51 +34,60 @@ fun MenuCardComponent(
     painter: Painter = painterResource(id = R.drawable.bookmark),
     color: Color = Color.Black,
     onClick: () -> (Unit),
+    onBookMarkClick: () -> (Unit),
 ) {
-    Row(
+    Card(
         modifier = modifier
-            .height(120.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.Top
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            },
     ) {
-        ImageComponent(
-            modifier = modifier.size(120.dp),
-            imageResource = imageResource,
-            contentDescription = "음식 사진"
-        )
-        Spacer(modifier = modifier.size(10.dp))
-        Column(
-            modifier = modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceEvenly
+        Row(
+            modifier = modifier
+                .height(120.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.Top
         ) {
-            Row(
-                modifier = modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            ImageComponent(
+                modifier = modifier.size(120.dp),
+                imageResource = imageResource,
+                contentDescription = "음식 사진"
+            )
+            Spacer(modifier = modifier.size(10.dp))
+            Column(
+                modifier = modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                TextComponent(text = title)
-                Icon(
-                    painter = painter,
-                    contentDescription = "즐겨찾기",
-                    modifier = modifier
-                        .padding(end = 10.dp)
-                        .clickable {
-                            onClick()
-                        },
-                    tint = color
+                Row(
+                    modifier = modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextComponent(text = title)
+                    Icon(
+                        painter = painter,
+                        contentDescription = "즐겨찾기",
+                        modifier = modifier
+                            .padding(end = 10.dp)
+                            .clickable {
+                                onBookMarkClick()
+                            },
+                        tint = color
+                    )
+                }
+                IconTextRowComponent(
+                    painter = painterResource(id = R.drawable.visibility),
+                    text = views
+                )
+                IconTextRowComponent(
+                    painter = painterResource(id = R.drawable.groups),
+                    text = servings
+                )
+                IconTextRowComponent(
+                    painter = painterResource(id = R.drawable.timer),
+                    text = timer
                 )
             }
-            IconTextRowComponent(
-                painter = painterResource(id = R.drawable.visibility),
-                text = views
-            )
-            IconTextRowComponent(
-                painter = painterResource(id = R.drawable.groups),
-                text = servings
-            )
-            IconTextRowComponent(
-                painter = painterResource(id = R.drawable.timer),
-                text = timer
-            )
         }
     }
 }
@@ -93,7 +103,8 @@ fun MenuCardComponentPreview() {
         servings = "2인분",
         timer = "15분 이내",
         painter = painterResource(id = R.drawable.filled_bookmark),
-        color = Color.Red
+        color = Color.Red,
+        onClick = {}
     ) {
 
     }
