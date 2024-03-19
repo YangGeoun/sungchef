@@ -1,19 +1,21 @@
 package com.ssafy.sungchef.features.screen.signup
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -28,47 +30,60 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
+import com.ssafy.sungchef.commons.BIRTH
+import com.ssafy.sungchef.commons.BIRTH_FORMAT
 import com.ssafy.sungchef.commons.DUPLICATE_CONFIRM
+import com.ssafy.sungchef.commons.INPUT_BIRTH
 import com.ssafy.sungchef.commons.INPUT_NICKNAME
-import com.ssafy.sungchef.commons.LIMIT_INPUT_NICKNAME
-import com.ssafy.sungchef.commons.NICKNAME
+import com.ssafy.sungchef.commons.NEXT_STEP
+import com.ssafy.sungchef.features.component.DatePickerDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Locale
 
+private const val TAG = "SignupBirthScreen_성식당"
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SignupScreen() {
+fun SignupBirthScreen() {
     Scaffold (
         topBar = {
             SignupTopBar()
         }
-    ) { paddingValues ->
+    ) {
+        paddingValues ->
 
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Box{
-                Column (
+            Box {
+                Column(
                     modifier = Modifier
                         .padding(
                             start = 20.dp,
                             end = 20.dp,
                             top = 40.dp
-                        ),
-                ){
+                        )
+                ) {
                     TextComponent(
-                        text = INPUT_NICKNAME,
+                        text = INPUT_BIRTH,
                         style = MaterialTheme.typography.headlineMedium
                     )
+
                     Spacer(
                         modifier = Modifier
                             .padding(top = 10.dp)
                     )
-                    SignupNickname(true)
+
+                    SignupBirth()
+                    SignupNickname(false)
 
                     Spacer(
                         modifier = Modifier
@@ -79,7 +94,7 @@ fun SignupScreen() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter), // Box 내에서 하단 중앙 정렬
-                    text = DUPLICATE_CONFIRM
+                    text = NEXT_STEP
                 ) {
                     // TODO navigation으로 screen 이동
                 }
@@ -88,100 +103,70 @@ fun SignupScreen() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SignupTopBar() {
-    TopAppBarComponent(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = Color.White),
-        navigationIcon = {
-            IconComponent(
-                painter = painterResource(id = R.drawable.icon_back)
-            )
-        },
-        title = {
-            SignupStep()
-        }
-    )
-}
+fun SignupBirth(){
+    var birth by remember { mutableStateOf("") }
 
-@Composable
-fun SignupStep() {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween
-    ){
-        CircleBackgroundText(num = 1)
-
-        Spacer(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp)
-        )
-
-        CircleBackgroundText(num = 2)
-
-        Spacer(
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp)
-        )
-        CircleBackgroundText(num = 3)
-    }
-}
-
-@Composable
-fun CircleBackgroundText(num : Int){
-
-    val activeColor = MaterialTheme.colorScheme.inversePrimary
-    val nonActiveColor = MaterialTheme.colorScheme.primaryContainer
-
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .width(50.dp)
-            .height(50.dp)
-            .background(
-                color = activeColor,
-                shape = CircleShape
-            ) // 원형 배경 색상과 모양 설정
-    ) { // 텍스트 주변에 패딩을 줘서 배경과의 간격을 생성
-        TextComponent(
-            text = "$num",
-            color = Color.Black,
-            style = MaterialTheme.typography.headlineMedium
-        ) // 텍스트 컴포넌트
-    }
-}
-
-@Composable
-fun SignupNickname(enable : Boolean) {
-
-    var nickname by remember { mutableStateOf("") }
+    val date = remember { mutableStateOf(LocalDate.now())}
+    val isOpen = remember { mutableStateOf(false) }
 
     TextFieldComponent(
-        enabled = enable,
-        value = nickname,
+        modifier = Modifier
+            .clickable {
+                isOpen.value = true
+            },
+        value = birth,
         onValueChange = {
-            nickname = it
+            birth = it
         },
-        hintText = NICKNAME,
+        hintText = BIRTH,
         trailingIcon = {
-            IconComponent(
-                painter = painterResource(id = R.drawable.icon_input_delete) 
-            )
+            IconButton(
+                onClick = {
+                    isOpen.value = true
+                }
+            ) {
+                IconComponent(
+                    size = 40,
+                    painter = painterResource(id = R.drawable.icon_calendar))
+            }
         },
         supportingText = {
             TextComponent(
-                text = LIMIT_INPUT_NICKNAME,
+                text = BIRTH_FORMAT,
                 color = MaterialTheme.colorScheme.primary
             )
         },
+        enabled = false
     )
+
+    if (isOpen.value) {
+        DatePickerDialogComponent(
+            onAccept = { time ->
+                isOpen.value = false
+
+                time?.let {
+                    date.value = Instant
+                        .ofEpochMilli(it)
+                        .atZone(ZoneId.of("Asia/Seoul"))
+                        .toLocalDate()
+
+                    birth = date.value.toString()
+                }
+            },
+            onCancel = {
+                isOpen.value = false
+            }
+        )
+    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
-fun SignupScreenPreview(){
-    SignupScreen()
+fun SignupBirthPreview(){
+    SignupBirthScreen()
 }
-
