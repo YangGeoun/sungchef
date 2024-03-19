@@ -7,6 +7,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults.outlinedTextFieldColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,6 +20,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TextFieldComponent(
     modifier : Modifier = Modifier,
+    enabled : Boolean = true,
     value : String = "",
     onValueChange: (String) -> Unit,
     hintText : String,
@@ -26,16 +29,18 @@ fun TextFieldComponent(
     singleLine: Boolean = true,
     maxLines: Int = 1,
     isError : Boolean = false,
-    keyboardAction : KeyboardActions = KeyboardActions()
+    keyboardAction : KeyboardActions = KeyboardActions(),
 ) {
     OutlinedTextField(
         modifier = modifier
             .fillMaxWidth(),
         value = value,
+        enabled = enabled,
         onValueChange = onValueChange,
         colors = outlinedTextFieldColors(
             focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
             unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+            disabledTextColor = Color.Black,
             disabledContainerColor = MaterialTheme.colorScheme.onPrimary,
             cursorColor = MaterialTheme.colorScheme.primary,
             errorCursorColor = Color.Red,

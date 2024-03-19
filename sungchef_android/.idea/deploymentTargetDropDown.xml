@@ -5,7 +5,13 @@
       <entry key="BodyPreview">
         <State />
       </entry>
-      <entry key="BodyPreview (1)">
+      <entry key="JoinScreenPreview">
+        <State />
+      </entry>
+      <entry key="SignupBirthPreview">
+        <State />
+      </entry>
+      <entry key="SignupScreenPreview">
         <State />
       </entry>
       <entry key="app">

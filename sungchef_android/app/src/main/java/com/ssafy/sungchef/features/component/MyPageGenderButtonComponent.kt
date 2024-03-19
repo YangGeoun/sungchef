@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,19 +24,23 @@ import com.ssafy.sungchef.R
  * modifier : Modifier
  * gender : 남성, 여성
  * genderResource : drawable 안에 있는 남성 여성 이미지
+ * color : 남성 primary 여성 primaryContainer
  * shape : 입맛에 맞게 변경
  */
 @Composable
 fun MyPageGenderButtonComponent(
-    modifier : Modifier = Modifier,
     gender : String,
     genderResource : Int,
+    color: Color = MaterialTheme.colorScheme.primaryContainer,
+    modifier : Modifier = Modifier,
     shape : RoundedCornerShape = RoundedCornerShape(30),
 ) {
     Row(
         modifier = modifier
+            .width(180.dp)
+            .height(60.dp)
             .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = color,
                 shape = shape
             ),
         verticalAlignment = Alignment.CenterVertically,
@@ -59,9 +64,6 @@ fun MyPageGenderButtonComponent(
 @Composable
 private fun BodyPreview() {
     MyPageGenderButtonComponent(
-        modifier = Modifier
-            .width(180.dp)
-            .height(60.dp),
         "여성",
         R.drawable.gender_woman,
     )
