@@ -20,10 +20,12 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun LazyVerticalGridComponent(
+    modifier: Modifier = Modifier,
     photoUrls: List<String>,
     onClick:(String) -> (Unit)
 ){
     LazyVerticalGrid(
+        modifier = modifier,
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)
