@@ -11,6 +11,7 @@ const val INPUT_BIRTH = "생년월일을 입력하세요."
 const val NICKNAME = "닉네임"
 const val DUPLICATE_CONFIRM = "중복 확인"
 const val NEXT_STEP = "다음 단계"
+const val EMPTY = ""
 
 
 const val DELETE_ALL = "전체 삭제"

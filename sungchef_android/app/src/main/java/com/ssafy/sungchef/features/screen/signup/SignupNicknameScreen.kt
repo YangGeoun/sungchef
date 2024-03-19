@@ -29,10 +29,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.DUPLICATE_CONFIRM
+import com.ssafy.sungchef.commons.EMPTY
 import com.ssafy.sungchef.commons.INPUT_NICKNAME
 import com.ssafy.sungchef.commons.LIMIT_INPUT_NICKNAME
 import com.ssafy.sungchef.commons.NICKNAME
 import com.ssafy.sungchef.features.component.FilledButtonComponent
+import com.ssafy.sungchef.features.component.IconButtonComponent
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
@@ -85,6 +87,7 @@ fun SignupScreen() {
                     // TODO navigation으로 screen 이동
                     // TODO 화면 넘길 때 Topbar 숫자 배경 바꾸기
                     // TODO 로그인 화면 완성 시 뒤로 가기 구현 (onBackPressed 포함)
+                    // TODO ViewModel에 닉네임 저장
                 }
             }
         }
@@ -168,8 +171,11 @@ fun SignupNickname(enable : Boolean) {
         },
         hintText = NICKNAME,
         trailingIcon = {
-            IconComponent(
-                painter = painterResource(id = R.drawable.icon_input_delete) 
+            IconButtonComponent(
+                onClick = {
+                  nickname = EMPTY
+                },
+                painter = painterResource(id = R.drawable.icon_input_delete)
             )
         },
         supportingText = {

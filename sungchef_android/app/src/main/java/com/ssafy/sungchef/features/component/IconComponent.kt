@@ -21,7 +21,8 @@ fun IconComponent(
         modifier = Modifier.size(size.dp),
         painter = painter,
         contentDescription = contentDescription,
-        tint = tint)
+        tint = tint
+    )
 }
 
 

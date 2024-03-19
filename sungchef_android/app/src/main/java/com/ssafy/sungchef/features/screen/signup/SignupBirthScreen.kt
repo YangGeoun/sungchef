@@ -98,6 +98,8 @@ fun SignupBirthScreen() {
                 ) {
                     // TODO navigation으로 screen 이동
                     // TODO 화면 넘길 때 Topbar 숫자 배경 바꾸기
+                    // TODO ViewModel에 생년월일 저장
+                    // TODO 뒤로 가기 구현 (onBackPressed 포함)
                 }
             }
         }
