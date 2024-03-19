@@ -25,6 +25,7 @@ import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.SearchTextFieldComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
+import com.ssafy.sungchef.features.navigation.NavGraph
 import com.ssafy.sungchef.features.ui.theme.SungchefTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,32 +39,9 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    NavGraph()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-
-    var textState by remember { mutableStateOf("") }
-
-    SearchTextFieldComponent(
-        modifier = Modifier,
-        value = textState,
-        onValueChange = {
-            textState = it
-        },
-        hintText = "",
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SungchefTheme {
-        Greeting("Android")
     }
 }
