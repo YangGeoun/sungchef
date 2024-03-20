@@ -4,23 +4,34 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ssafy.sungchef.R
+import com.ssafy.sungchef.commons.FEMALE
 import com.ssafy.sungchef.commons.INPUT_BIRTH
 import com.ssafy.sungchef.commons.INPUT_GENDER
+import com.ssafy.sungchef.commons.MALE
 import com.ssafy.sungchef.commons.NEXT_STEP
 import com.ssafy.sungchef.features.component.FilledButtonComponent
+import com.ssafy.sungchef.features.component.GenderButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -54,10 +65,11 @@ fun SignupGenderScreen(
 
                     Spacer(
                         modifier = Modifier
-                            .padding(top = 10.dp)
+                            .padding(top = 15.dp)
                     )
 
                     // TODO 남성 여성 화면 그리기
+                    SignupGender()
 
                     SignupBirth(
                         isClickable = false,
@@ -83,6 +95,49 @@ fun SignupGenderScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun SignupGender(){
+
+    var isManSelected by remember { mutableStateOf(false) }
+    var isWomanSelected by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .height(161.dp)
+    ){
+        GenderButtonComponent(
+            gender = MALE,
+            genderResource = R.drawable.gender_man,
+            isSelected = isManSelected,
+            onClick = {
+                isManSelected = !isManSelected
+
+                if (isManSelected) {
+                    isWomanSelected = false
+                }
+            }
+        )
+
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+        )
+
+        GenderButtonComponent(
+            gender = FEMALE,
+            genderResource = R.drawable.gender_woman,
+            isSelected = isWomanSelected,
+            onClick = {
+                isWomanSelected = !isWomanSelected
+
+                if (isWomanSelected) {
+                    isManSelected = false
+                }
+            }
+        )
     }
 }
 

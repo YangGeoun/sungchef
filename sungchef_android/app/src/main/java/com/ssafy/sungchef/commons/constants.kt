@@ -18,5 +18,7 @@ const val EMPTY = ""
 
 // 성별 화면
 const val INPUT_GENDER = "성별을 입력하세요."
+const val MALE = "남성"
+const val FEMALE = "여성"
 
 const val DELETE_ALL = "전체 삭제"
