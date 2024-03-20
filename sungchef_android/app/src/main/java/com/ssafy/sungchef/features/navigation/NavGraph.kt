@@ -1,5 +1,7 @@
 package com.ssafy.sungchef.features.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
@@ -33,6 +35,7 @@ import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrig
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
 
 @Composable
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraph() {
     val navController = rememberNavController()
     val currentDestination = navController
@@ -71,7 +74,7 @@ fun NavGraph() {
             homeScreen()
             menuScreen()
             refrigeratorScreen()
-            myPageScreen()
+            myPageScreen(navController)
         }
     }
 }
