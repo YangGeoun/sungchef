@@ -1,10 +1,10 @@
 package com.ssafy.sungchef.data.mapper.recommendation
 
-import com.ssafy.sungchef.data.model.responsedto.RecommendedFoodResponse
-import com.ssafy.sungchef.data.model.responsedto.RecommendedFoodListResponse
-import com.ssafy.sungchef.data.model.responsedto.RecommendationResponse
-import com.ssafy.sungchef.data.model.responsedto.RecommendedRecipeListResponse
-import com.ssafy.sungchef.data.model.responsedto.RecommendedRecipeResponse
+import com.ssafy.sungchef.data.model.responsedto.recommendation.RecommendedFoodResponse
+import com.ssafy.sungchef.data.model.responsedto.recommendation.RecommendedFoodListResponse
+import com.ssafy.sungchef.data.model.responsedto.recommendation.RecommendationResponse
+import com.ssafy.sungchef.data.model.responsedto.recommendation.RecommendedRecipeListResponse
+import com.ssafy.sungchef.data.model.responsedto.recommendation.RecommendedRecipeResponse
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedFood
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedRecipe
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedFoodList

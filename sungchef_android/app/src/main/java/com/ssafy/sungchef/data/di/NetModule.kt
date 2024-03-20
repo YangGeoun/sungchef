@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.data.di
 
 import com.ssafy.sungchef.BuildConfig
+import com.ssafy.sungchef.data.api.RecommendationService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,4 +41,9 @@ object NetModule {
             .client(okHttpClient)
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideRecommendationService(retrofit: Retrofit): RecommendationService =
+        retrofit.create(RecommendationService::class.java)
 }

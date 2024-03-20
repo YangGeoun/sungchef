@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.home.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -17,6 +18,6 @@ fun NavController.navigateHome(
 
 fun NavGraphBuilder.homeScreen(){
     composable(homeNavigationRoute) {
-        HomeScreen()
+        HomeScreen(hiltViewModel())
     }
 }

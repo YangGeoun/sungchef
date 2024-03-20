@@ -1,6 +1,6 @@
 package com.ssafy.sungchef.domain.model.recommendation
 
 data class Recommendation(
-    val recommendedFoodListList: List<RecommendedFoodList>,
-    val recommendedRecipeListList: List<RecommendedRecipeList>
+    val recommendedFoodList: List<RecommendedFoodList>,
+    val recommendedRecipeList: List<RecommendedRecipeList>
 )

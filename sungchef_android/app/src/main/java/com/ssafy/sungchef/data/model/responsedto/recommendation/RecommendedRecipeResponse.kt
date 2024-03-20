@@ -1,4 +1,4 @@
-package com.ssafy.sungchef.data.model.responsedto
+package com.ssafy.sungchef.data.model.responsedto.recommendation
 
 data class RecommendedRecipeResponse(
     val recipeId: Int,
