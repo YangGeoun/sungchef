@@ -1,5 +1,7 @@
 package com.ssafy.sungchef.features.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
@@ -16,13 +18,11 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
-import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.menu.navigation.menuScreen
@@ -31,7 +31,11 @@ import com.ssafy.sungchef.features.screen.mypage.navigation.myPageScreen
 import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
+import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
+import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph() {
     val navController = rememberNavController()
@@ -65,13 +69,14 @@ fun NavGraph() {
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = homeNavigationRoute,
+            startDestination = signupRoute,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen()
             menuScreen()
             refrigeratorScreen()
             myPageScreen()
+            signupGraph(navController)
         }
     }
 }

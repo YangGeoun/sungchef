@@ -50,7 +50,10 @@ import java.util.Locale
 private const val TAG = "SignupBirthScreen_성식당"
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SignupBirthScreen() {
+fun SignupBirthScreen(
+    viewModel : SignupViewModel,
+    onMoveNextPage : () -> Unit
+) {
     Scaffold (
         topBar = {
             SignupTopBar()
@@ -179,5 +182,9 @@ fun SignupBirth(
 @Preview
 @Composable
 fun SignupBirthPreview(){
-    SignupBirthScreen()
+    SignupBirthScreen(
+        viewModel = SignupViewModel()
+    ){
+
+    }
 }

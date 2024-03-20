@@ -1,5 +1,7 @@
 package com.ssafy.sungchef.features.screen.signup
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.DUPLICATE_CONFIRM
 import com.ssafy.sungchef.commons.EMPTY
@@ -39,9 +42,14 @@ import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
+import com.ssafy.sungchef.features.navigation.NavGraph
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SignupScreen() {
+fun SignupScreen(
+    viewModel: SignupViewModel,
+    onMoveNextPage : () -> Unit
+) {
     Scaffold (
         topBar = {
             SignupTopBar()
@@ -187,10 +195,15 @@ fun SignupNickname(enable : Boolean) {
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun SignupScreenPreview(){
-    SignupScreen()
+    SignupScreen(
+        viewModel = SignupViewModel(),
+    ){
+
+    }
 }
 

@@ -37,7 +37,8 @@ import com.ssafy.sungchef.features.component.TextComponent
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SignupGenderScreen(
-
+    viewModel : SignupViewModel,
+    onMoveSurveyPage : () -> Unit
 ) {
     Scaffold (
         topBar = {
@@ -145,5 +146,9 @@ fun SignupGender(){
 @Preview
 @Composable
 fun SignupGenderPreview(){
-    SignupGenderScreen()
+    SignupGenderScreen(
+        viewModel = SignupViewModel()
+    ) {
+
+    }
 }
