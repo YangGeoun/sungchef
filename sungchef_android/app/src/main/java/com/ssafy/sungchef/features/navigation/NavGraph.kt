@@ -75,8 +75,8 @@ fun NavGraph() {
             homeScreen()
             menuScreen()
             refrigeratorScreen()
-            myPageScreen()
             signupGraph(navController)
+            myPageScreen(navController)
         }
     }
 }

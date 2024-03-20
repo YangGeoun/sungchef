@@ -17,13 +17,14 @@ fun SmallTextButtonComponent(
     text : String,
     size : Int = 16,
     color : Color = MaterialTheme.colorScheme.primary,
+    modifier: Modifier = Modifier,
     onClick : () -> Unit = {},
 
     ) {
     Text(
         text = text,
         style = TextStyle(fontSize = size.sp, color = color),
-        modifier = Modifier.clickable {
+        modifier = modifier.clickable {
 //            Log.d("TAG", "SmallClickTextComponent: ${onClick}")
             onClick()
         }

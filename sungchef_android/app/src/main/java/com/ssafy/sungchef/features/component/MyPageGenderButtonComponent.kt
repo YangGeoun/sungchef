@@ -37,8 +37,8 @@ fun MyPageGenderButtonComponent(
 ) {
     Row(
         modifier = modifier
-            .width(180.dp)
-            .height(60.dp)
+//            .width(180.dp)
+//            .height(60.dp)
             .background(
                 color = color,
                 shape = shape
