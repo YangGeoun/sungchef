@@ -33,6 +33,8 @@ import com.ssafy.sungchef.commons.NEXT_STEP
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.GenderButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
+import com.ssafy.sungchef.features.screen.signup.common.SignupNickname
+import com.ssafy.sungchef.features.screen.signup.common.SignupTopBar
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
