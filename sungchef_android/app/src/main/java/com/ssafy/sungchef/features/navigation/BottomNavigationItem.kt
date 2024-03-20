@@ -4,6 +4,7 @@ import com.ssafy.sungchef.R
 import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.menu.navigation.menuNavigationRoute
 import com.ssafy.sungchef.features.screen.mypage.navigation.myPageNavigationRoute
+import com.ssafy.sungchef.features.screen.mypage.navigation.myPageRoute
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorNavigationRoute
 
 enum class BottomNavigationItem(
@@ -29,6 +30,6 @@ enum class BottomNavigationItem(
     Profile(
         label = "Profile",
         icon = R.drawable.account_circle,
-        route = myPageNavigationRoute
+        route = myPageRoute
     )
 }

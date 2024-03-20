@@ -38,17 +38,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.LazyVerticalGridComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
+import com.ssafy.sungchef.features.screen.home.HomeScreen
+import com.ssafy.sungchef.features.screen.mypage.navigation.settingNavigationRoute
 
 
 val TAG = "MyPage"
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun MyPageScreen(){
+fun MyPageScreen(navController: NavController){
     // 현재 선택된 탭의 인덱스를 추적하는 상태 변수
     var selectedTabIndex by remember { mutableStateOf(0) }
 
@@ -67,7 +72,7 @@ fun MyPageScreen(){
                 Column {
 
 
-                    Profile()
+                    Profile(navController)
 
                     // TabRow를 사용하여 탭 바 생성
                     TabRow(
@@ -127,9 +132,16 @@ fun MyPageScreen(){
     }
 }
 
+@Composable
+@Preview
+fun preview(){
+    val navController = rememberNavController()
+    MyPageScreen(navController = navController )
+}
+
 
 @Composable
-fun Profile(){
+fun Profile(navController: NavController){
     Row(modifier = Modifier
         .height(80.dp)
         .padding(start = 16.dp)) {
@@ -147,7 +159,7 @@ fun Profile(){
             verticalArrangement = Arrangement.Center
         ) {
 
-            Nickname()
+            Nickname(navController)
             UserRecord()
 
         }
@@ -174,7 +186,9 @@ fun ProfileImage(){
             Image(
                 painter = imagePainter,
                 contentDescription = "확대된 이미지",
-                modifier = Modifier.fillMaxWidth().height(300.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
                 contentScale = ContentScale.Crop // 이미지가 Dialog 내부에 맞게 조정됨
             )
         }
@@ -182,7 +196,7 @@ fun ProfileImage(){
 }
 
 @Composable
-fun Nickname(){
+fun Nickname(navController: NavController){
     val TAG = ""
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(text="south_hyun99", fontSize = 20.sp )
@@ -191,7 +205,7 @@ fun Nickname(){
             contentDescription = "이미지 설명",
             modifier = Modifier
                 .clickable { /* 클릭 시 수행할 작업 */
-                    Log.d(TAG, "Nickname: Setting Clicked")
+                    navController.navigate(settingNavigationRoute)
                 }
                 .size(32.dp)
                 .padding(start = 10.dp)
@@ -209,6 +223,3 @@ fun UserRecord(){
         Text(text = "즐겨찾기 $favorites")
     }
 }
-
-
-
