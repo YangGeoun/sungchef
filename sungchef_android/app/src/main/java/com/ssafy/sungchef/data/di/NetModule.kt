@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetModule {
+object NetModule {
 
     @Provides
     @Singleton
