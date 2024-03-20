@@ -42,6 +42,7 @@ fun TextFieldComponent(
             focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
             unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
             disabledTextColor = Color.Black,
+            errorContainerColor = MaterialTheme.colorScheme.onPrimary,
             disabledContainerColor = MaterialTheme.colorScheme.onPrimary,
             cursorColor = MaterialTheme.colorScheme.primary,
             errorCursorColor = Color.Red,

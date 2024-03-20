@@ -56,7 +56,7 @@ fun SignupBirthScreen(
 ) {
     Scaffold (
         topBar = {
-            SignupTopBar()
+            SignupTopBar(viewModel.topBarNumber.intValue)
         }
     ) {
         paddingValues ->
@@ -86,7 +86,7 @@ fun SignupBirthScreen(
                     )
 
                     SignupBirth()
-                    SignupNickname(false)
+                    SignupNickname(false, viewModel)
 
                     Spacer(
                         modifier = Modifier

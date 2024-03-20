@@ -42,7 +42,7 @@ fun SignupGenderScreen(
 ) {
     Scaffold (
         topBar = {
-            SignupTopBar()
+            SignupTopBar(viewModel.topBarNumber.intValue)
         }
     ) { paddingValues ->
         Surface(
@@ -76,7 +76,7 @@ fun SignupGenderScreen(
                         isClickable = false,
                         disabledBorderColor = Color.LightGray
                     )
-                    SignupNickname(false)
+                    SignupNickname(false, viewModel)
 
                     Spacer(
                         modifier = Modifier

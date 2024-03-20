@@ -20,12 +20,13 @@ fun IconButtonComponent(
     onClick : () -> Unit,
     colors: IconButtonColors = IconButtonDefaults.iconButtonColors(),
     painter: Painter,
-
+    enabled : Boolean = true
 ) {
     IconButton(
         onClick = onClick,
         modifier = Modifier.size(size.dp),
-        colors = colors
+        colors = colors,
+        enabled = enabled
     ){
         IconComponent(painter = painter, size = size)
     }

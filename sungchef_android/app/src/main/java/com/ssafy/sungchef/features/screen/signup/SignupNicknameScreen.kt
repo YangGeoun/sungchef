@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.signup
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -52,7 +54,7 @@ fun SignupScreen(
 ) {
     Scaffold (
         topBar = {
-            SignupTopBar()
+            SignupTopBar(viewModel.topBarNumber.intValue)
         }
     ) { paddingValues ->
 
@@ -78,7 +80,7 @@ fun SignupScreen(
                         modifier = Modifier
                             .padding(top = 10.dp)
                     )
-                    SignupNickname(true)
+                    SignupNickname(true, viewModel)
 
                     Spacer(
                         modifier = Modifier
@@ -92,10 +94,12 @@ fun SignupScreen(
                     text = DUPLICATE_CONFIRM
                 ) {
                     // TODO 중복확인 API 달기
-                    // TODO navigation으로 screen 이동
                     // TODO 화면 넘길 때 Topbar 숫자 배경 바꾸기
                     // TODO 로그인 화면 완성 시 뒤로 가기 구현 (onBackPressed 포함)
-                    // TODO ViewModel에 닉네임 저장
+                    if (!viewModel.checkNickname()){
+                        viewModel.topBarNumber.intValue++
+                        onMoveNextPage()
+                    }
                 }
             }
         }
@@ -104,57 +108,62 @@ fun SignupScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignupTopBar() {
+fun SignupTopBar(pageNumber : Int) {
     TopAppBarComponent(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = Color.White),
         navigationIcon = {
-            IconComponent(
+            IconButtonComponent(
+                onClick = {
+                    // TODO Login 화면 전환 기능 구현
+                },
                 painter = painterResource(id = R.drawable.icon_back)
             )
         },
         title = {
-            SignupStep()
+            SignupStep(pageNumber)
         }
     )
 }
 
 @Composable
-fun SignupStep() {
+fun SignupStep(pageNumber : Int) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-        CircleBackgroundText(num = 1)
+        CircleBackgroundText(num = 1, pageNumber)
 
         Spacer(
             modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp)
         )
 
-        CircleBackgroundText(num = 2)
+        CircleBackgroundText(num = 2, pageNumber)
 
         Spacer(
             modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp)
         )
-        CircleBackgroundText(num = 3)
+        CircleBackgroundText(num = 3, pageNumber)
     }
 }
 
 @Composable
-fun CircleBackgroundText(num : Int){
-
-    val activeColor = MaterialTheme.colorScheme.inversePrimary
-    val nonActiveColor = MaterialTheme.colorScheme.primaryContainer
-
+fun CircleBackgroundText(
+    num : Int,
+    pageNumber: Int
+){
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .width(50.dp)
             .height(50.dp)
             .background(
-                color = activeColor,
+                color = setCircleColor(
+                    num = num,
+                    pageNumber = pageNumber
+                ),
                 shape = CircleShape
             ) // 원형 배경 색상과 모양 설정
     ) { // 텍스트 주변에 패딩을 줘서 배경과의 간격을 생성
@@ -166,10 +175,14 @@ fun CircleBackgroundText(num : Int){
     }
 }
 
-@Composable
-fun SignupNickname(enable : Boolean) {
 
-    var nickname by remember { mutableStateOf("") }
+@Composable
+fun SignupNickname(
+    enable : Boolean,
+    viewModel : SignupViewModel
+) {
+
+    var nickname by remember { viewModel.nickname }
 
     TextFieldComponent(
         enabled = enable,
@@ -183,16 +196,41 @@ fun SignupNickname(enable : Boolean) {
                 onClick = {
                   nickname = EMPTY
                 },
-                painter = painterResource(id = R.drawable.icon_input_delete)
+                painter = painterResource(id = R.drawable.icon_input_delete),
+                enabled = enable
             )
         },
         supportingText = {
             TextComponent(
                 text = LIMIT_INPUT_NICKNAME,
-                color = MaterialTheme.colorScheme.primary
+                color = textErrorColor(
+                    isError = viewModel.checkNickname()
+                )
             )
         },
+        isError = viewModel.checkNickname()
     )
+}
+
+@Composable
+fun textErrorColor(isError : Boolean) : Color {
+    return if (isError) {
+        Color.Red
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+}
+
+@Composable
+fun setCircleColor(num : Int, pageNumber: Int) : Color {
+    val activeColor = MaterialTheme.colorScheme.inversePrimary
+    val nonActiveColor = MaterialTheme.colorScheme.primaryContainer
+
+    return if (num == pageNumber) {
+        activeColor
+    } else {
+        nonActiveColor
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
