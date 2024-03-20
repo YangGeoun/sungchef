@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.signup.common
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +34,16 @@ import com.ssafy.sungchef.features.screen.signup.SignupViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignupTopBar(pageNumber : Int) {
+fun SignupTopBar(
+    pageNumber : Int,
+    viewModel : SignupViewModel,
+    onMovePreviousPage : () -> Unit
+) {
+    BackHandler {
+        onMovePreviousPage()
+        viewModel.movePreviousPage()
+    }
+
     TopAppBarComponent(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,7 +51,8 @@ fun SignupTopBar(pageNumber : Int) {
         navigationIcon = {
             IconButtonComponent(
                 onClick = {
-                    // TODO 이전 화면 전환 구현
+                    viewModel.movePreviousPage()
+                    onMovePreviousPage()
                 },
                 painter = painterResource(id = R.drawable.icon_back)
             )

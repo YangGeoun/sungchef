@@ -28,11 +28,12 @@ fun NavGraphBuilder.signupGraph(navController: NavController) {
     ) {
         composable(route = nicknameNavigationRoute) {
             SignupScreen(
-                viewModel = hiltViewModel()
-            ){
-                navController.navigate(birthNavigationRoute){
-
+                viewModel = hiltViewModel(),
+                onMoveNextPage = {
+                    navController.navigate(birthNavigationRoute)
                 }
+            ){
+                navController.popBackStack()
             }
         }
 
@@ -41,22 +42,26 @@ fun NavGraphBuilder.signupGraph(navController: NavController) {
                 navController.getBackStackEntry(nicknameNavigationRoute)
             }
             SignupBirthScreen(
-                viewModel = hiltViewModel(parentEntry)
-            ){
-                navController.navigate(genderNavigationRoute){
-
+                viewModel = hiltViewModel(parentEntry),
+                onMoveNextPage = {
+                    navController.navigate(genderNavigationRoute)
                 }
+            ){
+                navController.popBackStack()
             }
         }
 
         composable(route = genderNavigationRoute) {
             val parentEntry = remember(it) {
-                navController.getBackStackEntry(birthNavigationRoute)
+                navController.getBackStackEntry(nicknameNavigationRoute)
             }
             SignupGenderScreen(
-                viewModel = hiltViewModel(parentEntry)
-            ) {
+                viewModel = hiltViewModel(parentEntry),
+                onMoveSurveyPage = {
 
+                }
+            ) {
+                navController.popBackStack()
             }
         }
     }

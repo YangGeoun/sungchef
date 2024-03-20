@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.features.screen.signup
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,9 +16,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.commons.DUPLICATE_CONFIRM
+import com.ssafy.sungchef.commons.EMPTY_NICKNAME
 import com.ssafy.sungchef.commons.INPUT_NICKNAME
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
@@ -28,11 +31,17 @@ import com.ssafy.sungchef.features.screen.signup.common.SignupTopBar
 @Composable
 fun SignupScreen(
     viewModel: SignupViewModel,
-    onMoveNextPage : () -> Unit
+    onMoveNextPage : () -> Unit,
+    onMovePreviousPage : () -> Unit
 ) {
+    val context = LocalContext.current
     Scaffold (
         topBar = {
-            SignupTopBar(viewModel.topBarNumber.intValue)
+            SignupTopBar(
+                viewModel.topBarNumber.intValue,
+                viewModel,
+                onMovePreviousPage
+            )
         }
     ) { paddingValues ->
 
@@ -72,11 +81,15 @@ fun SignupScreen(
                     text = DUPLICATE_CONFIRM
                 ) {
                     // TODO 중복확인 API 달기
-                    // TODO 화면 넘길 때 Topbar 숫자 배경 바꾸기
-                    // TODO 로그인 화면 완성 시 뒤로 가기 구현 (onBackPressed 포함)
+
+
                     if (!viewModel.checkNickname()){
-                        viewModel.topBarNumber.intValue++
-                        onMoveNextPage()
+                        if (viewModel.nickname.value.isNotEmpty()) {
+                            viewModel.moveNextPage()
+                            onMoveNextPage()
+                        } else {
+                            Toast.makeText(context, EMPTY_NICKNAME, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
@@ -84,17 +97,4 @@ fun SignupScreen(
     }
 }
 
-
-
-@RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview
-@Composable
-fun SignupScreenPreview(){
-    SignupScreen(
-        viewModel = SignupViewModel(),
-    ){
-
-    }
-}
 

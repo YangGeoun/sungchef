@@ -2,6 +2,7 @@ package com.ssafy.sungchef.features.screen.signup
 
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,11 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.BIRTH
+import com.ssafy.sungchef.commons.BIRTH_FAIL_MESSAGE
 import com.ssafy.sungchef.commons.BIRTH_FORMAT
 import com.ssafy.sungchef.commons.DUPLICATE_CONFIRM
 import com.ssafy.sungchef.commons.INPUT_BIRTH
@@ -38,10 +41,13 @@ import com.ssafy.sungchef.commons.INPUT_NICKNAME
 import com.ssafy.sungchef.commons.NEXT_STEP
 import com.ssafy.sungchef.features.component.DatePickerDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
+import com.ssafy.sungchef.features.component.IconButtonComponent
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
+import com.ssafy.sungchef.features.screen.signup.common.SignupNickname
+import com.ssafy.sungchef.features.screen.signup.common.SignupTopBar
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -52,11 +58,16 @@ private const val TAG = "SignupBirthScreen_성식당"
 @Composable
 fun SignupBirthScreen(
     viewModel : SignupViewModel,
-    onMoveNextPage : () -> Unit
+    onMoveNextPage : () -> Unit,
+    onMovePreviousPage : () -> Unit
 ) {
     Scaffold (
         topBar = {
-            SignupTopBar(viewModel.topBarNumber.intValue)
+            SignupTopBar(
+                viewModel.topBarNumber.intValue,
+                viewModel,
+                onMovePreviousPage
+            )
         }
     ) {
         paddingValues ->
@@ -85,7 +96,13 @@ fun SignupBirthScreen(
                             .padding(top = 10.dp)
                     )
 
-                    SignupBirth()
+                    SignupBirth(viewModel = viewModel)
+
+                    Spacer(
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                    )
+
                     SignupNickname(false, viewModel)
 
                     Spacer(
@@ -99,10 +116,13 @@ fun SignupBirthScreen(
                         .align(Alignment.BottomCenter), // Box 내에서 하단 중앙 정렬
                     text = NEXT_STEP
                 ) {
-                    // TODO navigation으로 screen 이동
-                    // TODO 화면 넘길 때 Topbar 숫자 배경 바꾸기
-                    // TODO ViewModel에 생년월일 저장
-                    // TODO 뒤로 가기 구현 (onBackPressed 포함)
+                    // TODO 뒤로 가기 구현 (onBackPressed 포함)ㅁㄴ
+                    if (viewModel.checkBirth()) {
+                        onMoveNextPage()
+                        viewModel.moveNextPage()
+                    } else {
+                        Log.d(TAG, "SignupBirthScreen: 못넘어가유")
+                    }
                 }
             }
         }
@@ -113,13 +133,17 @@ fun SignupBirthScreen(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SignupBirth(
+    enable : Boolean = true,
     isClickable: Boolean = true,
-    disabledBorderColor : Color = MaterialTheme.colorScheme.primary
+    disabledBorderColor : Color = MaterialTheme.colorScheme.primary,
+    viewModel : SignupViewModel
 ){
-    var birth by remember { mutableStateOf("") }
+    var birth by remember { viewModel.birth }
 
     val date = remember { mutableStateOf(LocalDate.now())}
     val isOpen = remember { mutableStateOf(false) }
+
+    val context = LocalContext.current // 현재 액티비티의 context를 나타냄
 
     TextFieldComponent(
         modifier = Modifier
@@ -135,15 +159,14 @@ fun SignupBirth(
         },
         hintText = BIRTH,
         trailingIcon = {
-            IconButton(
+            IconButtonComponent(
+                size = 40,
                 onClick = {
                     if (isClickable) isOpen.value = true
-                }
-            ) {
-                IconComponent(
-                    size = 40,
-                    painter = painterResource(id = R.drawable.icon_calendar))
-            }
+                },
+                painter = painterResource(id = R.drawable.icon_calendar),
+                enabled = enable,
+            )
         },
         supportingText = {
             TextComponent(
@@ -169,22 +192,12 @@ fun SignupBirth(
                     birth = date.value.toString()
                 }
             },
-            onCancel = {
+            onCancel = { isFuture ->
+                if (isFuture){
+                    Toast.makeText(context, BIRTH_FAIL_MESSAGE, Toast.LENGTH_SHORT).show()
+                }
                 isOpen.value = false
             }
         )
-    }
-}
-
-
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun SignupBirthPreview(){
-    SignupBirthScreen(
-        viewModel = SignupViewModel()
-    ){
-
     }
 }

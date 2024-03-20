@@ -23,4 +23,20 @@ class SignupViewModel @Inject constructor(
 
         return length !in 2..10 && length != 0
     }
+
+    fun checkBirth() : Boolean {
+        return birth.value.isNotEmpty()
+    }
+
+    fun checkGender() : Boolean {
+        return gender.value.isNotEmpty()
+    }
+
+    fun moveNextPage() {
+        topBarNumber.intValue++
+    }
+
+    fun movePreviousPage() {
+        topBarNumber.intValue--
+    }
 }

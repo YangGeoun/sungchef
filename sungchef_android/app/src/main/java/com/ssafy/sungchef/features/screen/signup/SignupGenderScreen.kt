@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.features.screen.signup
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,21 +31,29 @@ import com.ssafy.sungchef.commons.INPUT_BIRTH
 import com.ssafy.sungchef.commons.INPUT_GENDER
 import com.ssafy.sungchef.commons.MALE
 import com.ssafy.sungchef.commons.NEXT_STEP
+import com.ssafy.sungchef.commons.SEND_FEMALE
+import com.ssafy.sungchef.commons.SEND_MALE
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.GenderButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.signup.common.SignupNickname
 import com.ssafy.sungchef.features.screen.signup.common.SignupTopBar
 
+private const val TAG = "SignupGenderScreen_성식당"
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SignupGenderScreen(
     viewModel : SignupViewModel,
-    onMoveSurveyPage : () -> Unit
+    onMoveSurveyPage : () -> Unit,
+    onMovePreviousPage : () -> Unit
 ) {
     Scaffold (
         topBar = {
-            SignupTopBar(viewModel.topBarNumber.intValue)
+            SignupTopBar(
+                viewModel.topBarNumber.intValue,
+                viewModel,
+                onMovePreviousPage
+            )
         }
     ) { paddingValues ->
         Surface(
@@ -71,13 +80,24 @@ fun SignupGenderScreen(
                             .padding(top = 15.dp)
                     )
 
-                    // TODO 남성 여성 화면 그리기
-                    SignupGender()
+                    SignupGender(viewModel)
+
+                    Spacer(
+                        modifier = Modifier
+                            .padding(top = 15.dp)
+                    )
 
                     SignupBirth(
                         isClickable = false,
-                        disabledBorderColor = Color.LightGray
+                        disabledBorderColor = Color.LightGray,
+                        viewModel = viewModel
                     )
+
+                    Spacer(
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                    )
+
                     SignupNickname(false, viewModel)
 
                     Spacer(
@@ -91,10 +111,11 @@ fun SignupGenderScreen(
                         .align(Alignment.BottomCenter), // Box 내에서 하단 중앙 정렬
                     text = NEXT_STEP
                 ) {
-                    // TODO navigation으로 screen 이동
-                    // TODO 화면 넘길 때 Topbar 숫자 배경 바꾸기
-                    // TODO ViewModel에 생년월일 저장
                     // TODO 뒤로 가기 구현 (onBackPressed 포함)
+                    if (viewModel.checkGender()) {
+                        onMoveSurveyPage()
+                        Log.d(TAG, "SignupGenderScreen: 회원가입 성공")
+                    }
                 }
             }
         }
@@ -102,7 +123,9 @@ fun SignupGenderScreen(
 }
 
 @Composable
-fun SignupGender(){
+fun SignupGender(
+    viewModel : SignupViewModel
+){
 
     var isManSelected by remember { mutableStateOf(false) }
     var isWomanSelected by remember { mutableStateOf(false) }
@@ -119,6 +142,7 @@ fun SignupGender(){
                 isManSelected = !isManSelected
 
                 if (isManSelected) {
+                    viewModel.gender.value = SEND_MALE
                     isWomanSelected = false
                 }
             }
@@ -137,20 +161,10 @@ fun SignupGender(){
                 isWomanSelected = !isWomanSelected
 
                 if (isWomanSelected) {
+                    viewModel.gender.value = SEND_FEMALE
                     isManSelected = false
                 }
             }
         )
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun SignupGenderPreview(){
-    SignupGenderScreen(
-        viewModel = SignupViewModel()
-    ) {
-
     }
 }
