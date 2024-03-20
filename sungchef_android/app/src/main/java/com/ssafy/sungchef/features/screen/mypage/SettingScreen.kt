@@ -320,7 +320,7 @@ fun Acquire(){
 
                         Text("문의하기", style = MaterialTheme.typography.bodyLarge)
 
-                        TextFieldComponent(value = email, onValueChange = {newtext -> text = newtext}, hintText = "이메일을 입력하세요."
+                        TextFieldComponent(value = email, onValueChange = {newtext -> email = newtext}, hintText = "이메일을 입력하세요."
                             , singleLine = true)
                         TextField(
                             value = text,
