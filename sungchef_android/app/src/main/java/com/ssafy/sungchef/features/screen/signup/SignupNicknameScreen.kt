@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.features.screen.signup
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,11 +26,13 @@ import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.commons.DUPLICATE_CONFIRM
 import com.ssafy.sungchef.commons.EMPTY_NICKNAME
 import com.ssafy.sungchef.commons.INPUT_NICKNAME
+import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.signup.common.SignupNickname
 import com.ssafy.sungchef.features.screen.signup.common.SignupTopBar
 
+private const val TAG = "SignupNicknameScreen_성식당"
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SignupScreen(
@@ -35,6 +41,26 @@ fun SignupScreen(
     onMovePreviousPage : () -> Unit
 ) {
     val context = LocalContext.current
+
+    val uiState: BaseModel by viewModel.isDuplicateName.collectAsState()
+    val isError : Boolean by viewModel.isError.collectAsState()
+    val isNextPage : Boolean by viewModel.isNextPage.collectAsState()
+
+    if (isError) {
+        Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+    } else {
+        if (isNextPage) {
+            LaunchedEffect(Unit) {
+                Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+                onMoveNextPage()
+                viewModel.moveNextPage()
+
+                // 화면 전환하고 state를 다시 false로 초기화
+                viewModel.initIsNextPageState(false)
+            }
+        }
+    }
+
     Scaffold (
         topBar = {
             SignupTopBar(
@@ -81,12 +107,9 @@ fun SignupScreen(
                     text = DUPLICATE_CONFIRM
                 ) {
                     // TODO 중복확인 API 달기
-
-
                     if (!viewModel.checkNickname()){
                         if (viewModel.nickname.value.isNotEmpty()) {
-                            viewModel.moveNextPage()
-                            onMoveNextPage()
+                            viewModel.isDuplicateNickname(viewModel.nickname.value)
                         } else {
                             Toast.makeText(context, EMPTY_NICKNAME, Toast.LENGTH_SHORT).show()
                         }

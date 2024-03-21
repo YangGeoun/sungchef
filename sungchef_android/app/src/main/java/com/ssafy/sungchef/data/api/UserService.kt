@@ -8,6 +8,5 @@ import retrofit2.http.Path
 interface UserService {
 
     @GET("user/exist/{nickname}")
-    suspend fun duplicateNickname(@Path("nickname") nickname : String) : Response<APIError>
-
+    suspend fun duplicateNickname(@Path("nickname") nickname: String): Response<APIError>
 }
