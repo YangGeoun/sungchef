@@ -35,7 +35,7 @@ fun LazyVerticalGridComponent(
                 onClick(item)
             },
                 //각 아이템 썸네일 이미지
-                imageResource = com.ssafy.sungchef.R.drawable.test_image_small)
+                imageResource = item)
         }
     }
 }
