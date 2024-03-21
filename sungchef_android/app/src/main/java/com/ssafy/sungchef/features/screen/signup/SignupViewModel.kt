@@ -105,4 +105,8 @@ class SignupViewModel @Inject constructor(
     fun initIsNextPageState(state : Boolean) {
         _isNextPage.value = state
     }
+
+    fun initIsErrorState(state : Boolean) {
+        _isError.value = state
+    }
 }

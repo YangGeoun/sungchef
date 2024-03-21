@@ -2,6 +2,7 @@ package com.ssafy.sungchef.data.datasource
 
 import android.util.Log
 import com.google.gson.Gson
+import com.ssafy.sungchef.commons.ALREADY_NICKNAME
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.commons.DataState
 import retrofit2.Response
@@ -19,10 +20,20 @@ open class BaseRemoteDataSource {
                 DataState.Error(apiError)
             }
         } else {
-//            Log.d(TAG, "getResult: ${response.errorBody().toString()}")
-            val apiError: APIError =
-                Gson().fromJson(response.errorBody()?.charStream(), APIError::class.java)
-            DataState.Error(apiError)
+            when (response.code()) {
+                409 -> {
+                    val apiError = APIError(
+                        409L,
+                        ALREADY_NICKNAME
+                    )
+                    DataState.Error(apiError)
+                }
+                else -> {
+                    val apiError: APIError =
+                        Gson().fromJson(response.errorBody()?.charStream(), APIError::class.java)
+                    DataState.Error(apiError)
+                }
+            }
         }
     }
 }

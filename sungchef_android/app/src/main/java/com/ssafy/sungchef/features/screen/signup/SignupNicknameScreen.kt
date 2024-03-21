@@ -48,6 +48,9 @@ fun SignupScreen(
 
     if (isError) {
         Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+
+        // Error state 초기화
+        viewModel.initIsErrorState(false)
     } else {
         if (isNextPage) {
             LaunchedEffect(Unit) {
