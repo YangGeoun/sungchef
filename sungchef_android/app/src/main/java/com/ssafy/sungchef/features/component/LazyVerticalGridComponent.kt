@@ -38,7 +38,6 @@ fun LazyVerticalGridComponent(
                 imageResource = com.ssafy.sungchef.R.drawable.test_image_small)
         }
     }
-
 }
 
 @Preview

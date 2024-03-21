@@ -30,4 +30,10 @@ const val FEMALE = "여성"
 const val SEND_MALE = "M"
 const val SEND_FEMALE = "F"
 
+// 설문 조사
+const val SURVEY_TITLE = "취향에 맞는 음식을\n" +
+        "선택해보세요."
+const val SURVEY_DESCRIPTION = "좋아하는 음식을 선택하시면 취향에 맞는\n" +
+        "음식들을 찾아드려요."
+
 const val DELETE_ALL = "전체 삭제"

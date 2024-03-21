@@ -64,7 +64,6 @@ class SignupViewModel @Inject constructor(
     fun isDuplicateNickname(nickname : String) {
         viewModelScope.launch {
             duplicateNicknameUseCase.duplicateNickname(nickname).collect{
-                Log.d(TAG, "isDuplicateNickname: 넌 몇 번 호출되니?")
                 when (it) {
                     is DataState.Success -> {
                         _isDuplicateName.emit( BaseModel(
@@ -85,7 +84,7 @@ class SignupViewModel @Inject constructor(
                         _isError.emit(true)
                         _isNextPage.emit(false)
                     }
-                    else -> {
+                    is DataState.Loading -> {
 
                     }
                 }
@@ -102,6 +101,7 @@ class SignupViewModel @Inject constructor(
         }
     }
 
+    // nextPage 상태 초기화
     fun initIsNextPageState(state : Boolean) {
         _isNextPage.value = state
     }
