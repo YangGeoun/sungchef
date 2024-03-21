@@ -5,12 +5,13 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.ssafy.sungchef.domain.usecase.signup.DuplicateNicknameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-
+    private val duplicateNicknameUseCase: DuplicateNicknameUseCase
 ) : ViewModel(){
 
     val topBarNumber = mutableIntStateOf(1)
