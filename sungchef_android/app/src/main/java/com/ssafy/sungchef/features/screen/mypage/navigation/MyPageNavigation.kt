@@ -2,6 +2,7 @@ package com.ssafy.sungchef.features.screen.mypage.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -26,7 +27,7 @@ fun NavController.navigateMyPage(
 fun NavGraphBuilder.myPageScreen(navController : NavController){
 
     navigation(startDestination = myPageNavigationRoute, route = myPageRoute) {
-        composable(myPageNavigationRoute) { MyPageScreen(navController) }
+        composable(myPageNavigationRoute) { MyPageScreen(navController, hiltViewModel()) }
         composable(settingNavigationRoute) { SettingScreen(navController) }
     }
 
