@@ -179,6 +179,7 @@ fun SignupBirth(
     )
 
     if (isOpen.value) {
+
         DatePickerDialogComponent(
             onAccept = { time ->
                 isOpen.value = false
