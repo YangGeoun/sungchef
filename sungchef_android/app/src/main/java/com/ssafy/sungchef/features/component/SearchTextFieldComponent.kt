@@ -1,17 +1,18 @@
 package com.ssafy.sungchef.features.component
 
-import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExposedDropdownMenuDefaults.outlinedTextFieldColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
+import com.ssafy.sungchef.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -19,14 +20,14 @@ fun SearchTextFieldComponent(
     modifier : Modifier = Modifier,
     value : String = "",
     shape : RoundedCornerShape = RoundedCornerShape(30),
-    onValueChange: (String) -> Unit,
     hintText : String,
     supportingText: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true,
     maxLines: Int = 1,
     isError : Boolean = false,
-    keyboardAction : KeyboardActions = KeyboardActions()
+    keyboardAction : KeyboardActions = KeyboardActions(),
+    onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         modifier = modifier
@@ -51,10 +52,11 @@ fun SearchTextFieldComponent(
             errorLeadingIconColor = Color.Red,
             errorTrailingIconColor = Color.Red
         ),
-        label = {
+        placeholder = {
             TextComponent(
                 text = hintText,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 14.sp
             )
         },
         singleLine = singleLine,

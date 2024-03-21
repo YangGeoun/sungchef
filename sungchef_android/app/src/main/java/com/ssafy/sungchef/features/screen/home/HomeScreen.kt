@@ -21,7 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ssafy.sungchef.domain.model.recommendation.RecommendedFood
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedFoodList
+import com.ssafy.sungchef.domain.model.recommendation.RecommendedRecipe
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedRecipeList
 import com.ssafy.sungchef.features.component.ImageTextColumnComponent
 import com.ssafy.sungchef.features.component.TextComponent
@@ -63,50 +65,49 @@ private fun Content(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            RecommendBody(
+            RecommendFoodBody(
                 modifier = modifier,
                 text = "오늘은 무엇을 먹을까?",
-                dataList = recommendedRecipeList[0].recommendedRecipeList,
+                dataList = recommendedFoodList[0].recommendedFoodList,
                 size = 300
             ) {
 
             }
-            RecommendBody(
+            RecommendRecipeBody(
                 modifier = modifier,
                 text = "냉장고를 털어보자",
-                dataList = recommendedRecipeList[1].recommendedRecipeList,
-                size = 120
+                dataList = recommendedRecipeList[0].recommendedRecipeList,
             ) {
 
             }
-            RecommendBody(
+            RecommendFoodBody(
                 modifier = modifier,
                 text = "좋아할 만한 음식",
-                dataList = recommendedFoodList[0].recommendedFoodList,
-                size = 120
-            ) {
-
-            }
-            RecommendBody(
-                modifier = modifier,
-                text = "남자가 좋아하는 음식",
                 dataList = recommendedFoodList[1].recommendedFoodList,
                 size = 120
             ) {
 
             }
-            RecommendBody(
+            RecommendFoodBody(
                 modifier = modifier,
-                text = "20대가 좋아하는 음식",
+                text = "남자가 좋아하는 음식",
                 dataList = recommendedFoodList[2].recommendedFoodList,
                 size = 120
             ) {
 
             }
-            RecommendBody(
+            RecommendFoodBody(
+                modifier = modifier,
+                text = "20대가 좋아하는 음식",
+                dataList = recommendedFoodList[3].recommendedFoodList,
+                size = 120
+            ) {
+
+            }
+            RecommendFoodBody(
                 modifier = modifier,
                 text = "오늘같은 날씨에 먹어봐요",
-                dataList = recommendedFoodList[3].recommendedFoodList,
+                dataList = recommendedFoodList[4].recommendedFoodList,
                 size = 120
             ) {
 
@@ -116,11 +117,11 @@ private fun Content(
 }
 
 @Composable
-private fun <T> RecommendBody(
+private fun RecommendFoodBody(
     modifier: Modifier = Modifier,
     text: String = "",
     size: Int,
-    dataList: List<T>?,
+    dataList: List<RecommendedFood>?,
     onClick: () -> (Unit)
 ) {
     Column {
@@ -140,9 +141,45 @@ private fun <T> RecommendBody(
                         modifier = modifier
                             .padding(horizontal = 20.dp)
                             .padding(vertical = 10.dp),
-                        imageResource = "",
-                        text = item.toString(),
+                        imageResource = item.foodImage,
+                        text = item.foodName,
                         size = size
+                    ) {
+                        onClick()
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecommendRecipeBody(
+    modifier: Modifier = Modifier,
+    text: String = "",
+    dataList: List<RecommendedRecipe>?,
+    onClick: () -> (Unit)
+) {
+    Column {
+        TextComponent(
+            text = text,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = modifier.padding(top = 10.dp, bottom = 10.dp, start = 20.dp)
+        )
+        LazyRow(
+            modifier = modifier
+                .fillMaxWidth()
+                .background(Color.White)
+        ) {
+            if (dataList != null) {
+                items(dataList) { item ->
+                    ImageTextColumnComponent(
+                        modifier = modifier
+                            .padding(horizontal = 20.dp)
+                            .padding(vertical = 10.dp),
+                        imageResource = item.recipeImage,
+                        text = item.recipeName,
+                        size = 120
                     ) {
                         onClick()
                     }
