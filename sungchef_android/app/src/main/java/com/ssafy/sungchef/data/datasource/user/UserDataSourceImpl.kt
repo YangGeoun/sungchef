@@ -13,8 +13,15 @@ class UserDataSourceImpl @Inject constructor(
     private val userService : UserService
 ) : UserDataSource, BaseRemoteDataSource(){
     override suspend fun duplicateNickname(nickname: String): DataState<APIError> {
-        return getResult { userService.duplicateNickname(nickname) }
+        return try {
+            getResult {
+                userService.duplicateNickname(nickname)
+            }
+        } catch (e : Exception){
+            DataState.Error(APIError(409, "ㅁㄴㅇㅁㄴㅇㅁ"))
+        }
     }
+
 
     override suspend fun userSimple(): UserSimple {
         return userService.userSimple();
