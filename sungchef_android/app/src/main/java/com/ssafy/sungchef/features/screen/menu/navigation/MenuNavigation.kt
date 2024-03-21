@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.menu.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -16,6 +17,6 @@ fun NavController.navigateMenu(
 
 fun NavGraphBuilder.menuScreen(){
     composable(menuNavigationRoute){
-        MenuScreen()
+        MenuScreen(hiltViewModel())
     }
 }

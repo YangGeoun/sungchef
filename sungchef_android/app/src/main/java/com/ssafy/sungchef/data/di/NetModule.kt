@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.data.di
 
 import com.ssafy.sungchef.BuildConfig
+import com.ssafy.sungchef.data.api.RecipeService
 import com.ssafy.sungchef.data.api.RecommendationService
 import com.ssafy.sungchef.data.api.UserService
 import dagger.Module
@@ -53,4 +54,9 @@ object NetModule {
     @Singleton
     fun provideUserService(retrofit: Retrofit): UserService =
         retrofit.create(UserService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideRecipeService(retrofit: Retrofit): RecipeService =
+        retrofit.create(RecipeService::class.java)
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,6 +18,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +30,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ssafy.sungchef.R
+import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.MenuCardComponent
 import com.ssafy.sungchef.features.component.TextComponent
@@ -35,8 +40,12 @@ import com.ssafy.sungchef.features.component.TextComponent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(
-
+    viewModel: MenuViewModel
 ) {
+    val viewState = viewModel.uiState.collectAsState().value
+    LaunchedEffect(true){
+        viewModel.getRecipeInfo(0)
+    }
     Scaffold(
         topBar = {
             SearchBar(
@@ -58,13 +67,16 @@ fun MenuScreen(
             }
         }
     ) { paddingValues ->
-        Content(paddingValues)
+        if (!viewState.recipeInfoList.isNullOrEmpty()){
+            Content(paddingValues, viewState.recipeInfoList)
+        }
     }
 }
 
 @Composable
 private fun Content(
     paddingValues: PaddingValues,
+    recipeInfoList: List<RecipeInfo>,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -74,14 +86,14 @@ private fun Content(
     ) {
         RecipeInfo(modifier = modifier, 300)
         LazyColumn(modifier = modifier.fillMaxWidth()) {
-            items(10) { data ->
+            itemsIndexed(recipeInfoList) { index, data ->
                 MenuCardComponent(
                     modifier = modifier,
-                    imageResource = "",
-                    title = "대박 맛집 김치찌개",
-                    views = "$data",
-                    servings = "$data",
-                    timer = "$data",
+                    imageResource = data.recipeImage,
+                    title = data.recipeName,
+                    views = "${data.recipeVisitCount}",
+                    servings = data.recipeVolume,
+                    timer = data.recipeCookingTime,
                     onClick = { /*TODO*/ }
                 ) {
 
@@ -141,5 +153,5 @@ private fun RecipeInfo(
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    MenuScreen()
+    MenuScreen(hiltViewModel())
 }
