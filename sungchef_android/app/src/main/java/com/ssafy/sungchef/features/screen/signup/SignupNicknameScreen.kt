@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.ssafy.sungchef.commons.ALREADY_NICKNAME
 import com.ssafy.sungchef.commons.DUPLICATE_CONFIRM
 import com.ssafy.sungchef.commons.EMPTY_NICKNAME
@@ -133,7 +134,9 @@ fun nicknameState(
                         text = ALREADY_NICKNAME
                     )
                 },
-                onDismissRequest = {},
+                onDismissRequest = {
+
+                },
                 confirmButton = {
                     TextButton(
                         onClick = {
@@ -144,7 +147,11 @@ fun nicknameState(
                     ) {
                         TextComponent(text = "확인")
                     }
-                }
+                },
+                properties = DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                )
             )
         }
     } else {
