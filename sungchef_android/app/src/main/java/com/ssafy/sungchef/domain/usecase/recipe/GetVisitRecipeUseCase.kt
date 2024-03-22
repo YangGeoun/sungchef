@@ -1,4 +1,4 @@
-package com.ssafy.sungchef.domain.usecase
+package com.ssafy.sungchef.domain.usecase.recipe
 
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.domain.model.recipe.RecipeInfo

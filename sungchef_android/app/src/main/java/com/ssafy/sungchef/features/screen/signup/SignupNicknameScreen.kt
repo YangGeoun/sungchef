@@ -135,7 +135,9 @@ fun nicknameState(
                     )
                 },
                 onDismissRequest = {
-
+                    showDialog.value = false
+                    // Error state 초기화
+                    viewModel.initIsErrorState(false)
                 },
                 confirmButton = {
                     TextButton(
