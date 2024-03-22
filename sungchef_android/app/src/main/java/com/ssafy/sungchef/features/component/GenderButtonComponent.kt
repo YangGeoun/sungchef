@@ -32,8 +32,7 @@ fun GenderButtonComponent(
 ) {
     Box(
         modifier = modifier
-            .width(173.dp)
-            .fillMaxHeight()
+            .fillMaxSize()
             .background(
                 color = toggleColor(isSelected),
                 shape = shape

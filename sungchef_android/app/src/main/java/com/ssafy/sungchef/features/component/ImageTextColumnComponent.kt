@@ -22,7 +22,7 @@ import com.ssafy.sungchef.R
 @Composable
 fun ImageTextColumnComponent(
     modifier: Modifier,
-    imageResource: String,
+    imageResource: Any,
     text: String = "",
     size: Int = 240,
     onClick: () -> (Unit)

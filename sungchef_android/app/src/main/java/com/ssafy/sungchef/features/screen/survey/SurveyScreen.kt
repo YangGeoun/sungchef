@@ -1,17 +1,17 @@
 package com.ssafy.sungchef.features.screen.survey
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -21,11 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.NEXT_STEP
 import com.ssafy.sungchef.commons.SURVEY_DESCRIPTION
 import com.ssafy.sungchef.commons.SURVEY_TITLE
 import com.ssafy.sungchef.features.component.FilledButtonComponent
+import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.TextComponent
 
 
@@ -33,7 +34,14 @@ import com.ssafy.sungchef.features.component.TextComponent
 fun SurveyScreen(
 
 ) {
-    Box {
+
+    val photoUrl = listOf(R.drawable.test_image, R.drawable.test_image, R.drawable.test_image, R.drawable.test_image
+                    ,R.drawable.test_image, R.drawable.test_image, R.drawable.test_image, R.drawable.test_image)
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ){
         Column(
             modifier = Modifier
                 .padding(
@@ -76,19 +84,20 @@ fun SurveyScreen(
 
             SurveyLazyGrid(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .background(
                         color = Color.White,
                         shape = RoundedCornerShape(15.dp)
                     )
                     .weight(1f)
+                    .padding(bottom = 60.dp),
+                photoUrl = photoUrl
             )
-
         }
         FilledButtonComponent(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter), // Box 내에서 하단 중앙 정렬
+                .align(Alignment.BottomCenter),
             text = NEXT_STEP
         ) {
             // TODO 설문 완료 API 붙히기
@@ -96,10 +105,11 @@ fun SurveyScreen(
     }
 }
 
+
 @Composable
 fun SurveyLazyGrid(
     modifier : Modifier,
-    photoUrl : List<String> = listOf()
+    photoUrl : List<Int> = listOf()
 ){
 
     LazyVerticalGrid(
@@ -111,9 +121,22 @@ fun SurveyLazyGrid(
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.Center, // 수평 방향으로 가운데 정렬
+                verticalAlignment = Alignment.CenterVertically // 수직 방향으로 가운데 정렬
             ){
-
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ImageComponent(
+                        modifier = Modifier
+                            .padding(vertical = 10.dp)
+                            .size(120.dp),
+                        imageResource = url,
+                    )
+                    TextComponent(
+                        text = "김치찌개"
+                    )
+                }
             }
         }
     }

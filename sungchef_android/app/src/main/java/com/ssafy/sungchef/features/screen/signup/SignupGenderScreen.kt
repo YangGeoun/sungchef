@@ -135,6 +135,8 @@ fun SignupGender(
             .height(161.dp)
     ){
         GenderButtonComponent(
+            modifier = Modifier
+                .weight(0.7f),
             gender = MALE,
             genderResource = R.drawable.gender_man,
             isSelected = isManSelected,
@@ -150,10 +152,12 @@ fun SignupGender(
 
         Spacer(
             modifier = Modifier
-                .weight(1f)
+                .weight(0.1f)
         )
 
         GenderButtonComponent(
+            modifier = Modifier
+                .weight(0.7f),
             gender = FEMALE,
             genderResource = R.drawable.gender_woman,
             isSelected = isWomanSelected,
