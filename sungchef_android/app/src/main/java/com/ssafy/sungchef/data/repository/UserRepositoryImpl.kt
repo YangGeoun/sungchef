@@ -27,6 +27,7 @@ class UserRepositoryImpl @Inject constructor(
             if (isDuplicate is DataState.Success) {
                 emit(DataState.Success(isDuplicate.data.toBaseModel()))
             } else if (isDuplicate is DataState.Error) {
+                Log.d(TAG, "apiError: ${isDuplicate.apiError}")
                 emit(DataState.Error(isDuplicate.apiError))
             }
         }

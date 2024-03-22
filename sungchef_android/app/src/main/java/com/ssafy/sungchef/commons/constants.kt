@@ -13,7 +13,7 @@ const val EMPTY_NICKNAME = "닉네임을 입력해주세요."
 // 닉네임 중복체크 메시지
 const val ALREADY_NICKNAME = "이미 존재하는 닉네임 입니다."
 const val WRONG_NICKNAME_FORMAT = "잘못된 닉네임 형식 입니다."
-const val SERVER_INSTABILITY = "서버와의 연결이 불안정합니다.\n 잠시후에 다시 시도해주세요."
+const val SERVER_INSTABILITY = "서버와의 연결이 불안정합니다.\n잠시후에 다시 시도해주세요."
 
 // 생년월일 화면
 const val BIRTH = "생년월일"

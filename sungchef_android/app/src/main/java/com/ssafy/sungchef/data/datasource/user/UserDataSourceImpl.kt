@@ -22,7 +22,7 @@ class UserDataSourceImpl @Inject constructor(
             }
         } catch (e : Exception){
             Log.d(TAG, "duplicateNickname: ${e.message}")
-            DataState.Error(APIError(409, ""))
+            DataState.Error(APIError(500, ""))
         }
     }
 

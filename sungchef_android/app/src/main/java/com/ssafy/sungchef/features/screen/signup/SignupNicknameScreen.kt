@@ -131,7 +131,7 @@ fun nicknameState(
             AlertDialog(
                 title = {
                     TextComponent(
-                        text = ALREADY_NICKNAME
+                        text = uiState.message
                     )
                 },
                 onDismissRequest = {
