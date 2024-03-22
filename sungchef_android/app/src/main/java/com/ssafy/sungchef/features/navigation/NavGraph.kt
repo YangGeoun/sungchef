@@ -25,8 +25,10 @@ import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
+import com.ssafy.sungchef.features.screen.menu.navigation.menuDetailScreen
 import com.ssafy.sungchef.features.screen.menu.navigation.menuScreen
 import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenu
+import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenuDetail
 import com.ssafy.sungchef.features.screen.mypage.navigation.myPageScreen
 import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
@@ -73,10 +75,11 @@ fun NavGraph() {
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen()
-            menuScreen()
+            menuScreen{navController.navigateMenuDetail(it)}
             refrigeratorScreen()
             signupGraph(navController)
             myPageScreen(navController)
+            menuDetailScreen()
         }
     }
 }

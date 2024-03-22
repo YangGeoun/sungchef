@@ -40,7 +40,8 @@ import com.ssafy.sungchef.features.component.TextComponent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(
-    viewModel: MenuViewModel
+    viewModel: MenuViewModel,
+    navigateDetailScreen: (Int) -> (Unit)
 ) {
     val viewState = viewModel.uiState.collectAsState().value
     LaunchedEffect(true) {
@@ -73,7 +74,10 @@ fun MenuScreen(
                 viewState.recipeInfoList,
                 onVisitClick = {viewModel.getVisitRecipeInfo(1)},
                 onBookMarkClick = {viewModel.getBookMarkRecipeInfo(1)}
-            )
+            ){
+                // Todo 메뉴 상세페이지로 이동 및 데이터 받아오기
+                navigateDetailScreen(it)
+            }
         }
     }
 }
@@ -84,7 +88,8 @@ private fun Content(
     recipeInfoList: List<RecipeInfo>,
     modifier: Modifier = Modifier,
     onVisitClick: () -> (Unit),
-    onBookMarkClick:() -> (Unit)
+    onBookMarkClick:() -> (Unit),
+    onClick:(Int)->(Unit)
 ) {
     Column(
         modifier = modifier
@@ -99,9 +104,6 @@ private fun Content(
         )
         LazyColumn(modifier = modifier.fillMaxWidth()) {
             itemsIndexed(recipeInfoList) { index, data ->
-                if (index==recipeInfoList.size-1){
-                    onVisitClick()
-                }
                 MenuCardComponent(
                     modifier = modifier,
                     imageResource = data.recipeImage,
@@ -109,7 +111,7 @@ private fun Content(
                     views = "${data.recipeVisitCount}",
                     servings = data.recipeVolume,
                     timer = data.recipeCookingTime,
-                    onClick = { /*TODO*/ }
+                    onClick = { onClick(data.recipeId) }
                 ) {
 
                 }
@@ -179,5 +181,5 @@ private fun RecipeInfo(
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    MenuScreen(hiltViewModel())
+    MenuScreen(hiltViewModel()){}
 }

@@ -15,8 +15,10 @@ fun NavController.navigateMenu(
     this.navigate(menuNavigationRoute, navOptions)
 }
 
-fun NavGraphBuilder.menuScreen(){
+fun NavGraphBuilder.menuScreen(navigateToMenuDetail: (Int)->(Unit)){
     composable(menuNavigationRoute){
-        MenuScreen(hiltViewModel())
+        MenuScreen(hiltViewModel()){
+            navigateToMenuDetail(it)
+        }
     }
 }

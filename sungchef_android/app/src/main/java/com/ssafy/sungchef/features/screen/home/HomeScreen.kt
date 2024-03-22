@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -58,59 +59,69 @@ private fun Content(
     recommendedRecipeList: List<RecommendedRecipeList>?
 ) {
     if (recommendedFoodList != null && recommendedRecipeList != null) {
-        val scrollState = rememberScrollState()
-        Column(
+        LazyColumn(
             modifier = modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .verticalScroll(scrollState)
         ) {
-            RecommendFoodBody(
-                modifier = modifier,
-                text = "오늘은 무엇을 먹을까?",
-                dataList = recommendedFoodList[0].recommendedFoodList,
-                size = 300
-            ) {
+            item {
+                RecommendFoodBody(
+                    modifier = modifier,
+                    text = "오늘은 무엇을 먹을까?",
+                    dataList = recommendedFoodList[0].recommendedFoodList,
+                    size = 300
+                ) {
 
+                }
             }
-            RecommendRecipeBody(
-                modifier = modifier,
-                text = "냉장고를 털어보자",
-                dataList = recommendedRecipeList[0].recommendedRecipeList,
-            ) {
+            item {
+                RecommendRecipeBody(
+                    modifier = modifier,
+                    text = "냉장고를 털어보자",
+                    dataList = recommendedRecipeList[0].recommendedRecipeList,
+                ) {
 
+                }
             }
-            RecommendFoodBody(
-                modifier = modifier,
-                text = "좋아할 만한 음식",
-                dataList = recommendedFoodList[1].recommendedFoodList,
-                size = 120
-            ) {
+            item {
+                RecommendFoodBody(
+                    modifier = modifier,
+                    text = "좋아할 만한 음식",
+                    dataList = recommendedFoodList[1].recommendedFoodList,
+                    size = 120
+                ) {
 
+                }
             }
-            RecommendFoodBody(
-                modifier = modifier,
-                text = "남자가 좋아하는 음식",
-                dataList = recommendedFoodList[2].recommendedFoodList,
-                size = 120
-            ) {
+            item {
+                RecommendFoodBody(
+                    modifier = modifier,
+                    text = "남자가 좋아하는 음식",
+                    dataList = recommendedFoodList[2].recommendedFoodList,
+                    size = 120
+                ) {
 
+                }
             }
-            RecommendFoodBody(
-                modifier = modifier,
-                text = "20대가 좋아하는 음식",
-                dataList = recommendedFoodList[3].recommendedFoodList,
-                size = 120
-            ) {
+            item {
+                RecommendFoodBody(
+                    modifier = modifier,
+                    text = "20대가 좋아하는 음식",
+                    dataList = recommendedFoodList[3].recommendedFoodList,
+                    size = 120
+                ) {
 
+                }
             }
-            RecommendFoodBody(
-                modifier = modifier,
-                text = "오늘같은 날씨에 먹어봐요",
-                dataList = recommendedFoodList[4].recommendedFoodList,
-                size = 120
-            ) {
+            item {
+                RecommendFoodBody(
+                    modifier = modifier,
+                    text = "오늘같은 날씨에 먹어봐요",
+                    dataList = recommendedFoodList[4].recommendedFoodList,
+                    size = 120
+                ) {
 
+                }
             }
         }
     }
