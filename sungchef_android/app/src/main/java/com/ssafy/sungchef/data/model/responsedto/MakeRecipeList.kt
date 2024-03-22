@@ -8,11 +8,11 @@ data class MakeRecipeList (
 
 data class MakeRecipeListData(
     val makeRecipeCount: Int,
-    val makeRecipeList : List<RecipeList>
+    val makeRecipeList : List<MakeRecipeDetailList>
 
 )
 
-data class RecipeList(
+data class MakeRecipeDetailList(
     val makeRecipeImage : String,
     val makeRecipeCreateDate : String,
     val makeRecipeReview : String

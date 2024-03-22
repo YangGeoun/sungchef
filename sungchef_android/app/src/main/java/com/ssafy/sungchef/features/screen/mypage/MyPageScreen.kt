@@ -65,11 +65,15 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
     
     val userSimple by viewModel.userSimpleData.collectAsState()
     val makeRecipeList by viewModel.makeRecipeListData.collectAsState()
+    val bookmarkRecipeList by viewModel.bookmarkRecipeListData.collectAsState()
 
     
 
     LaunchedEffect(true) {
+        Log.d(TAG, "MyPageScreen: LaunchedEffect")
+        isUserSimpleFinished = false
         viewModel.getUserSimple()
+
     }
 
     // 현재 선택된 탭의 인덱스를 추적하는 상태 변수
@@ -90,6 +94,7 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
                 Column {
                     Log.d(TAG, "MyPageScreen: 두번찍히니?")
                     Log.d(TAG, "MyPageScreen: $userSimple")
+                    Log.d(TAG, "MyPageScreen: isUserSimpleFinished : $isUserSimpleFinished")
 //                    val userSimple = UserSimple(0,"", UserProfile("","",0,0))
 
                     if(userSimple?.code!=0 && !isUserSimpleFinished){
@@ -97,13 +102,21 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
                         Log.d(TAG, "MyPageScreen: for문진입")
                         isUserSimpleFinished = true
                         val makeRecipeCount = userSimple!!.data.makeRecipeCount
-                        val pageCount = if(makeRecipeCount%9==0) makeRecipeCount/9 else {makeRecipeCount/9+1}
-                        for (page in 1..pageCount){
+                        val makeRecipePageCount = if(makeRecipeCount%9==0) makeRecipeCount/9 else {makeRecipeCount/9+1}
+                        for (page in 1..makeRecipePageCount){
                             //여기 await를 안 하면.. 1,2페이지 순서로 호출한다고 해서 그 순서대로 list에 add된다는 보장 X
                             Log.d(TAG, "MyPageScreen: cnt : ${tstcnt++}")
                             viewModel.getMakeRecipeList(page)
                         }
                         Log.d(TAG, "MyPageScreen: 업로드 리스트 ${makeRecipeList}")
+                        val bookmarkRecipeCount = userSimple!!.data.bookmarkRecipeCount
+                        val bookmarkRecipePageCount = if(bookmarkRecipeCount%9==0) bookmarkRecipeCount/9 else {bookmarkRecipeCount/9+1}
+                        for (page in 1..bookmarkRecipePageCount){
+                            //여기 await를 안 하면.. 1,2페이지 순서로 호출한다고 해서 그 순서대로 list에 add된다는 보장 X
+                            Log.d(TAG, "MyPageScreen: cnt : ${tstcnt++}")
+                            viewModel.getBookmarkRecipeList(page)
+                        }
+                        Log.d(TAG, "MyPageScreen: 북마크 리스트 ${bookmarkRecipeList}")
                     }
                     Profile(navController, userSimple!!)
 
@@ -129,24 +142,10 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
                         makeRecipeURLList.add(lst.makeRecipeImage)
                     }
 
-                    val lst1 = mutableListOf<String>()
-                    lst1.add("원1")
-                    lst1.add("투1")
-                    lst1.add("쓰1리")
-                    lst1.add("포1")
-                    lst1.add("ㅍ1ㅇㅂ")
-                    lst1.add("ㅅ1ㅅ")
-                    lst1.add("ㅅ1ㅂ")
-                    lst1.add("ㄷ1ㄷ")
-                    lst1.add("ㅜ1ㅇ")
-                    lst1.add("ㅌ1")
-                    val lst2 = mutableListOf<String>()
-                    lst2.add("원2")
-                    lst2.add("투2")
-                    lst2.add("쓰2리")
-                    lst2.add("포2")
-                    lst2.add("ㅍ2ㅇㅂ")
-
+                    var bookmarkRecipeURLList = mutableListOf<String>()
+                    for (lst in bookmarkRecipeList.data.bookmarkRecipeList){
+                        bookmarkRecipeURLList.add(lst.recipeImage)
+                    }
 
 
                     // 선택된 탭의 내용을 표시
@@ -156,7 +155,7 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
                                 TAG,
                                 "MyPage1: $it"
                             )}, )
-                        1 -> LazyVerticalGridComponent(photoUrls = lst2, onClick = {
+                        1 -> LazyVerticalGridComponent(photoUrls = bookmarkRecipeURLList, onClick = {
                             Log.d(
                                 TAG,
                                 "MyPage2: $it"

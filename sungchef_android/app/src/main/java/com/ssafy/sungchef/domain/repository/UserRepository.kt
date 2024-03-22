@@ -2,6 +2,7 @@ package com.ssafy.sungchef.domain.repository
 
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.domain.model.base.BaseModel
@@ -13,4 +14,5 @@ interface UserRepository {
     suspend fun userSimple() : UserSimple
 
     suspend fun makeRecipeList(page : Int) : MakeRecipeList
+    suspend fun bookmarkRecipeList(page : Int) : BookmarkRecipeList
 }

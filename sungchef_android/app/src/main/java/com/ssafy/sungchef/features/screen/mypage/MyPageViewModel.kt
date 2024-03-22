@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.sungchef.commons.DataState
+import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
+import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeListData
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeListData
-import com.ssafy.sungchef.data.model.responsedto.RecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserProfile
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.domain.usecase.RecommendationUseCase
@@ -29,6 +30,9 @@ class MyPageViewModel @Inject constructor(
 
     private val _makeRecipeListData = MutableStateFlow<MakeRecipeList>(MakeRecipeList(0, "", MakeRecipeListData(0, listOf())))
     val makeRecipeListData: StateFlow<MakeRecipeList> = _makeRecipeListData.asStateFlow()
+    private val _bookmarkRecipeListData = MutableStateFlow<BookmarkRecipeList>(BookmarkRecipeList(0, "", BookmarkRecipeListData(0, listOf())))
+    val bookmarkRecipeListData: StateFlow<BookmarkRecipeList> = _bookmarkRecipeListData.asStateFlow()
+
 
     var cnt = 0
 //    init {
@@ -58,6 +62,24 @@ class MyPageViewModel @Inject constructor(
                 makeRecipeListResponse.code, makeRecipeListResponse.message,
                 MakeRecipeListData(makeRecipeListResponse.data.makeRecipeCount,
                     updatedMakeRecipeList)
+            )
+        }
+    }
+
+    fun getBookmarkRecipeList(page: Int) {
+        viewModelScope.launch {
+            val bookmarkRecipeListResponse = userSimpleUseCase.bookmarkRecipeList(page)
+            Log.d(TAG, "getBookmarkRecipeList: $bookmarkRecipeListResponse")
+            val updatedBookmarkRecipeList = _bookmarkRecipeListData.value.data.bookmarkRecipeList.toMutableList().apply {
+                bookmarkRecipeListResponse.data.bookmarkRecipeList.forEach {
+                    Log.d(TAG, "getBookmarkRecipeList: viewmodel : ${cnt++}")
+                    add(it)
+                }
+            }
+            _bookmarkRecipeListData.value= BookmarkRecipeList(
+                bookmarkRecipeListResponse.code, bookmarkRecipeListResponse.message,
+                BookmarkRecipeListData(bookmarkRecipeListResponse.data.bookmarkRecipeCount,
+                    updatedBookmarkRecipeList)
             )
         }
     }

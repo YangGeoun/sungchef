@@ -5,6 +5,7 @@ import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.datasource.user.UserDataSource
 import com.ssafy.sungchef.data.mapper.user.toBaseModel
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.domain.model.base.BaseModel
@@ -37,5 +38,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun makeRecipeList(page : Int) : MakeRecipeList {
         return userDataSource.makeRecipeList(page)
+    }
+
+    override suspend fun bookmarkRecipeList(page : Int) : BookmarkRecipeList {
+        return userDataSource.bookmarkRecipeList(page)
     }
 }

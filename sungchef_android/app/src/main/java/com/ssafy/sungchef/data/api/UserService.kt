@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.data.api
 
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import retrofit2.Response
@@ -17,5 +18,8 @@ interface UserService {
 
     @GET("user/recipe/{page}")
     suspend fun makeRecipeList(@Path("page") page : Int) : MakeRecipeList
+
+    @GET("user/bookmark/{page}")
+    suspend fun bookmarkRecipeList(@Path("page") page : Int) : BookmarkRecipeList
 
 }
