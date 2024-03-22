@@ -43,8 +43,8 @@ fun MenuScreen(
     viewModel: MenuViewModel
 ) {
     val viewState = viewModel.uiState.collectAsState().value
-    LaunchedEffect(true){
-        viewModel.getRecipeInfo(0)
+    LaunchedEffect(true) {
+        viewModel.getVisitRecipeInfo(0)
     }
     Scaffold(
         topBar = {
@@ -67,8 +67,13 @@ fun MenuScreen(
             }
         }
     ) { paddingValues ->
-        if (!viewState.recipeInfoList.isNullOrEmpty()){
-            Content(paddingValues, viewState.recipeInfoList)
+        if (!viewState.recipeInfoList.isNullOrEmpty()) {
+            Content(
+                paddingValues,
+                viewState.recipeInfoList,
+                onVisitClick = {viewModel.getVisitRecipeInfo(1)},
+                onBookMarkClick = {viewModel.getBookMarkRecipeInfo(1)}
+            )
         }
     }
 }
@@ -77,16 +82,26 @@ fun MenuScreen(
 private fun Content(
     paddingValues: PaddingValues,
     recipeInfoList: List<RecipeInfo>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onVisitClick: () -> (Unit),
+    onBookMarkClick:() -> (Unit)
 ) {
     Column(
         modifier = modifier
             .padding(paddingValues)
             .padding(horizontal = 20.dp)
     ) {
-        RecipeInfo(modifier = modifier, 300)
+        RecipeInfo(
+            modifier = modifier,
+            300,
+            onVisitClick = {onVisitClick()},
+            onBookMarkClick = {onBookMarkClick()}
+        )
         LazyColumn(modifier = modifier.fillMaxWidth()) {
             itemsIndexed(recipeInfoList) { index, data ->
+                if (index==recipeInfoList.size-1){
+                    onVisitClick()
+                }
                 MenuCardComponent(
                     modifier = modifier,
                     imageResource = data.recipeImage,
@@ -107,8 +122,11 @@ private fun Content(
 private fun RecipeInfo(
     modifier: Modifier,
     count: Int,
+    onVisitClick: () -> (Unit),
+    onBookMarkClick:() -> (Unit)
 ) {
     var menuVisibility by remember { mutableStateOf(false) }
+    var standard by remember { mutableStateOf("조회순") }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -127,7 +145,7 @@ private fun RecipeInfo(
         ) {
             TextComponent(
                 modifier = modifier,
-                text = "조회순",
+                text = standard,
                 color = Color.Black,
                 fontSize = 16.sp
             )
@@ -139,11 +157,19 @@ private fun RecipeInfo(
             ) {
                 DropdownMenuItem(
                     text = { TextComponent(text = "조회순") },
-                    onClick = { menuVisibility = !menuVisibility }
+                    onClick = {
+                        menuVisibility = !menuVisibility
+                        standard = "조회순"
+                        onVisitClick()
+                    }
                 )
                 DropdownMenuItem(
                     text = { TextComponent(text = "즐겨찾기순") },
-                    onClick = { menuVisibility = !menuVisibility }
+                    onClick = {
+                        menuVisibility = !menuVisibility
+                        standard = "즐겨찾기순"
+                        onBookMarkClick()
+                    }
                 )
             }
         }
