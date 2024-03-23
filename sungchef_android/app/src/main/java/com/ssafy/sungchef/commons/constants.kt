@@ -30,11 +30,17 @@ const val FEMALE = "여성"
 const val SEND_MALE = "M"
 const val SEND_FEMALE = "F"
 
+// 축하 메시지
+const val CONGRATULATION = "성식당에 가입 해주셔서\n감사합니다."
+const val GO_SURVEY = "설문조사 하러 가실까요?"
+
 // 설문 조사
 const val SURVEY_TITLE = "취향에 맞는 음식을\n" +
         "선택해보세요."
 const val SURVEY_DESCRIPTION = "좋아하는 음식을 선택하시면 취향에 맞는\n" +
         "음식들을 찾아드려요."
 const val SURVEY_SELECT_COUNT = "최소 5개 이상 골라 주세요."
+const val MOVE_HOME_SCREEN = "홈 화면 이동하기"
+
 
 const val DELETE_ALL = "전체 삭제"

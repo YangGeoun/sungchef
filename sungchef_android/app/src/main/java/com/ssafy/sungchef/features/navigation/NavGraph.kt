@@ -35,6 +35,7 @@ import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrig
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
 import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
+import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -80,6 +81,7 @@ fun NavGraph() {
             signupGraph(navController)
             myPageScreen(navController)
             menuDetailScreen()
+            surveyScreen()
         }
     }
 }

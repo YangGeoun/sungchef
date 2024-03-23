@@ -35,7 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ssafy.sungchef.R
+import com.ssafy.sungchef.commons.MOVE_HOME_SCREEN
 import com.ssafy.sungchef.commons.NEXT_STEP
 import com.ssafy.sungchef.commons.SURVEY_DESCRIPTION
 import com.ssafy.sungchef.commons.SURVEY_SELECT_COUNT
@@ -44,12 +46,13 @@ import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.TextComponent
+import com.ssafy.sungchef.features.screen.survey.navigation.SurveyViewModel
 import com.ssafy.sungchef.features.ui.theme.primaryContainer50
 
 private const val TAG = "SurveyScreen_성식당"
 @Composable
 fun SurveyScreen(
-
+    viewModel : SurveyViewModel
 ) {
 
     val photoUrl = listOf(R.drawable.test_image, R.drawable.test_image, R.drawable.test_image, R.drawable.test_image
@@ -134,7 +137,7 @@ fun SurveyScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter),
-            text = NEXT_STEP
+            text = MOVE_HOME_SCREEN
         ) {
             // TODO 설문 완료 API 붙히기
         }
@@ -231,5 +234,7 @@ fun setBackground(isSelected : Boolean) : Color {
 @Preview(showBackground = true)
 @Composable
 fun SurveyBodyPreview() {
-    SurveyScreen()
+    SurveyScreen(
+        viewModel = hiltViewModel()
+    )
 }

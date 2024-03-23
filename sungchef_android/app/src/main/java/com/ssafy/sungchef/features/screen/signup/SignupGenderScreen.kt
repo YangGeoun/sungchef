@@ -44,7 +44,7 @@ private const val TAG = "SignupGenderScreen_성식당"
 @Composable
 fun SignupGenderScreen(
     viewModel : SignupViewModel,
-    onMoveSurveyPage : () -> Unit,
+    onMoveCongratulationPage : () -> Unit,
     onMovePreviousPage : () -> Unit
 ) {
     Scaffold (
@@ -113,7 +113,7 @@ fun SignupGenderScreen(
                 ) {
                     // TODO 뒤로 가기 구현 (onBackPressed 포함)
                     if (viewModel.checkGender()) {
-                        onMoveSurveyPage()
+                        onMoveCongratulationPage()
                         Log.d(TAG, "SignupGenderScreen: 회원가입 성공")
                     }
                 }
