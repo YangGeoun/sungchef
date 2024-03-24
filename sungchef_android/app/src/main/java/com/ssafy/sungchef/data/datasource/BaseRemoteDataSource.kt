@@ -21,6 +21,13 @@ open class BaseRemoteDataSource {
             }
         } else {
             when (response.code()) {
+                400 -> {
+                    val apiError = APIError(
+                        400L,
+                        "올바른 데이터를 입력해주세요."
+                    )
+                    DataState.Error(apiError)
+                }
                 409 -> {
                     val apiError = APIError(
                         409L,

@@ -24,11 +24,12 @@ const val EMPTY = ""
 const val BIRTH_FAIL_MESSAGE = "현재 날짜보다 미래인 날짜는\n선택할 수 없습니다."
 
 // 성별 화면
-const val INPUT_GENDER = "성별을 입력하세요."
+const val INPUT_GENDER = "성별을 골라주세요."
 const val MALE = "남성"
 const val FEMALE = "여성"
 const val SEND_MALE = "M"
 const val SEND_FEMALE = "F"
+const val SUCCESS_CODE = 200
 
 // 축하 메시지
 const val CONGRATULATION = "성식당에 가입 해주셔서\n감사합니다."

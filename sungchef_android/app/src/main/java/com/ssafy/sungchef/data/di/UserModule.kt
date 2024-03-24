@@ -1,8 +1,12 @@
 package com.ssafy.sungchef.data.di
 
+import com.ssafy.sungchef.data.datasource.token.TokenDataSource
+import com.ssafy.sungchef.data.datasource.token.TokenDataSourceImpl
 import com.ssafy.sungchef.data.datasource.user.UserDataSource
 import com.ssafy.sungchef.data.datasource.user.UserDataSourceImpl
+import com.ssafy.sungchef.data.repository.UserDataStoreRepositoryImpl
 import com.ssafy.sungchef.data.repository.UserRepositoryImpl
+import com.ssafy.sungchef.domain.repository.UserDataStoreRepository
 import com.ssafy.sungchef.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -21,4 +25,12 @@ abstract class UserModule {
     @Binds
     @Singleton
     abstract fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl) : UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTokenDataSource(tokenDataSourceImpl: TokenDataSourceImpl) : TokenDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindUserDataStoreRepository(userDataStoreRepositoryImpl: UserDataStoreRepositoryImpl) : UserDataStoreRepository
 }

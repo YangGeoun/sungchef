@@ -61,6 +61,8 @@ fun SignupBirthScreen(
     onMoveNextPage : () -> Unit,
     onMovePreviousPage : () -> Unit
 ) {
+    val context = LocalContext.current
+
     Scaffold (
         topBar = {
             SignupTopBar(
@@ -116,12 +118,11 @@ fun SignupBirthScreen(
                         .align(Alignment.BottomCenter), // Box 내에서 하단 중앙 정렬
                     text = NEXT_STEP
                 ) {
-                    // TODO 뒤로 가기 구현 (onBackPressed 포함)ㅁㄴ
                     if (viewModel.checkBirth()) {
                         onMoveNextPage()
                         viewModel.moveNextPage()
                     } else {
-                        Log.d(TAG, "SignupBirthScreen: 못넘어가유")
+                        Toast.makeText(context, INPUT_BIRTH, Toast.LENGTH_SHORT).show()
                     }
                 }
             }

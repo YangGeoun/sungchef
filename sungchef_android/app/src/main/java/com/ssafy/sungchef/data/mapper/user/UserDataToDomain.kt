@@ -1,6 +1,9 @@
 package com.ssafy.sungchef.data.mapper.user
 
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.responsedto.ResponseDto
+import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
+import com.ssafy.sungchef.domain.model.JwtToken
 import com.ssafy.sungchef.domain.model.base.BaseModel
 
 fun APIError.toBaseModel() : BaseModel{
@@ -18,6 +21,13 @@ fun APIError.toBaseModel() : BaseModel{
             "서버와의 연결이 불안정 합니다.\n잠시 후에 다시 시도해주세요."
         )
     }
+}
+
+fun TokenResponse.toJwtToken() : JwtToken {
+    return JwtToken(
+        this.accessToken,
+        this.refreshToken
+    )
 }
 
 
