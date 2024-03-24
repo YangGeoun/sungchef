@@ -4,7 +4,7 @@ import android.util.Log
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.datasource.user.UserDataSource
 import com.ssafy.sungchef.data.mapper.user.toBaseModel
-import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
@@ -12,7 +12,7 @@ import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import retrofit2.Response
+
 
 import javax.inject.Inject
 
@@ -43,5 +43,17 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun bookmarkRecipeList(page : Int) : BookmarkRecipeList {
         return userDataSource.bookmarkRecipeList(page)
+    }
+
+    override suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO): Flow<DataState<Boolean>> {
+        return flow {
+            val isSuccess = userDataSource.surveySubmit(surveyRequestDTO)
+
+            if (isSuccess is DataState.Success) {
+                emit(DataState.Success(true))
+            } else if (isSuccess is DataState.Error) {
+                emit(DataState.Error(isSuccess.apiError))
+            }
+        }
     }
 }

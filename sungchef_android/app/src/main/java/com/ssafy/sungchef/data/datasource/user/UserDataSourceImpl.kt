@@ -5,6 +5,7 @@ import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.api.UserService
 import com.ssafy.sungchef.data.datasource.BaseRemoteDataSource
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
@@ -37,5 +38,11 @@ class UserDataSourceImpl @Inject constructor(
 
     override suspend fun bookmarkRecipeList(page : Int) : BookmarkRecipeList {
         return userService.bookmarkRecipeList(page)
+    }
+
+    override suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO): DataState<APIError> {
+        return getResult {
+            userService.submitSurvey(surveyRequestDTO)
+        }
     }
 }

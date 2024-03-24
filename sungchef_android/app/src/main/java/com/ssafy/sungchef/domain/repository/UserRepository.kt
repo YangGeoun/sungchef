@@ -2,6 +2,7 @@ package com.ssafy.sungchef.domain.repository
 
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
@@ -15,4 +16,6 @@ interface UserRepository {
 
     suspend fun makeRecipeList(page : Int) : MakeRecipeList
     suspend fun bookmarkRecipeList(page : Int) : BookmarkRecipeList
+
+    suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO) : Flow<DataState<Boolean>>
 }

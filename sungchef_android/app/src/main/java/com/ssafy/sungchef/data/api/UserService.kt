@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.data.api
 
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
@@ -29,4 +30,7 @@ interface UserService {
 
     @POST("user/signup")
     suspend fun signupUser(@Body userRequestDTO: UserRequestDTO) : Response<ResponseDto<TokenResponse>>
+
+    @POST("survey/submit")
+    suspend fun submitSurvey(@Body surveyRequestDTO: SurveyRequestDTO) : Response<APIError>
 }
