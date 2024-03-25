@@ -1,6 +1,8 @@
 package com.ssafy.sungchef.features.screen.menu
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,10 +57,16 @@ fun MenuDetailScreen(
     viewModel: MenuViewModel,
     onBackNavigate:()->(Unit)
 ) {
+    val context:Context = LocalContext.current
     LaunchedEffect(key1 = true) {
         viewModel.getDetailRecipe(recipeId.toInt())
     }
     val viewState = viewModel.uiState.collectAsState().value
+    if (viewState.isError){
+        Toast.makeText(context, "잘못된 접근입니다.",Toast.LENGTH_SHORT).show()
+        viewModel.resetError()
+        onBackNavigate()
+    }
     // Todo 서버 통신
     Scaffold {
         if (viewState.recipeDetail != null) {

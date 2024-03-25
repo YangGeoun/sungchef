@@ -5,6 +5,7 @@ import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
 
 data class RecipeViewState (
     val isLoading: Boolean = false,
+    val isError:Boolean = false,
     val recipeInfoList: List<RecipeInfo>? = null,
     val recipeDetail: RecipeDetail? = null
 )

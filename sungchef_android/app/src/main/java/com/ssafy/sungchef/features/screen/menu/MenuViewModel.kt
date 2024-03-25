@@ -77,10 +77,13 @@ class MenuViewModel @Inject constructor(
 
                     is DataState.Error -> {
                         setState { currentState.copy(isLoading = false) }
+                        when (it.apiError.code) {
+                            400.toLong() -> setState { currentState.copy(isError = true) }
+                        }
                     }
 
                     is DataState.Loading -> {
-
+                        setState { currentState.copy(isLoading = true) }
                     }
                 }
             }
@@ -91,11 +94,27 @@ class MenuViewModel @Inject constructor(
         setState { currentState.copy(recipeDetail = null) }
     }
 
+    fun resetError() {
+        setState { currentState.copy(isError = false) }
+    }
+
     fun changeBookmarkRecipe(recipeId: Int, isBookmark: Boolean) {
         viewModelScope.launch {
-            changeBookmarkRecipe.invoke(recipeId, isBookmark).collect(
+            changeBookmarkRecipe.invoke(recipeId, isBookmark).collect() {
+                when (it) {
+                    is DataState.Success -> {
+                        setState { currentState.copy(isLoading = false) }
+                    }
 
-            )
+                    is DataState.Error -> {
+                        setState { currentState.copy(isError = true, isLoading = false) }
+                    }
+
+                    is DataState.Loading -> {
+                        setState { currentState.copy(isError = true, isLoading = true) }
+                    }
+                }
+            }
         }
     }
 

@@ -1,6 +1,8 @@
 package com.ssafy.sungchef.features.screen.menu
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,9 +48,14 @@ fun MenuScreen(
     viewModel: MenuViewModel,
     navigateDetailScreen: (Int) -> (Unit)
 ) {
+    val context: Context = LocalContext.current
     val viewState = viewModel.uiState.collectAsState().value
     LaunchedEffect(viewState) {
         viewModel.getVisitRecipeInfo(0)
+    }
+    if (viewState.isError) {
+        Toast.makeText(context, "즐겨찾기에 실패했습니다.", Toast.LENGTH_SHORT).show()
+        viewModel.resetError()
     }
     Scaffold(
         topBar = {
