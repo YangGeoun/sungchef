@@ -80,6 +80,7 @@ dependencies {
     implementation ("com.squareup.okhttp3:logging-interceptor:4.12.0")
     //hilt
     implementation("com.google.dagger:hilt-android:2.49")
+    implementation("androidx.datastore:datastore-core:1.0.0")
     ksp ("com.google.dagger:hilt-compiler:2.48")
     //navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
@@ -99,6 +100,9 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Datastore
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
 
     ksp("com.github.bumptech.glide:glide:4.14.2")
 }

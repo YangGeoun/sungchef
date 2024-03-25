@@ -39,6 +39,8 @@ import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrig
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
 import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
+import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
+import com.ssafy.sungchef.features.screen.survey.navigation.survey_route
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -93,6 +95,7 @@ fun NavGraph() {
                 navVisibility = true
                 navController.popBackStack()
             }
+            surveyScreen(navController)
         }
     }
 }

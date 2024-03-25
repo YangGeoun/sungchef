@@ -11,18 +11,22 @@ import com.ssafy.sungchef.commons.ALREADY_NICKNAME
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.commons.SERVER_INSTABILITY
 import com.ssafy.sungchef.commons.WRONG_NICKNAME_FORMAT
+import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.usecase.signup.DuplicateNicknameUseCase
+import com.ssafy.sungchef.domain.usecase.signup.SignupUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "SignupViewModel_성식당"
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-    private val duplicateNicknameUseCase: DuplicateNicknameUseCase
+    private val duplicateNicknameUseCase: DuplicateNicknameUseCase,
+    private val signupUserUseCase: SignupUserUseCase
 ) : ViewModel(){
 
     val topBarNumber = mutableIntStateOf(1)
@@ -38,6 +42,9 @@ class SignupViewModel @Inject constructor(
 
     private val _isNextPage = MutableStateFlow(false)
     val isNextPage : StateFlow<Boolean> = _isNextPage
+
+    private val _isSignupSuccess = MutableStateFlow(0)
+    val isSignupSuccess : StateFlow<Int> = _isSignupSuccess
 
     fun checkNickname(): Boolean {
         val length = nickname.value.length
@@ -108,5 +115,36 @@ class SignupViewModel @Inject constructor(
 
     fun initIsErrorState(state : Boolean) {
         _isError.value = state
+    }
+
+    // TODO 소셜 로그인 시 변경 필요
+    fun isSuccessSignup() {
+        viewModelScope.launch {
+            val userRequestDTO = UserRequestDTO(
+                "",
+                "Kakao",
+                nickname.value,
+                gender.value,
+                birth.value
+            )
+
+            signupUserUseCase.signupUser(userRequestDTO).collect {
+                when(it) {
+                    is DataState.Success -> {
+                        Log.d(TAG, "isSuccessSignup: 서버 통신 성공ㅁㄴ")
+                        _isSignupSuccess.emit(it.data)
+                        _isNextPage.emit(true)
+                    }
+
+                    is DataState.Error -> {
+
+                    }
+
+                    is DataState.Loading -> {
+
+                    }
+                }
+            }
+        }
     }
 }

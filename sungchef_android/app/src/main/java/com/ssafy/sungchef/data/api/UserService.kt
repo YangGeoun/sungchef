@@ -1,10 +1,16 @@
 package com.ssafy.sungchef.data.api
 
 import com.ssafy.sungchef.data.model.APIError
+
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
+import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
+import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
+import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -27,4 +33,13 @@ interface UserService {
 
     @POST("user/bookmark")
     suspend fun changeBookmarkRecipe(@Body bookMarkRequest: BookMarkRequest): Response<APIError>
+
+    @POST("user/signup")
+    suspend fun signupUser(@Body userRequestDTO: UserRequestDTO) : Response<ResponseDto<TokenResponse>>
+
+    @POST("survey/submit")
+    suspend fun submitSurvey(@Body surveyRequestDTO: SurveyRequestDTO) : Response<APIError>
+
+    @GET("survey")
+    suspend fun getSurvey() : Response<ResponseDto<SurveyResponse>>
 }

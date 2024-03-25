@@ -1,5 +1,8 @@
 package com.ssafy.sungchef.features.screen.menu
 
+import androidx.compose.foundation.layout.height
+
+
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -15,7 +18,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight

@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.features.component
 
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,7 +24,8 @@ fun AlertDialogComponent(
        },
        text = {
            TextComponent(
-               text = dialogText
+               text = dialogText,
+               style = MaterialTheme.typography.titleLarge
            )
        },
        onDismissRequest = onDismissRequest,

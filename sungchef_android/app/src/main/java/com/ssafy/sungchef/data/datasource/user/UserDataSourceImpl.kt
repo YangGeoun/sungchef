@@ -2,13 +2,20 @@ package com.ssafy.sungchef.data.datasource.user
 
 import android.util.Log
 import com.ssafy.sungchef.commons.DataState
+import com.ssafy.sungchef.commons.SERVER_INSTABILITY
 import com.ssafy.sungchef.data.api.UserService
 import com.ssafy.sungchef.data.datasource.BaseRemoteDataSource
 import com.ssafy.sungchef.data.model.APIError
+
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
+
+import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
+
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
+import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -43,4 +50,23 @@ class UserDataSourceImpl @Inject constructor(
     override suspend fun changeBookmarkRecipe(bookMarkRequest: BookMarkRequest): DataState<APIError> =
         getResult { userService.changeBookmarkRecipe(bookMarkRequest) }
 
+    override suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO): DataState<APIError> {
+        return try {
+            getResult {
+                userService.submitSurvey(surveyRequestDTO)
+            }
+        } catch (e : Exception) {
+            DataState.Error(APIError(500, ""))
+        }
+    }
+
+    override suspend fun getSurvey(): DataState<ResponseDto<SurveyResponse>> {
+        return try {
+            getResult {
+                userService.getSurvey()
+            }
+        } catch (e : Exception) {
+            DataState.Error(APIError(500, SERVER_INSTABILITY))
+        }
+    }
 }

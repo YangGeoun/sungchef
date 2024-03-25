@@ -1,10 +1,8 @@
 package com.ssafy.sungchef.features.screen.signup
 
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,11 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -29,29 +23,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.BIRTH
 import com.ssafy.sungchef.commons.BIRTH_FAIL_MESSAGE
 import com.ssafy.sungchef.commons.BIRTH_FORMAT
-import com.ssafy.sungchef.commons.DUPLICATE_CONFIRM
 import com.ssafy.sungchef.commons.INPUT_BIRTH
-import com.ssafy.sungchef.commons.INPUT_NICKNAME
 import com.ssafy.sungchef.commons.NEXT_STEP
 import com.ssafy.sungchef.features.component.DatePickerDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.IconButtonComponent
-import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
-import com.ssafy.sungchef.features.component.TopAppBarComponent
 import com.ssafy.sungchef.features.screen.signup.common.SignupNickname
 import com.ssafy.sungchef.features.screen.signup.common.SignupTopBar
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.Locale
 
 private const val TAG = "SignupBirthScreen_성식당"
 @RequiresApi(Build.VERSION_CODES.O)
@@ -61,6 +49,8 @@ fun SignupBirthScreen(
     onMoveNextPage : () -> Unit,
     onMovePreviousPage : () -> Unit
 ) {
+    val context = LocalContext.current
+
     Scaffold (
         topBar = {
             SignupTopBar(
@@ -116,12 +106,11 @@ fun SignupBirthScreen(
                         .align(Alignment.BottomCenter), // Box 내에서 하단 중앙 정렬
                     text = NEXT_STEP
                 ) {
-                    // TODO 뒤로 가기 구현 (onBackPressed 포함)ㅁㄴ
                     if (viewModel.checkBirth()) {
                         onMoveNextPage()
                         viewModel.moveNextPage()
                     } else {
-                        Log.d(TAG, "SignupBirthScreen: 못넘어가유")
+                        Toast.makeText(context, INPUT_BIRTH, Toast.LENGTH_SHORT).show()
                     }
                 }
             }

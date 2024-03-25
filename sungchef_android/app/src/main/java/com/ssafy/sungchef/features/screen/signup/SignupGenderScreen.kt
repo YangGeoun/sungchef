@@ -1,7 +1,7 @@
 package com.ssafy.sungchef.features.screen.signup
 
 import android.os.Build
-import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,12 +23,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.FEMALE
-import com.ssafy.sungchef.commons.INPUT_BIRTH
 import com.ssafy.sungchef.commons.INPUT_GENDER
 import com.ssafy.sungchef.commons.MALE
 import com.ssafy.sungchef.commons.NEXT_STEP
@@ -44,9 +43,18 @@ private const val TAG = "SignupGenderScreen_성식당"
 @Composable
 fun SignupGenderScreen(
     viewModel : SignupViewModel,
-    onMoveSurveyPage : () -> Unit,
+    onMoveCongratulationPage : () -> Unit,
     onMovePreviousPage : () -> Unit
 ) {
+
+    val isNextPage : Boolean by viewModel.isNextPage.collectAsState()
+    val context = LocalContext.current
+
+    if (isNextPage) {
+        onMoveCongratulationPage()
+        viewModel.initIsNextPageState(false)
+    }
+
     Scaffold (
         topBar = {
             SignupTopBar(
@@ -111,10 +119,12 @@ fun SignupGenderScreen(
                         .align(Alignment.BottomCenter), // Box 내에서 하단 중앙 정렬
                     text = NEXT_STEP
                 ) {
-                    // TODO 뒤로 가기 구현 (onBackPressed 포함)
                     if (viewModel.checkGender()) {
-                        onMoveSurveyPage()
-                        Log.d(TAG, "SignupGenderScreen: 회원가입 성공")
+                        // 회원가입 시도
+                        viewModel.isSuccessSignup()
+
+                    } else {
+                        Toast.makeText(context, INPUT_GENDER, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -172,3 +182,5 @@ fun SignupGender(
         )
     }
 }
+
+
