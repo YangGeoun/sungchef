@@ -1,4 +1,6 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -8,6 +10,13 @@ plugins {
     //hilt
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
+    // Menifest에 local-properties 변수를 사용 할 수 있는 플러그인
+    id ("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+}
+
+// properties 파일 로드
+val properties = Properties().apply {
+    load(FileInputStream(rootProject.file("local.properties")))
 }
 
 android {
@@ -27,15 +36,24 @@ android {
         }
 
         buildConfigField("String", "BASE_URL",getApiKey("BASE_URL"))
+        buildConfigField("String", "NATIVE_APP_KEY",getApiKey("NATIVE_APP_KEY"))
     }
 
     buildTypes {
+
+        debug {
+            isMinifyEnabled = false
+            manifestPlaceholders["NATIVE_APP_KEY"] = properties["NATIVE_APP_KEY"] as String
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Menifest에 변수를 사용할 수 있음
+            manifestPlaceholders["NATIVE_APP_KEY"] = properties["NATIVE_APP_KEY"] as String
         }
     }
     compileOptions {
@@ -103,6 +121,9 @@ dependencies {
 
     // Datastore
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
+
+    // Kakao Login
+    implementation ("com.kakao.sdk:v2-user:2.20.1")
 
     ksp("com.github.bumptech.glide:glide:4.14.2")
 }

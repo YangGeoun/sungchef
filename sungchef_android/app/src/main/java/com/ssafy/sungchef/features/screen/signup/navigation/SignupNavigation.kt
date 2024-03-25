@@ -27,12 +27,16 @@ const val signupRoute = "signup_route"
 
 private const val TAG = "SignupNavigation_성식당"
 @RequiresApi(Build.VERSION_CODES.O)
-fun NavGraphBuilder.signupGraph(navController: NavController) {
+fun NavGraphBuilder.signupGraph(
+    navController: NavController,
+    navVisibility : (Boolean) -> Unit
+) {
     navigation(
         startDestination = nicknameNavigationRoute,
         route = signupRoute
     ) {
         composable(route = nicknameNavigationRoute) {
+            navVisibility(false)
             SignupScreen(
                 viewModel = hiltViewModel(),
                 onMoveNextPage = {

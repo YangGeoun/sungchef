@@ -29,6 +29,9 @@ import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
+import com.ssafy.sungchef.features.screen.login.LoginScreen
+import com.ssafy.sungchef.features.screen.login.navigation.loginScreen
+import com.ssafy.sungchef.features.screen.login.navigation.login_route
 import com.ssafy.sungchef.features.screen.menu.navigation.menuDetailScreen
 import com.ssafy.sungchef.features.screen.menu.navigation.menuScreen
 import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenu
@@ -80,7 +83,7 @@ fun NavGraph() {
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = signupRoute,
+            startDestination = login_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen()
@@ -89,13 +92,21 @@ fun NavGraph() {
                 navVisibility = false
             }
             refrigeratorScreen()
-            signupGraph(navController)
+            signupGraph(navController){
+                navVisibility = false
+            }
             myPageScreen(navController)
             menuDetailScreen(navController){
                 navVisibility = true
                 navController.popBackStack()
             }
-            surveyScreen(navController)
+            surveyScreen(navController){
+                navVisibility = true
+            }
+
+            loginScreen(){
+                navVisibility = false
+            }
         }
     }
 }

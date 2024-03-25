@@ -15,16 +15,20 @@ const val survey_route = "survey_screen"
 
 
 fun NavController.navigateSurvey(
-    navOptions: NavOptions? = null
+    navOptions: NavOptions? = null,
 ) {
     this.navigate(survey_route, navOptions)
 }
 
-fun NavGraphBuilder.surveyScreen(navController: NavController){
+fun NavGraphBuilder.surveyScreen(
+    navController: NavController,
+    navVisibility : (Boolean) -> Unit
+){
     composable(survey_route) {
         SurveyScreen(
             viewModel = hiltViewModel()
         ){
+            navVisibility(true)
             navController.navigate(
                 homeNavigationRoute,
                 navOptions {
