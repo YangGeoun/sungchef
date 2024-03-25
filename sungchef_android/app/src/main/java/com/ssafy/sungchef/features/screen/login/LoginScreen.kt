@@ -60,7 +60,7 @@ fun LoginScreen() {
                 .clickable {
                     kakaoLogin(context)
                 },
-            imageResource = R.drawable.kakao_login
+            imageResource = R.drawable.kakao_login,
         )
 
         Spacer(

@@ -99,6 +99,7 @@ dependencies {
     //hilt
     implementation("com.google.dagger:hilt-android:2.49")
     implementation("androidx.datastore:datastore-core:1.0.0")
+    implementation("com.android.identity:identity-credential-android:20231002")
     ksp ("com.google.dagger:hilt-compiler:2.48")
     //navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
