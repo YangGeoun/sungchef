@@ -4,18 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.domain.usecase.recipe.GetBookMarkRecipeUseCase
+import com.ssafy.sungchef.domain.usecase.recipe.GetDetailRecipeUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetVisitRecipeUseCase
 import com.ssafy.sungchef.domain.viewstate.recipe.RecipeViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MenuViewModel @Inject constructor(
     private val getVisitRecipeUseCase: GetVisitRecipeUseCase,
-    private val getBookMarkRecipeUseCase: GetBookMarkRecipeUseCase
+    private val getBookMarkRecipeUseCase: GetBookMarkRecipeUseCase,
+    private val getDetailRecipeUseCase: GetDetailRecipeUseCase
 ) : ViewModel() {
     private val initialState: RecipeViewState by lazy { createInitialState() }
     fun createInitialState(): RecipeViewState = RecipeViewState()
@@ -59,6 +62,28 @@ class MenuViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getDetailRecipe(id:Int){
+        viewModelScope.launch {
+            getDetailRecipeUseCase(id).collect{
+                when(it){
+                    is DataState.Success -> {
+                        setState { currentState.copy(isLoading = false, recipeDetail = it.data) }
+                    }
+                    is DataState.Error -> {
+
+                    }
+                    is DataState.Loading -> {
+
+                    }
+                }
+            }
+        }
+    }
+
+    fun resetDetailRecipe(){
+        setState { currentState.copy(recipeDetail = null) }
     }
 
     private fun setState(reduce: RecipeViewState.() -> RecipeViewState) {

@@ -1,83 +1,149 @@
 package com.ssafy.sungchef.features.screen.menu
 
-import android.text.Layout.Alignment
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import com.ssafy.sungchef.R
+import com.ssafy.sungchef.domain.model.recipe.RecipeDetail
+import com.ssafy.sungchef.domain.model.recipe.RecipeDetailInfo
+import com.ssafy.sungchef.domain.model.recipe.RecipeIngredient
+import com.ssafy.sungchef.features.component.CardComponent
 import com.ssafy.sungchef.features.component.IconTextRowComponent
-import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.TextComponent
 
 @Composable
 fun MenuDetailScreen(
-    recipeId:String = ""
+    recipeId: String = "",
+    viewModel: MenuViewModel
 ) {
-    Log.d("TAG", "MenuDetailScreen: $recipeId")
+    LaunchedEffect(key1 = true) {
+        viewModel.getDetailRecipe(recipeId.toInt())
+    }
+    val viewState = viewModel.uiState.collectAsState().value
     // Todo 서버 통신
     Scaffold {
-        Content(it)
+        if (viewState.recipeDetail != null) {
+            Content(
+                paddingValues = it,
+                recipeDetail = viewState.recipeDetail
+            )
+        }
     }
 }
 
 @Composable
 private fun Content(
     paddingValues: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    recipeDetail: RecipeDetail
 ) {
+    val scrollState = rememberScrollState()
     Column(
-        modifier = modifier.padding(paddingValues)
+        modifier = modifier
+            .padding(paddingValues)
+            .fillMaxSize()
+            .verticalScroll(scrollState)
     ) {
         // Todo 이미지
         ImageComponent(
             modifier
                 .fillMaxWidth()
-                .aspectRatio(1.5f))
-        // Todo 제목, 인분, 시간, 정보
-        MenuInfoCard(modifier = modifier)
-        TextComponent(text = "재료")
-        TextComponent(text = "레시피")
+                .aspectRatio(1.5f),
+            recipeDetail.recipeImage
+        )
+        MenuInfoCard(
+            modifier = modifier,
+            title = recipeDetail.recipeName,
+            description = recipeDetail.recipeDescription,
+            volume = recipeDetail.recipeVolume,
+            time = recipeDetail.recipeCookingTime
+        )
+        CardComponent(text = "재료") {
+            // 반복문 돌려야함
+            for (recipeIngredientInfo in recipeDetail.recipeIngredientInfoList) {
+                if (recipeIngredientInfo.recipeIngredientList.isNotEmpty()) {
+                    IngredientCardComponent(
+                        classification = recipeIngredientInfo.recipeIngredientType,
+                        recipeIngredients = recipeIngredientInfo.recipeIngredientList
+                    )
+                }
+            }
+        }
+        CardComponent(text = "레시피") {
+            for (recipeDetailInfo in recipeDetail.recipeDetailInfoList)
+                RecipeCardComponent(modifier, recipeDetailInfo)
+        }
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ImageComponent(
-    modifier: Modifier
-){
-    Image(
+private fun ImageComponent(
+    modifier: Modifier,
+    image: String,
+) {
+    GlideImage(
+        model = image,
         modifier = modifier,
-        painter = painterResource(id = R.drawable.test_image),
+        contentDescription = "레시피 사진",
         contentScale = ContentScale.FillBounds,
-        contentDescription = "음식 사진"
+        loading = placeholder(R.drawable.icon_image_fail),
+        failure = placeholder(R.drawable.icon_image_fail)
     )
 }
 
 @Composable
 fun MenuInfoCard(
-    modifier: Modifier
+    modifier: Modifier,
+    title: String,
+    description: String,
+    volume: String,
+    time: String
 ) {
     Card(
-        modifier = modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+        modifier = modifier
+            .padding(horizontal = 20.dp, vertical = 10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         TextComponent(
-            text = "국가 권력급 김치찌개",
+            text = title,
             modifier = modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp)
@@ -85,7 +151,7 @@ fun MenuInfoCard(
             fontSize = 22.sp
         )
         TextComponent(
-            text = "하나의 김치찌개가 국가를 지.배.한.다.",
+            text = description,
             modifier = modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp)
@@ -102,18 +168,101 @@ fun MenuInfoCard(
         ) {
             IconTextRowComponent(
                 painter = painterResource(id = R.drawable.groups),
-                text = "2인분"
+                text = volume
             )
             IconTextRowComponent(
                 painter = painterResource(id = R.drawable.timer),
-                text = "15분 이내"
+                text = time
             )
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun MenuInfoPreview() {
-    Content(paddingValues = PaddingValues(20.dp),modifier = Modifier)
+fun IngredientCardComponent(
+    modifier: Modifier = Modifier,
+    classification: String = "",
+    recipeIngredients: List<RecipeIngredient>,
+) {
+    Row(
+        modifier = modifier
+            .wrapContentHeight()
+            .padding(horizontal = 20.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Image(
+            modifier = modifier
+                .size(36.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.FillBounds,
+            painter = painterResource(id = R.drawable.test_image),
+            contentDescription = "사진"
+        )
+        Spacer(modifier = modifier.size(2.dp))
+        //반복문 돌리기
+        Column {
+            TextComponent(
+                modifier = modifier
+                    .height(36.dp)
+                    .fillMaxWidth()
+                    .wrapContentHeight(align = Alignment.CenterVertically),
+                text = classification,
+                fontSize = 18.sp,
+                textAlign = TextAlign.Start
+            )
+            for (recipeIngredient in recipeIngredients){
+                Row(
+                    modifier = modifier.padding(top = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = modifier.size(2.dp))
+                    TextComponent(
+                        text = recipeIngredient.recipeIngredientName,
+                        fontSize = 16.sp
+                    )
+                    Spacer(modifier = modifier.size(5.dp))
+                    TextComponent(
+                        text = recipeIngredient.recipeIngredientVolume,
+                        fontSize = 16.sp
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RecipeCardComponent(
+    modifier: Modifier = Modifier,
+    recipeDetailInfo: RecipeDetailInfo
+) {
+    Row(
+        modifier = modifier
+            .padding(horizontal = 20.dp)
+            .padding(bottom = 5.dp),
+    ) {
+        ImageComponent(
+            modifier = modifier
+                .size(120.dp)
+                .clip(RoundedCornerShape(15.dp)),
+            recipeDetailInfo.recipeDetailImage
+        )
+        Spacer(modifier = modifier.size(30.dp))
+        Column {
+            Box(
+                modifier = modifier
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+            ) {
+                TextComponent(
+                    text = "Step${recipeDetailInfo.recipeDetailStep}",
+                    modifier = modifier.padding(horizontal = 10.dp)
+                )
+            }
+            TextComponent(
+                text = recipeDetailInfo.recipeDetailDescription,
+                modifier = modifier.padding(top = 10.dp)
+            )
+        }
+    }
 }

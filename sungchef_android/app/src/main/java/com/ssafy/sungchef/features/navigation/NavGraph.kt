@@ -79,7 +79,7 @@ fun NavGraph() {
             refrigeratorScreen()
             signupGraph(navController)
             myPageScreen(navController)
-            menuDetailScreen()
+            menuDetailScreen(navController)
         }
     }
 }
@@ -111,5 +111,5 @@ fun navigateToBottomNavDestination(bottomNav: BottomNavigationItem, navControlle
 
 private fun NavDestination?.isBottomNavDestinationInHierarchy(destination: BottomNavigationItem) =
     this?.hierarchy?.any {
-        it.route?.contains(destination.name, true) ?: false
+        it.route?.contains(destination.route, true) ?: false
     } ?: false
