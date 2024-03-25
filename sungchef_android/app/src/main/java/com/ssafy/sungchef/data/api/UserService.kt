@@ -7,7 +7,11 @@ import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
+
+import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
+
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
@@ -34,6 +38,7 @@ interface UserService {
     @POST("user/bookmark")
     suspend fun changeBookmarkRecipe(@Body bookMarkRequest: BookMarkRequest): Response<APIError>
 
+
     @POST("user/signup")
     suspend fun signupUser(@Body userRequestDTO: UserRequestDTO) : Response<ResponseDto<TokenResponse>>
 
@@ -42,4 +47,7 @@ interface UserService {
 
     @GET("survey")
     suspend fun getSurvey() : Response<ResponseDto<SurveyResponse>>
+
+    @GET("user")
+    suspend fun userSettingInfo() : UserSettingInfo
 }

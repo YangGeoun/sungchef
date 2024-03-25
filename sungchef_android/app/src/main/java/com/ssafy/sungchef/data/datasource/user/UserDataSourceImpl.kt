@@ -14,6 +14,7 @@ import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
+import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
 import retrofit2.Response
@@ -50,6 +51,7 @@ class UserDataSourceImpl @Inject constructor(
     override suspend fun changeBookmarkRecipe(bookMarkRequest: BookMarkRequest): DataState<APIError> =
         getResult { userService.changeBookmarkRecipe(bookMarkRequest) }
 
+
     override suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO): DataState<APIError> {
         return try {
             getResult {
@@ -69,4 +71,10 @@ class UserDataSourceImpl @Inject constructor(
             DataState.Error(APIError(500, SERVER_INSTABILITY))
         }
     }
+
+    override suspend fun userSettingInfo(): UserSettingInfo {
+        return userService.userSettingInfo()
+    }
+
+
 }

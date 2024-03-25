@@ -10,6 +10,7 @@ import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.survey.Survey
@@ -68,6 +69,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+
     override suspend fun surveySubmit(selectSurveyList : List<Int>): Flow<DataState<Boolean>> {
         return flow {
             val isSuccess = userDataSource.surveySubmit(selectSurveyList.toSurveyRequestDto())
@@ -92,5 +94,8 @@ class UserRepositoryImpl @Inject constructor(
                 emit(DataState.Error(surveyList.apiError))
             }
         }
+    }
+    override suspend fun userSettingInfo(): UserSettingInfo {
+        return userDataSource.userSettingInfo()
     }
 }

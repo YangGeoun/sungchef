@@ -28,7 +28,7 @@ fun NavGraphBuilder.myPageScreen(navController : NavController){
 
     navigation(startDestination = myPageNavigationRoute, route = myPageRoute) {
         composable(myPageNavigationRoute) { MyPageScreen(navController, hiltViewModel()) }
-        composable(settingNavigationRoute) { SettingScreen(navController) }
+        composable(settingNavigationRoute) { SettingScreen(navController, hiltViewModel()) }
     }
 
 

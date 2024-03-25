@@ -5,6 +5,7 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.survey.Survey
@@ -20,8 +21,10 @@ interface UserRepository {
 
     suspend fun changeBookmarkRecipe(recipeId:Int, isBookmark:Boolean): Flow<DataState<BaseModel>>
 
+
     suspend fun surveySubmit(selectSurveyList : List<Int>) : Flow<DataState<Boolean>>
 
     suspend fun getSubmit() : Flow<DataState<Survey>>
 
+    suspend fun userSettingInfo() : UserSettingInfo
 }
