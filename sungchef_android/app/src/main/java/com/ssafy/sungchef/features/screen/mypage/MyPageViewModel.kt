@@ -3,16 +3,13 @@ package com.ssafy.sungchef.features.screen.mypage
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeListData
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeListData
 import com.ssafy.sungchef.data.model.responsedto.UserProfile
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
-import com.ssafy.sungchef.domain.usecase.RecommendationUseCase
-import com.ssafy.sungchef.domain.usecase.UserSimpleUseCase
-import com.ssafy.sungchef.domain.viewstate.recommendation.RecommendationViewState
+import com.ssafy.sungchef.domain.usecase.user.UserSimpleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

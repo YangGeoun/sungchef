@@ -8,6 +8,7 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import retrofit2.Response
 import javax.inject.Inject
@@ -42,5 +43,9 @@ class UserDataSourceImpl @Inject constructor(
 
     override suspend fun changeBookmarkRecipe(bookMarkRequest: BookMarkRequest): DataState<APIError> =
         getResult { userService.changeBookmarkRecipe(bookMarkRequest) }
+
+    override suspend fun userSettingInfo(): UserSettingInfo {
+        return userService.userSettingInfo()
+    }
 
 }

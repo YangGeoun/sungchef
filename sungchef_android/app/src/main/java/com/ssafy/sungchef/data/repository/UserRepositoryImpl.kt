@@ -8,6 +8,7 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.repository.UserRepository
@@ -64,5 +65,9 @@ class UserRepositoryImpl @Inject constructor(
 
             }
         }
+    }
+
+    override suspend fun userSettingInfo(): UserSettingInfo {
+        return userDataSource.userSettingInfo()
     }
 }

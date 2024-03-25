@@ -5,6 +5,7 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import retrofit2.Response
 
@@ -17,4 +18,5 @@ interface UserDataSource {
     suspend fun bookmarkRecipeList(page : Int) : BookmarkRecipeList;
 
     suspend fun changeBookmarkRecipe(bookMarkRequest: BookMarkRequest): DataState<APIError>
+    suspend fun userSettingInfo() : UserSettingInfo
 }

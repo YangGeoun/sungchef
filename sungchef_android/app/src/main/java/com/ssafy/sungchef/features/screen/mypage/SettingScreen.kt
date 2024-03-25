@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -43,6 +45,8 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,14 +66,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.BIRTH
 import com.ssafy.sungchef.commons.BIRTH_FORMAT
+import com.ssafy.sungchef.commons.EMPTY_NICKNAME
+import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.features.component.DatePickerDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.GenderButtonComponent
+import com.ssafy.sungchef.features.component.IconButtonComponent
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.LazyVerticalGridComponent
@@ -87,10 +96,44 @@ import java.util.Date
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(navController: NavController){
+fun SettingScreen(navController: NavController, viewModel: SettingViewModel){
+
+    val userNickname by viewModel.userNickname.collectAsState()
+    val uiState: BaseModel by viewModel.isDuplicateName.collectAsState()
+    val isDuplicateCheckNeeded by viewModel.isDuplicateCheckNeeded.collectAsState()
+    val context = LocalContext.current
+
+//    val userNickname = "헤헿"
+    LaunchedEffect(key1 = true){
+        viewModel.getUserSettingInfo()
+    }
+
+    LaunchedEffect(uiState){
+        Log.d(TAG, "SettingScreen: uiState LaunchedEffect")
+        if(uiState.message!="") {
+            Log.d(TAG, "SettingScreen: uiState : $uiState")
+            if(uiState.isSuccess) viewModel.setIsDuplicateCheckNeeded(false)
+            else viewModel.setIsDuplicateCheckNeeded(true)
+            Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+        }
+
+    }
 
     Scaffold(
-        topBar = { TopAppBarComponent() }
+        topBar = { TopAppBarComponent(
+            navigationIcon = { IconButtonComponent(
+                onClick = { navController.popBackStack() },
+                painter = painterResource(id = R.drawable.icon_back)
+            )},
+            actions = { IconButtonComponent(
+                onClick = {
+                    Log.d(TAG, "SettingScreen: 최종 저장 $isDuplicateCheckNeeded")
+//                    navController.popBackStack()
+                          },
+                painter = painterResource(id = R.drawable.save),
+                size = 36
+            )}
+        ) }
     ) { paddingValues ->
         Surface(
             modifier = Modifier
@@ -103,11 +146,14 @@ fun SettingScreen(navController: NavController){
 //                verticalArrangement = Arrangement.Center
 
             ) {
+
+                Log.d(TAG, "SettingScreen: 초기화면 : $userNickname")
+                
                 SetProfileImage()
 
                 Column(modifier = Modifier.background(Color.White)) {
                     Spacer(modifier = Modifier.height(10.dp))
-                    SetNickname()
+                    SetNickname(userNickname, viewModel)
                     SetBirthDate()
                     SetGender()
                     Spacer(modifier = Modifier.height(10.dp))
@@ -131,7 +177,6 @@ fun SetProfileImage(){
     ) {
 
         var imageUri by remember { mutableStateOf<Uri?>(null) }
-        val context = LocalContext.current
         val galleryLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent()
         ) { uri : Uri?->
@@ -163,14 +208,17 @@ fun SetProfileImage(){
 }
 
 @Composable
-fun SetNickname(){
-    var text by remember { mutableStateOf("기본닉네임") }
+fun SetNickname(userNickname: String, viewModel: SettingViewModel){
+    val context = LocalContext.current
+//    var text by remember { mutableStateOf("기본닉네임") }
 
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.background(Color.White)) {
         OutlinedTextField(
-            value = text,
-            onValueChange = { text = it },
+            value = userNickname,
+            onValueChange = {
+                viewModel.setIsDuplicateCheckNeeded(true)
+                viewModel.setNickname(it) },
             label = { Text("닉네임") },
             modifier = Modifier
                 .padding(start = 20.dp)
@@ -187,7 +235,13 @@ fun SetNickname(){
             ,
             shape = RoundedCornerShape(15)
         ) {
-
+            if (!viewModel.checkNickname()){
+                if (userNickname.isNotEmpty()) {
+                    viewModel.isDuplicateNickname(userNickname)
+                } else {
+                    Toast.makeText(context, EMPTY_NICKNAME, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }
@@ -200,6 +254,8 @@ fun SetBirthDate(){
     //실제 유저 생일 가져와서 LocalDate로 매핑 필요
     val date = remember { mutableStateOf(LocalDate.now())}
     val isOpen = remember { mutableStateOf(false) }
+
+
 
     TextFieldComponent(
         modifier = Modifier
@@ -328,7 +384,11 @@ fun Acquire(){
                             placeholder = {Text("문의내용을 입력하세요")},
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp)) // 큰 네모칸의 느낌을 주기 위한 테두리
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.primary,
+                                    RoundedCornerShape(8.dp)
+                                ) // 큰 네모칸의 느낌을 주기 위한 테두리
                                 .padding(top = 8.dp, bottom = 8.dp), // 내부 패딩을 추가하여 입력 영역을 넓힘
 
                             textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
@@ -379,6 +439,6 @@ fun Logout(){
 @RequiresApi(Build.VERSION_CODES.O)
 fun SettingPreview(){
     val navController = rememberNavController()
-    SettingScreen(navController = navController )
+    SettingScreen(navController = navController, hiltViewModel())
 }
 

@@ -4,6 +4,7 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import retrofit2.Response
 import retrofit2.http.Body
@@ -27,4 +28,6 @@ interface UserService {
 
     @POST("user/bookmark")
     suspend fun changeBookmarkRecipe(@Body bookMarkRequest: BookMarkRequest): Response<APIError>
+    @GET("user")
+    suspend fun userSettingInfo() : UserSettingInfo
 }
