@@ -17,4 +17,10 @@ interface RecipeService {
 
     @GET("recipe/{recipeid}")
     suspend fun getDetailRecipe(@Path("recipeid")id:Int):Response<ResponseDto<RecipeDetailResponse>>
+
+    @GET("recipe/visit/{page}")
+    suspend fun getAllVisitRecipe(@Path("page") page: Int): ResponseDto<SearchedRecipeResponse>
+
+    @GET("recipe/bookmark/{page}")
+    suspend fun getAllBookMarkRecipe(@Path("page")page: Int): ResponseDto<SearchedRecipeResponse>
 }

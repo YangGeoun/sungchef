@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.domain.usecase.recipe
 
+import androidx.paging.PagingData
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
 import com.ssafy.sungchef.domain.repository.RecipeRepository
@@ -9,7 +10,7 @@ import javax.inject.Inject
 class GetBookMarkRecipeUseCase @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) {
-    suspend operator fun invoke(page: Int): Flow<DataState<List<RecipeInfo>>> {
-        return recipeRepository.getBookMarkRecipe(page)
+    suspend operator fun invoke(page: Int, isVisit: Boolean): Flow<PagingData<RecipeInfo>> {
+        return recipeRepository.getAllBookmarkRecipe(page, isVisit)
     }
 }

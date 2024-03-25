@@ -30,17 +30,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.MenuCardComponent
 import com.ssafy.sungchef.features.component.TextComponent
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,9 +57,7 @@ fun MenuScreen(
 ) {
     val context: Context = LocalContext.current
     val viewState = viewModel.uiState.collectAsState().value
-    LaunchedEffect(viewState) {
-        viewModel.getVisitRecipeInfo(0)
-    }
+
     if (viewState.isError) {
         Toast.makeText(context, "즐겨찾기에 실패했습니다.", Toast.LENGTH_SHORT).show()
         viewModel.resetError()
@@ -78,17 +83,15 @@ fun MenuScreen(
             }
         }
     ) { paddingValues ->
-        if (!viewState.recipeInfoList.isNullOrEmpty()) {
-            Content(
-                paddingValues,
-                viewState.recipeInfoList,
-                onVisitClick = { viewModel.getVisitRecipeInfo(1) },
-                onBookMarkClick = { viewModel.getBookMarkRecipeInfo(1) },
-                onClick = { navigateDetailScreen(it) }
-            ) { recipeId, bookmark ->
-                // Todo 즐겨찾기 통신 만들기
-                viewModel.changeBookmarkRecipe(recipeId, bookmark)
-            }
+        Content(
+            paddingValues,
+            viewState.pagedData,
+            onVisitClick = { viewModel.getVisitRecipeInfo(0) },
+            onBookMarkClick = { viewModel.getBookMarkRecipeInfo(0) },
+            onClick = { navigateDetailScreen(it) }
+        ) { recipeId, bookmark ->
+            // Todo 즐겨찾기 통신 만들기
+            viewModel.changeBookmarkRecipe(recipeId, bookmark)
         }
     }
 }
@@ -96,13 +99,17 @@ fun MenuScreen(
 @Composable
 private fun Content(
     paddingValues: PaddingValues,
-    recipeInfoList: List<RecipeInfo>,
+    recipeInfoList: Flow<PagingData<RecipeInfo>>? = null,
     modifier: Modifier = Modifier,
     onVisitClick: () -> (Unit),
     onBookMarkClick: () -> (Unit),
     onClick: (Int) -> (Unit),
     changeBookMarkState: (Int, Boolean) -> (Unit)
 ) {
+    var pagingItems: LazyPagingItems<RecipeInfo>? = null
+    recipeInfoList?.let {
+        pagingItems = rememberFlowWithLifecycle(it).collectAsLazyPagingItems()
+    }
     Column(
         modifier = modifier
             .padding(paddingValues)
@@ -115,18 +122,23 @@ private fun Content(
             onBookMarkClick = { onBookMarkClick() }
         )
         LazyColumn(modifier = modifier.fillMaxWidth()) {
-            itemsIndexed(recipeInfoList) { index, data ->
-                MenuCardComponent(
-                    modifier = modifier,
-                    imageResource = data.recipeImage,
-                    title = data.recipeName,
-                    views = "${data.recipeVisitCount}",
-                    servings = data.recipeVolume,
-                    timer = data.recipeCookingTime,
-                    bookmark = data.bookmark,
-                    onClick = { onClick(data.recipeId) }
-                ) {
-                    changeBookMarkState(data.recipeId, data.bookmark)
+            if(recipeInfoList != null && pagingItems != null){
+                Log.d("TAG", "Content: ${pagingItems!!.itemCount}")
+                items(pagingItems!!.itemCount){
+                    pagingItems!![it]?.let { it1 ->
+                        MenuCardComponent(
+                            modifier = modifier,
+                            imageResource = it1.recipeImage,
+                            title = it1.recipeName,
+                            views = it1.recipeVisitCount.toString(),
+                            servings = it1.recipeVolume,
+                            timer = it1.recipeCookingTime,
+                            bookmark = it1.bookmark,
+                            onClick = { onClick(it1.recipeId) }
+                        ) {
+
+                        }
+                    }
                 }
             }
         }
@@ -189,6 +201,15 @@ private fun RecipeInfo(
             }
         }
     }
+}
+
+@Composable
+fun <T> rememberFlowWithLifecycle(
+    flow: Flow<T>,
+    lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
+    minActiveState: Lifecycle.State = Lifecycle.State.STARTED
+): Flow<T> = remember(flow, lifecycle) {
+    flow.flowWithLifecycle(lifecycle, minActiveState)
 }
 
 @Preview(showBackground = true)
