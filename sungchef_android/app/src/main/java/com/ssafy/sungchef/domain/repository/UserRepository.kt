@@ -7,6 +7,7 @@ import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.domain.model.base.BaseModel
+import com.ssafy.sungchef.domain.model.survey.Survey
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
@@ -18,4 +19,6 @@ interface UserRepository {
     suspend fun bookmarkRecipeList(page : Int) : BookmarkRecipeList
 
     suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO) : Flow<DataState<Boolean>>
+
+    suspend fun getSubmit() : Flow<DataState<Survey>>
 }

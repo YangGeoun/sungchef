@@ -36,6 +36,7 @@ import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorSc
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
 import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
 import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
+import com.ssafy.sungchef.features.screen.survey.navigation.survey_route
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -72,7 +73,7 @@ fun NavGraph() {
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = signupRoute,
+            startDestination = survey_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen()

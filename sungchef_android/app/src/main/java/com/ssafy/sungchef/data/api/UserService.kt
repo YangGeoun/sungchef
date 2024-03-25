@@ -7,6 +7,7 @@ import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
+import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -33,4 +34,7 @@ interface UserService {
 
     @POST("survey/submit")
     suspend fun submitSurvey(@Body surveyRequestDTO: SurveyRequestDTO) : Response<APIError>
+
+    @GET("survey")
+    suspend fun getSurvey() : Response<ResponseDto<SurveyResponse>>
 }

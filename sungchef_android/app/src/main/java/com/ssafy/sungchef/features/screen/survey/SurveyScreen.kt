@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,15 +38,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.MOVE_HOME_SCREEN
-import com.ssafy.sungchef.commons.NEXT_STEP
 import com.ssafy.sungchef.commons.SURVEY_DESCRIPTION
 import com.ssafy.sungchef.commons.SURVEY_SELECT_COUNT
 import com.ssafy.sungchef.commons.SURVEY_TITLE
+import com.ssafy.sungchef.domain.model.survey.Survey
+import com.ssafy.sungchef.domain.model.survey.SurveyInfo
 import com.ssafy.sungchef.features.component.FilledButtonComponent
-import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.TextComponent
-import com.ssafy.sungchef.features.screen.survey.navigation.SurveyViewModel
 import com.ssafy.sungchef.features.ui.theme.primaryContainer50
 
 private const val TAG = "SurveyScreen_성식당"
@@ -60,6 +59,9 @@ fun SurveyScreen(
 
     var selectSurveyCount by remember { mutableIntStateOf(0) }
 
+    val surveyListState : MutableList<SurveyInfo> by viewModel.surveyList.collectAsState()
+    // 설문 조사 리스트 불러오기
+    viewModel.getSurveyList()
 
     Box(
         modifier = Modifier
@@ -111,8 +113,7 @@ fun SurveyScreen(
                 horizontalArrangement = Arrangement.End // 내부 컴포넌트를 오른쪽으로 정렬
             ) {
                 TextComponent(
-                    // TODO 서버통신 후 전체 갯수 받아와서 표시
-                    text = "$selectSurveyCount / 전체 갯수",
+                    text = "$selectSurveyCount / 20",
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -130,7 +131,8 @@ fun SurveyScreen(
                 onSelectionChange = { newSelectionCount ->
                     // 선택된 아이템의 개수를 업데이트
                     selectSurveyCount = newSelectionCount
-                }
+                },
+                surveyList = surveyListState
             )
         }
         FilledButtonComponent(
@@ -149,16 +151,16 @@ fun SurveyScreen(
 fun SurveyLazyGrid(
     modifier : Modifier,
     photoUrl : List<Int> = listOf(),
-    onSelectionChange: (Int) -> Unit
+    onSelectionChange: (Int) -> Unit,
+    surveyList : MutableList<SurveyInfo>
 ){
     var selectedIndices by remember { mutableStateOf(listOf<Int>()) }
-    Log.d(TAG, "SurveyLazyGrid: $selectedIndices")
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier
     ) {
-        // TODO 서버통신 후 itemsIndexed로 바꾸기
-        itemsIndexed(photoUrl){ index, url ->
+        itemsIndexed(surveyList){ index, surveyInfo ->
 
             val isSelected = index in selectedIndices
 
@@ -195,7 +197,7 @@ fun SurveyLazyGrid(
                                 }
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(15.dp)), // 이미지의 모서리를 둥글게
-                            imageResource = url,
+                            imageResource = surveyInfo.foodImage,
                         )
                         // 아이템을 클릭하면 박스 덮어 씌우기
                         if (isSelected) {
