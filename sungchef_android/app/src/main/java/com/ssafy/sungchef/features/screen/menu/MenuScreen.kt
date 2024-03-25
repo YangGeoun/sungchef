@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.menu
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,7 +46,7 @@ fun MenuScreen(
     navigateDetailScreen: (Int) -> (Unit)
 ) {
     val viewState = viewModel.uiState.collectAsState().value
-    LaunchedEffect(true) {
+    LaunchedEffect(viewState) {
         viewModel.getVisitRecipeInfo(0)
     }
     Scaffold(
@@ -72,11 +74,12 @@ fun MenuScreen(
             Content(
                 paddingValues,
                 viewState.recipeInfoList,
-                onVisitClick = {viewModel.getVisitRecipeInfo(1)},
-                onBookMarkClick = {viewModel.getBookMarkRecipeInfo(1)}
-            ){
-                // Todo 메뉴 상세페이지로 이동 및 데이터 받아오기
-                navigateDetailScreen(it)
+                onVisitClick = { viewModel.getVisitRecipeInfo(1) },
+                onBookMarkClick = { viewModel.getBookMarkRecipeInfo(1) },
+                onClick = { navigateDetailScreen(it) }
+            ) { recipeId, bookmark ->
+                // Todo 즐겨찾기 통신 만들기
+                viewModel.changeBookmarkRecipe(recipeId, bookmark)
             }
         }
     }
@@ -88,8 +91,9 @@ private fun Content(
     recipeInfoList: List<RecipeInfo>,
     modifier: Modifier = Modifier,
     onVisitClick: () -> (Unit),
-    onBookMarkClick:() -> (Unit),
-    onClick:(Int)->(Unit)
+    onBookMarkClick: () -> (Unit),
+    onClick: (Int) -> (Unit),
+    changeBookMarkState: (Int, Boolean) -> (Unit)
 ) {
     Column(
         modifier = modifier
@@ -99,8 +103,8 @@ private fun Content(
         RecipeInfo(
             modifier = modifier,
             300,
-            onVisitClick = {onVisitClick()},
-            onBookMarkClick = {onBookMarkClick()}
+            onVisitClick = { onVisitClick() },
+            onBookMarkClick = { onBookMarkClick() }
         )
         LazyColumn(modifier = modifier.fillMaxWidth()) {
             itemsIndexed(recipeInfoList) { index, data ->
@@ -111,9 +115,10 @@ private fun Content(
                     views = "${data.recipeVisitCount}",
                     servings = data.recipeVolume,
                     timer = data.recipeCookingTime,
+                    bookmark = data.bookmark,
                     onClick = { onClick(data.recipeId) }
                 ) {
-
+                    changeBookMarkState(data.recipeId, data.bookmark)
                 }
             }
         }
@@ -125,7 +130,7 @@ private fun RecipeInfo(
     modifier: Modifier,
     count: Int,
     onVisitClick: () -> (Unit),
-    onBookMarkClick:() -> (Unit)
+    onBookMarkClick: () -> (Unit)
 ) {
     var menuVisibility by remember { mutableStateOf(false) }
     var standard by remember { mutableStateOf("조회순") }
@@ -181,5 +186,5 @@ private fun RecipeInfo(
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    MenuScreen(hiltViewModel()){}
+    MenuScreen(hiltViewModel()) {}
 }

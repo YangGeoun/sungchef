@@ -15,4 +15,5 @@ interface UserRepository {
 
     suspend fun makeRecipeList(page : Int) : MakeRecipeList
     suspend fun bookmarkRecipeList(page : Int) : BookmarkRecipeList
+    suspend fun changeBookmarkRecipe(recipeId:Int, isBookmark:Boolean): Flow<DataState<BaseModel>>
 }

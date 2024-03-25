@@ -15,6 +15,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,10 +37,12 @@ fun MenuCardComponent(
     servings: String,
     timer: String,
     painter: Painter = painterResource(id = R.drawable.bookmark),
+    bookmark: Boolean,
     color: Color = Color.Black,
     onClick: () -> (Unit),
     onBookMarkClick: () -> (Unit),
 ) {
+    var bookMarkState by remember{ mutableStateOf(bookmark) }
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -67,16 +73,31 @@ fun MenuCardComponent(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     TextComponent(text = title)
-                    Icon(
-                        painter = painter,
-                        contentDescription = "즐겨찾기",
-                        modifier = modifier
-                            .padding(end = 10.dp)
-                            .clickable {
-                                onBookMarkClick()
-                            },
-                        tint = color
-                    )
+                    if (bookMarkState){
+                        Icon(
+                            painter = painterResource(id = R.drawable.filled_bookmark),
+                            contentDescription = "즐겨찾기",
+                            modifier = modifier
+                                .padding(end = 10.dp)
+                                .clickable {
+                                    onBookMarkClick()
+                                    bookMarkState=!bookMarkState
+                                },
+                            tint = Color.Green
+                        )
+                    }else{
+                        Icon(
+                            painter = painter,
+                            contentDescription = "즐겨찾기",
+                            modifier = modifier
+                                .padding(end = 10.dp)
+                                .clickable {
+                                    onBookMarkClick()
+                                    bookMarkState=!bookMarkState
+                                },
+                            tint = color
+                        )
+                    }
                 }
                 IconTextRowComponent(
                     painter = painterResource(id = R.drawable.visibility),
@@ -106,6 +127,7 @@ fun MenuCardComponentPreview() {
         servings = "2인분",
         timer = "15분 이내",
         painter = painterResource(id = R.drawable.filled_bookmark),
+        bookmark = true,
         color = Color.Red,
         onClick = {}
     ) {

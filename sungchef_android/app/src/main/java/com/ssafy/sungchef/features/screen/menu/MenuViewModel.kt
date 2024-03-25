@@ -6,6 +6,7 @@ import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.domain.usecase.recipe.GetBookMarkRecipeUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetDetailRecipeUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetVisitRecipeUseCase
+import com.ssafy.sungchef.domain.usecase.user.ChangeBookmarkRecipe
 import com.ssafy.sungchef.domain.viewstate.recipe.RecipeViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,27 +19,27 @@ import javax.inject.Inject
 class MenuViewModel @Inject constructor(
     private val getVisitRecipeUseCase: GetVisitRecipeUseCase,
     private val getBookMarkRecipeUseCase: GetBookMarkRecipeUseCase,
-    private val getDetailRecipeUseCase: GetDetailRecipeUseCase
+    private val getDetailRecipeUseCase: GetDetailRecipeUseCase,
+    private val changeBookmarkRecipe: ChangeBookmarkRecipe
 ) : ViewModel() {
-    private val initialState: RecipeViewState by lazy { createInitialState() }
-    fun createInitialState(): RecipeViewState = RecipeViewState()
-
-    val currentState: RecipeViewState get() = uiState.value
-
+    private val initialState: RecipeViewState by lazy { RecipeViewState() }
+    private val currentState: RecipeViewState get() = uiState.value
     private val _uiState: MutableStateFlow<RecipeViewState> = MutableStateFlow(initialState)
     val uiState: StateFlow<RecipeViewState> = _uiState
 
     fun getVisitRecipeInfo(page: Int) {
         viewModelScope.launch {
-            getVisitRecipeUseCase(page).collect{
-                when(it){
-                    is DataState.Success ->{
+            getVisitRecipeUseCase(page).collect {
+                when (it) {
+                    is DataState.Success -> {
                         setState { currentState.copy(isLoading = false, recipeInfoList = it.data) }
                     }
-                    is DataState.Error ->{
+
+                    is DataState.Error -> {
                         setState { currentState.copy(isLoading = false) }
                     }
-                    is DataState.Loading ->{
+
+                    is DataState.Loading -> {
                         setState { currentState.copy(isLoading = true) }
                     }
                 }
@@ -48,15 +49,17 @@ class MenuViewModel @Inject constructor(
 
     fun getBookMarkRecipeInfo(page: Int) {
         viewModelScope.launch {
-            getBookMarkRecipeUseCase(page).collect{
-                when(it){
-                    is DataState.Success ->{
+            getBookMarkRecipeUseCase(page).collect {
+                when (it) {
+                    is DataState.Success -> {
                         setState { currentState.copy(isLoading = false, recipeInfoList = it.data) }
                     }
-                    is DataState.Error ->{
+
+                    is DataState.Error -> {
                         setState { currentState.copy(isLoading = false) }
                     }
-                    is DataState.Loading ->{
+
+                    is DataState.Loading -> {
                         setState { currentState.copy(isLoading = true) }
                     }
                 }
@@ -64,16 +67,18 @@ class MenuViewModel @Inject constructor(
         }
     }
 
-    fun getDetailRecipe(id:Int){
+    fun getDetailRecipe(id: Int) {
         viewModelScope.launch {
-            getDetailRecipeUseCase(id).collect{
-                when(it){
+            getDetailRecipeUseCase(id).collect {
+                when (it) {
                     is DataState.Success -> {
                         setState { currentState.copy(isLoading = false, recipeDetail = it.data) }
                     }
-                    is DataState.Error -> {
 
+                    is DataState.Error -> {
+                        setState { currentState.copy(isLoading = false) }
                     }
+
                     is DataState.Loading -> {
 
                     }
@@ -82,8 +87,16 @@ class MenuViewModel @Inject constructor(
         }
     }
 
-    fun resetDetailRecipe(){
+    fun resetDetailRecipe() {
         setState { currentState.copy(recipeDetail = null) }
+    }
+
+    fun changeBookmarkRecipe(recipeId: Int, isBookmark: Boolean) {
+        viewModelScope.launch {
+            changeBookmarkRecipe.invoke(recipeId, isBookmark).collect(
+
+            )
+        }
     }
 
     private fun setState(reduce: RecipeViewState.() -> RecipeViewState) {

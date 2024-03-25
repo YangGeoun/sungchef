@@ -1,11 +1,14 @@
 package com.ssafy.sungchef.data.api
 
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface UserService {
@@ -22,4 +25,6 @@ interface UserService {
     @GET("user/bookmark/{page}")
     suspend fun bookmarkRecipeList(@Path("page") page : Int) : BookmarkRecipeList
 
+    @POST("user/bookmark")
+    suspend fun changeBookmarkRecipe(@Body bookMarkRequest: BookMarkRequest): Response<APIError>
 }

@@ -5,6 +5,7 @@ import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.datasource.user.UserDataSource
 import com.ssafy.sungchef.data.mapper.user.toBaseModel
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
@@ -17,9 +18,10 @@ import retrofit2.Response
 import javax.inject.Inject
 
 private const val TAG = "UserRepositoryImpl_성식당"
+
 class UserRepositoryImpl @Inject constructor(
     private val userDataSource: UserDataSource
-) : UserRepository{
+) : UserRepository {
     override suspend fun duplicateNickname(nickname: String): Flow<DataState<BaseModel>> {
         return flow {
             val isDuplicate = userDataSource.duplicateNickname(nickname)
@@ -37,11 +39,30 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.userSimple();
     }
 
-    override suspend fun makeRecipeList(page : Int) : MakeRecipeList {
+    override suspend fun makeRecipeList(page: Int): MakeRecipeList {
         return userDataSource.makeRecipeList(page)
     }
 
-    override suspend fun bookmarkRecipeList(page : Int) : BookmarkRecipeList {
+    override suspend fun bookmarkRecipeList(page: Int): BookmarkRecipeList {
         return userDataSource.bookmarkRecipeList(page)
+    }
+
+    override suspend fun changeBookmarkRecipe(
+        recipeId: Int,
+        isBookmark: Boolean
+    ): Flow<DataState<BaseModel>> = flow {
+        val bookmarkState =
+            userDataSource.changeBookmarkRecipe(BookMarkRequest(recipeId, isBookmark))
+        when (bookmarkState) {
+            is DataState.Success -> {
+                emit(DataState.Success(bookmarkState.data.toBaseModel()))
+            }
+            is DataState.Error -> {
+
+            }
+            is DataState.Loading -> {
+
+            }
+        }
     }
 }

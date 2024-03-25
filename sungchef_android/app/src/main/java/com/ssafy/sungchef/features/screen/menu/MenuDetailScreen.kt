@@ -51,7 +51,8 @@ import com.ssafy.sungchef.features.component.TextComponent
 @Composable
 fun MenuDetailScreen(
     recipeId: String = "",
-    viewModel: MenuViewModel
+    viewModel: MenuViewModel,
+    onBackNavigate:()->(Unit)
 ) {
     LaunchedEffect(key1 = true) {
         viewModel.getDetailRecipe(recipeId.toInt())
@@ -65,6 +66,10 @@ fun MenuDetailScreen(
                 recipeDetail = viewState.recipeDetail
             )
         }
+    }
+    BackHandler {
+        onBackNavigate()
+        viewModel.resetDetailRecipe()
     }
 }
 

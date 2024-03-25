@@ -12,7 +12,7 @@ interface RecipeService {
     @GET("recipe/visit/{page}")
     suspend fun getVisitRecipe(@Path("page")page: Int): Response<ResponseDto<SearchedRecipeResponse>>
 
-    @GET("recipe/visit/{page}")
+    @GET("recipe/bookmark/{page}")
     suspend fun getBookMarkRecipe(@Path("page")page: Int): Response<ResponseDto<SearchedRecipeResponse>>
 
     @GET("recipe/{recipeid}")
