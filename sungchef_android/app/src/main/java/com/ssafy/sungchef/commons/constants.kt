@@ -42,6 +42,7 @@ const val SURVEY_DESCRIPTION = "좋아하는 음식을 선택하시면 취향에
         "음식들을 찾아드려요."
 const val SURVEY_SELECT_COUNT = "최소 5개 이상 골라 주세요."
 const val MOVE_HOME_SCREEN = "홈 화면 이동하기"
+const val SURVEY_CERTIFICATION_NUMBER = "설문 갯수를 확인해주세요."
 
 
 const val DELETE_ALL = "전체 삭제"

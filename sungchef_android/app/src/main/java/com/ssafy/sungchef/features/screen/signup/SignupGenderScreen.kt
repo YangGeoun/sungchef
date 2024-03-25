@@ -1,7 +1,6 @@
 package com.ssafy.sungchef.features.screen.signup
 
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
@@ -25,18 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.FEMALE
-import com.ssafy.sungchef.commons.INPUT_BIRTH
 import com.ssafy.sungchef.commons.INPUT_GENDER
 import com.ssafy.sungchef.commons.MALE
 import com.ssafy.sungchef.commons.NEXT_STEP
 import com.ssafy.sungchef.commons.SEND_FEMALE
 import com.ssafy.sungchef.commons.SEND_MALE
-import com.ssafy.sungchef.commons.SUCCESS_CODE
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.GenderButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent

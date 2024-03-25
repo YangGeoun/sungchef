@@ -1,6 +1,5 @@
 package com.ssafy.sungchef.features.screen.menu
 
-import android.text.Layout.Alignment
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
@@ -23,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.features.component.IconTextRowComponent
-import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.TextComponent
 
 @Composable

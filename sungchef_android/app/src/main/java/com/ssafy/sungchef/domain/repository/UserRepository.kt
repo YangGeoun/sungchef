@@ -18,7 +18,7 @@ interface UserRepository {
     suspend fun makeRecipeList(page : Int) : MakeRecipeList
     suspend fun bookmarkRecipeList(page : Int) : BookmarkRecipeList
 
-    suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO) : Flow<DataState<Boolean>>
+    suspend fun surveySubmit(selectSurveyList : List<Int>) : Flow<DataState<Boolean>>
 
     suspend fun getSubmit() : Flow<DataState<Survey>>
 }

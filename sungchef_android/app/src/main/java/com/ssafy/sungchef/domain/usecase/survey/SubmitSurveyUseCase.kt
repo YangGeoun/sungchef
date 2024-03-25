@@ -11,7 +11,7 @@ class SubmitSurveyUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
 
-    suspend fun submitSurvey(surveyRequestDTO: SurveyRequestDTO) : Flow<DataState<Boolean>> {
-        return userRepository.surveySubmit(surveyRequestDTO)
+    suspend fun submitSurvey(selectSurveyList : List<Int>) : Flow<DataState<Boolean>> {
+        return userRepository.surveySubmit(selectSurveyList)
     }
 }

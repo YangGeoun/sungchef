@@ -82,7 +82,7 @@ fun NavGraph() {
             signupGraph(navController)
             myPageScreen(navController)
             menuDetailScreen()
-            surveyScreen()
+            surveyScreen(navController)
         }
     }
 }

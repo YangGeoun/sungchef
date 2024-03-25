@@ -4,6 +4,7 @@ import android.util.Log
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.datasource.user.UserDataSource
 import com.ssafy.sungchef.data.mapper.survey.toSurvey
+import com.ssafy.sungchef.data.mapper.survey.toSurveyRequestDto
 import com.ssafy.sungchef.data.mapper.user.toBaseModel
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
@@ -47,9 +48,9 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.bookmarkRecipeList(page)
     }
 
-    override suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO): Flow<DataState<Boolean>> {
+    override suspend fun surveySubmit(selectSurveyList : List<Int>): Flow<DataState<Boolean>> {
         return flow {
-            val isSuccess = userDataSource.surveySubmit(surveyRequestDTO)
+            val isSuccess = userDataSource.surveySubmit(selectSurveyList.toSurveyRequestDto())
 
             if (isSuccess is DataState.Success) {
                 emit(DataState.Success(true))

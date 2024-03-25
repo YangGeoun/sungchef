@@ -2,9 +2,7 @@ package com.ssafy.sungchef.features.screen.signup
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -27,15 +24,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.ssafy.sungchef.commons.ALREADY_NICKNAME
 import com.ssafy.sungchef.commons.DUPLICATE_CONFIRM
 import com.ssafy.sungchef.commons.EMPTY_NICKNAME
 import com.ssafy.sungchef.commons.INPUT_NICKNAME
 import com.ssafy.sungchef.domain.model.base.BaseModel
-import com.ssafy.sungchef.features.component.AlertDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.signup.common.SignupNickname
@@ -131,7 +126,8 @@ fun nicknameState(
             AlertDialog(
                 title = {
                     TextComponent(
-                        text = uiState.message
+                        text = uiState.message,
+                        style = MaterialTheme.typography.titleLarge
                     )
                 },
                 onDismissRequest = {

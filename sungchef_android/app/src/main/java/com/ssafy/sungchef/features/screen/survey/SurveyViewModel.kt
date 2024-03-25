@@ -3,7 +3,11 @@ package com.ssafy.sungchef.features.screen.survey
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ssafy.sungchef.commons.ALREADY_NICKNAME
 import com.ssafy.sungchef.commons.DataState
+import com.ssafy.sungchef.commons.SERVER_INSTABILITY
+import com.ssafy.sungchef.commons.SURVEY_CERTIFICATION_NUMBER
+import com.ssafy.sungchef.commons.WRONG_NICKNAME_FORMAT
 import com.ssafy.sungchef.domain.model.survey.Survey
 import com.ssafy.sungchef.domain.model.survey.SurveyInfo
 import com.ssafy.sungchef.domain.usecase.survey.GetSurveyUseCase
@@ -23,17 +27,35 @@ class SurveyViewModel @Inject constructor(
     private val getSurveyUseCase : GetSurveyUseCase
 ) : ViewModel() {
 
-    private val _isNextPage = MutableStateFlow(false)
-    val isNextPage : StateFlow<Boolean> = _isNextPage
-
     private val _surveyList = MutableStateFlow(mutableListOf<SurveyInfo>())
     val surveyList : StateFlow<MutableList<SurveyInfo>> = _surveyList
 
     private val _errorMessage = MutableStateFlow("")
     val errorMessage : StateFlow<String> = _errorMessage
 
-    fun submitSurvey() {
+    private val _isSurveySuccess = MutableStateFlow(false)
+    val isSurveySuccess : StateFlow<Boolean> = _isSurveySuccess
 
+    fun submitSurvey(selectSurveyList : List<Int>) {
+        viewModelScope.launch {
+            submitSurveyUseCase.submitSurvey(selectSurveyList).collect {
+                when (it) {
+                    is DataState.Success -> {
+                        _isSurveySuccess.emit(true)
+                    }
+
+                    is DataState.Error -> {
+                        _errorMessage.emit(
+                            failSurveyMessage(it.apiError.code)
+                        )
+                    }
+
+                    is DataState.Loading -> {
+
+                    }
+                }
+            }
+        }
     }
 
     fun getSurveyList() {
@@ -55,6 +77,14 @@ class SurveyViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun failSurveyMessage(code : Long) : String {
+        return when (code) {
+            // 에러코드에 따른 메시지
+            400L -> SURVEY_CERTIFICATION_NUMBER
+            else -> SERVER_INSTABILITY
         }
     }
 }

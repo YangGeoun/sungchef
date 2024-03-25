@@ -41,8 +41,8 @@ import com.ssafy.sungchef.commons.MOVE_HOME_SCREEN
 import com.ssafy.sungchef.commons.SURVEY_DESCRIPTION
 import com.ssafy.sungchef.commons.SURVEY_SELECT_COUNT
 import com.ssafy.sungchef.commons.SURVEY_TITLE
-import com.ssafy.sungchef.domain.model.survey.Survey
 import com.ssafy.sungchef.domain.model.survey.SurveyInfo
+import com.ssafy.sungchef.features.component.AlertDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.TextComponent
@@ -51,15 +51,37 @@ import com.ssafy.sungchef.features.ui.theme.primaryContainer50
 private const val TAG = "SurveyScreen_성식당"
 @Composable
 fun SurveyScreen(
-    viewModel : SurveyViewModel
+    viewModel : SurveyViewModel,
+    onMoveHomePage : () -> Unit
 ) {
-
-    val photoUrl = listOf(R.drawable.test_image, R.drawable.test_image, R.drawable.test_image, R.drawable.test_image
-                    ,R.drawable.test_image, R.drawable.test_image, R.drawable.test_image, R.drawable.test_image)
-
     var selectSurveyCount by remember { mutableIntStateOf(0) }
 
+    // 사용자가 선택된 설문조사를 담는 변수
+    var selectedIndices by remember { mutableStateOf(listOf<Int>()) }
+    Log.d(TAG, "SurveyLazyGrid: $selectedIndices")
+    // 선택된 설문조사를 업데이트 하는 함수
+    val updateSelectedSurvey : (List<Int>) -> Unit = { newSurvey ->
+        selectedIndices = newSurvey
+    }
+    // 다이얼로그의 상태를 관리하는 변수
+    var showDialog by remember { mutableStateOf(false) }
+
     val surveyListState : MutableList<SurveyInfo> by viewModel.surveyList.collectAsState()
+    val isSurveySuccess : Boolean by viewModel.isSurveySuccess.collectAsState()
+    val errorMessage : String by viewModel.errorMessage.collectAsState()
+
+    if (isSurveySuccess) {
+        onMoveHomePage()
+    }
+
+    if (errorMessage.isNotEmpty()) {
+        ShowSurveyDialog(
+            showDialog = showDialog,
+        ){
+            showDialog = false
+        }
+    }
+
     // 설문 조사 리스트 불러오기
     viewModel.getSurveyList()
 
@@ -127,13 +149,15 @@ fun SurveyScreen(
                     )
                     .weight(1f)
                     .padding(bottom = 60.dp),
-                photoUrl = photoUrl,
                 onSelectionChange = { newSelectionCount ->
                     // 선택된 아이템의 개수를 업데이트
                     selectSurveyCount = newSelectionCount
                 },
-                surveyList = surveyListState
+                surveyList = surveyListState,
+                selectedIndices = selectedIndices,
+                updateSelectedIndices = updateSelectedSurvey
             )
+
         }
         FilledButtonComponent(
             modifier = Modifier
@@ -142,6 +166,18 @@ fun SurveyScreen(
             text = MOVE_HOME_SCREEN
         ) {
             // TODO 설문 완료 API 붙히기
+
+            // 설문을 5개 이상 고르지 않았다면
+            if (selectSurveyCount < 5) {
+                showDialog = true
+            } else {
+                viewModel.submitSurvey(selectedIndices)
+            }
+        }
+        ShowSurveyDialog(
+            showDialog = showDialog,
+        ){
+            showDialog = false
         }
     }
 }
@@ -150,18 +186,18 @@ fun SurveyScreen(
 @Composable
 fun SurveyLazyGrid(
     modifier : Modifier,
-    photoUrl : List<Int> = listOf(),
     onSelectionChange: (Int) -> Unit,
-    surveyList : MutableList<SurveyInfo>
+    surveyList : MutableList<SurveyInfo>,
+    selectedIndices : List<Int>,
+    updateSelectedIndices: (List<Int>) -> Unit
 ){
-    var selectedIndices by remember { mutableStateOf(listOf<Int>()) }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier
     ) {
         itemsIndexed(surveyList){ index, surveyInfo ->
-
+            
             val isSelected = index in selectedIndices
 
             Row(
@@ -184,16 +220,17 @@ fun SurveyLazyGrid(
                         ImageComponent(
                             modifier = Modifier
                                 .clickable {
-                                    // 클릭 시 선택 상태를 업데이트
-                                    selectedIndices = if (isSelected) {
-                                        // 이미 선택된 경우, 리스트에서 제거
-                                        selectedIndices - index
-                                    } else {
-                                        // 선택되지 않은 경우, 리스트에 추가
-                                        selectedIndices + index
-                                    }
+                                    val newSelectedIndices =
+                                        if (selectedIndices.contains(surveyInfo.foodId)) {
+                                            selectedIndices - surveyInfo.foodId
+                                        } else {
+                                            selectedIndices + surveyInfo.foodId
+                                        }
+
+                                    // 바깥 selectedIndices 갱신
+                                    updateSelectedIndices(newSelectedIndices)
                                     // 몇 개를 클릭했는지 콜백함수로 바깥에 전달
-                                    onSelectionChange(selectedIndices.size)
+                                    onSelectionChange(newSelectedIndices.size)
                                 }
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(15.dp)), // 이미지의 모서리를 둥글게
@@ -226,6 +263,24 @@ fun SurveyLazyGrid(
     }
 }
 
+@Composable
+fun ShowSurveyDialog(
+    showDialog : Boolean,
+    onCancel : (Boolean) -> Unit
+) {
+    if (showDialog) {
+        AlertDialogComponent(
+            dialogText = SURVEY_SELECT_COUNT,
+            onDismissRequest = {
+                onCancel(false)
+            },
+            showDialog = {
+                onCancel(false)
+            }
+        )
+    }
+}
+
 // 아이템 클릭 시 덮어 씌우는 박스 background 설정
 @Composable
 fun setBackground(isSelected : Boolean) : Color {
@@ -237,6 +292,7 @@ fun setBackground(isSelected : Boolean) : Color {
 @Composable
 fun SurveyBodyPreview() {
     SurveyScreen(
-        viewModel = hiltViewModel()
+        viewModel = hiltViewModel(),
+        {}
     )
 }
