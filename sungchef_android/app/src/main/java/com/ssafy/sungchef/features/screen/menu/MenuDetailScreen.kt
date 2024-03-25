@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.height
 
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -50,6 +49,8 @@ import com.ssafy.sungchef.domain.model.recipe.RecipeDetail
 import com.ssafy.sungchef.domain.model.recipe.RecipeDetailInfo
 import com.ssafy.sungchef.domain.model.recipe.RecipeIngredient
 import com.ssafy.sungchef.features.component.CardComponent
+import com.ssafy.sungchef.features.component.FilledButtonComponent
+import com.ssafy.sungchef.features.component.FilledButtonPreview
 import com.ssafy.sungchef.features.component.IconTextRowComponent
 import com.ssafy.sungchef.features.component.TextComponent
 
@@ -92,39 +93,45 @@ private fun Content(
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = modifier
-            .padding(paddingValues)
-            .fillMaxSize()
-            .verticalScroll(scrollState)
+        modifier = modifier.fillMaxSize()
     ) {
-        // Todo 이미지
-        ImageComponent(
-            modifier
-                .fillMaxWidth()
-                .aspectRatio(1.5f),
-            recipeDetail.recipeImage
-        )
-        MenuInfoCard(
-            modifier = modifier,
-            title = recipeDetail.recipeName,
-            description = recipeDetail.recipeDescription,
-            volume = recipeDetail.recipeVolume,
-            time = recipeDetail.recipeCookingTime
-        )
-        CardComponent(text = "재료") {
-            // 반복문 돌려야함
-            for (recipeIngredientInfo in recipeDetail.recipeIngredientInfoList) {
-                if (recipeIngredientInfo.recipeIngredientList.isNotEmpty()) {
-                    IngredientCardComponent(
-                        classification = recipeIngredientInfo.recipeIngredientType,
-                        recipeIngredients = recipeIngredientInfo.recipeIngredientList
-                    )
+        Column(
+            modifier = modifier
+                .padding(paddingValues)
+                .weight(1f)
+                .verticalScroll(scrollState)
+        ) {
+            // Todo 이미지
+            ImageComponent(
+                modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1.5f),
+                recipeDetail.recipeImage
+            )
+            MenuInfoCard(
+                modifier = modifier,
+                title = recipeDetail.recipeName,
+                description = recipeDetail.recipeDescription,
+                volume = recipeDetail.recipeVolume,
+                time = recipeDetail.recipeCookingTime
+            )
+            CardComponent(text = "재료") {
+                for (recipeIngredientInfo in recipeDetail.recipeIngredientInfoList) {
+                    if (recipeIngredientInfo.recipeIngredientList.isNotEmpty()) {
+                        IngredientCardComponent(
+                            classification = recipeIngredientInfo.recipeIngredientType,
+                            recipeIngredients = recipeIngredientInfo.recipeIngredientList
+                        )
+                    }
                 }
             }
+            CardComponent(text = "레시피") {
+                for (recipeDetailInfo in recipeDetail.recipeDetailInfoList)
+                    RecipeCardComponent(modifier, recipeDetailInfo)
+            }
         }
-        CardComponent(text = "레시피") {
-            for (recipeDetailInfo in recipeDetail.recipeDetailInfoList)
-                RecipeCardComponent(modifier, recipeDetailInfo)
+        FilledButtonComponent(text = "요리하기"){
+            // 요리하는 화면으로 이동
         }
     }
 }
