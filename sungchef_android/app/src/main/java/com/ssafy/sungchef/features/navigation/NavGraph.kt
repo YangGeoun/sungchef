@@ -86,7 +86,9 @@ fun NavGraph() {
             startDestination = login_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
-            homeScreen()
+            homeScreen(){
+                navVisibility = true
+            }
             menuScreen{
                 navController.navigateMenuDetail(it)
                 navVisibility = false
@@ -104,7 +106,7 @@ fun NavGraph() {
                 navVisibility = true
             }
 
-            loginScreen(){
+            loginScreen(navController){
                 navVisibility = false
             }
         }

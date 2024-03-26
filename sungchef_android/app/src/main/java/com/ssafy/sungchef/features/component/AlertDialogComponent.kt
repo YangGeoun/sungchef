@@ -13,30 +13,44 @@ fun AlertDialogComponent(
     dialogTitle : String = "",
     dialogText : String,
     onDismissRequest : () -> Unit,
-    showDialog : (Boolean) -> Unit
+    showDialog : (Boolean) -> Unit,
+    isNextPage : (Boolean) -> Unit = {},
+    initUiState : () -> Unit = {}
 ) {
    AlertDialog(
        modifier = modifier,
        title = {
            TextComponent(
-               text = dialogTitle
+               text = dialogTitle,
+               style = MaterialTheme.typography.titleLarge
            )
        },
        text = {
            TextComponent(
                text = dialogText,
-               style = MaterialTheme.typography.titleLarge
+               style = MaterialTheme.typography.bodyLarge
            )
        },
        onDismissRequest = onDismissRequest,
        confirmButton = {
             TextButton(
                 onClick = {
+                    isNextPage(true)
                     showDialog(false)
                 }
             ) {
                 TextComponent(text = "확인")
             }
+       },
+       dismissButton = {
+           TextButton(
+               onClick = {
+                   initUiState()
+                   showDialog(false)
+               }
+           ) {
+               TextComponent(text = "취소")
+           }
        }
    )
 }

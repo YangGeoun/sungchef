@@ -59,7 +59,6 @@ class SurveyViewModel @Inject constructor(
     }
 
     fun getSurveyList() {
-        Log.d(TAG, "getSurveyList: 함수 불리나?")
         viewModelScope.launch {
             getSurveyUseCase.getSurveyList().collect{
                 when (it) {

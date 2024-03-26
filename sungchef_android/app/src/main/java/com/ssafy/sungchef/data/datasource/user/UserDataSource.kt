@@ -4,6 +4,7 @@ import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 
@@ -13,6 +14,7 @@ import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
+import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
 import retrofit2.Response
 
 interface UserDataSource {
@@ -31,5 +33,7 @@ interface UserDataSource {
     suspend fun getSurvey() : DataState<ResponseDto<SurveyResponse>>
 
     suspend fun userSettingInfo() : UserSettingInfo
+
+    suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO) : DataState<ResponseDto<TokenResponse>>
 
 }

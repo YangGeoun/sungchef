@@ -11,7 +11,7 @@ class GetSurveyUseCase @Inject constructor(
 ) {
 
     suspend fun getSurveyList() : Flow<DataState<Survey>> {
-        return userRepository.getSubmit()
+        return userRepository.getSurvey()
     }
 
 }

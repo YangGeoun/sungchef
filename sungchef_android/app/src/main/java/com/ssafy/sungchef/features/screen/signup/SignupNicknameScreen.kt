@@ -124,7 +124,7 @@ fun nicknameState(
 
         if (showDialog.value){
             AlertDialog(
-                title = {
+                text = {
                     TextComponent(
                         text = uiState.message,
                         style = MaterialTheme.typography.titleLarge

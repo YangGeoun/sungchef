@@ -10,6 +10,7 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
 
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
@@ -17,6 +18,7 @@ import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
+import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -76,5 +78,9 @@ class UserDataSourceImpl @Inject constructor(
         return userService.userSettingInfo()
     }
 
-
+    override suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO): DataState<ResponseDto<TokenResponse>> {
+        return getResult {
+            userService.login(userSnsIdRequestDTO)
+        }
+    }
 }

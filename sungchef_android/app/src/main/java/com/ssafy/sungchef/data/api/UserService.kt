@@ -5,6 +5,7 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 
@@ -50,4 +51,7 @@ interface UserService {
 
     @GET("user")
     suspend fun userSettingInfo() : UserSettingInfo
+
+    @POST("user/login")
+    suspend fun login(@Body userSnsIdRequestDTO: UserSnsIdRequestDTO) : Response<ResponseDto<TokenResponse>>
 }

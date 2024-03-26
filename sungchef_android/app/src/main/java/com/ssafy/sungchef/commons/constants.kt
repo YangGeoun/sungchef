@@ -44,5 +44,10 @@ const val SURVEY_SELECT_COUNT = "최소 5개 이상 골라 주세요."
 const val MOVE_HOME_SCREEN = "홈 화면 이동하기"
 const val SURVEY_CERTIFICATION_NUMBER = "설문 갯수를 확인해주세요."
 
+// 로그인
+const val NEED_SURVEY = "설문 조사가 필요합니다.\n확인 버튼을 누르면 설문 조사 페이지로 이동합니다."
+const val NEED_SIGNUP = "회원가입이 필요합니다.\n확인 버튼을 누르면 회원 가입 페이지로 이동합니다."
+const val KAKAO = "Kakao"
+
 
 const val DELETE_ALL = "전체 삭제"

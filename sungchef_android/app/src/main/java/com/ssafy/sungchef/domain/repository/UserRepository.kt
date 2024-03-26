@@ -5,8 +5,10 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
+import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.survey.Survey
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +26,9 @@ interface UserRepository {
 
     suspend fun surveySubmit(selectSurveyList : List<Int>) : Flow<DataState<Boolean>>
 
-    suspend fun getSubmit() : Flow<DataState<Survey>>
+    suspend fun getSurvey() : Flow<DataState<Survey>>
 
     suspend fun userSettingInfo() : UserSettingInfo
+
+
 }

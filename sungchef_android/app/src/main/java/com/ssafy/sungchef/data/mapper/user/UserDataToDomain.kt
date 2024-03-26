@@ -5,6 +5,7 @@ import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
 import com.ssafy.sungchef.domain.model.JwtToken
 import com.ssafy.sungchef.domain.model.base.BaseModel
+import com.ssafy.sungchef.domain.model.user.LoginState
 
 fun APIError.toBaseModel() : BaseModel{
     return when (this.code) {
@@ -29,5 +30,13 @@ fun TokenResponse.toJwtToken() : JwtToken {
         this.refreshToken
     )
 }
+
+fun<T> ResponseDto<T>.toLoginState() : LoginState {
+    return LoginState(
+        this.code,
+        this.message
+    )
+}
+
 
 

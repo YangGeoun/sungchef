@@ -6,12 +6,15 @@ import com.ssafy.sungchef.data.datasource.user.UserDataSource
 import com.ssafy.sungchef.data.mapper.survey.toSurvey
 import com.ssafy.sungchef.data.mapper.survey.toSurveyRequestDto
 import com.ssafy.sungchef.data.mapper.user.toBaseModel
+import com.ssafy.sungchef.data.mapper.user.toJwtToken
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
+import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
+import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.survey.Survey
 import com.ssafy.sungchef.domain.repository.UserRepository
@@ -82,7 +85,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSubmit(): Flow<DataState<Survey>> {
+    override suspend fun getSurvey(): Flow<DataState<Survey>> {
         return flow {
             val surveyList = userDataSource.getSurvey()
 

@@ -16,8 +16,11 @@ fun NavController.navigateHome(
     this.navigate(homeNavigationRoute, navOptions)
 }
 
-fun NavGraphBuilder.homeScreen(){
+fun NavGraphBuilder.homeScreen(
+    navVisibility : () -> Unit
+){
     composable(homeNavigationRoute) {
+        navVisibility()
         HomeScreen(hiltViewModel())
     }
 }
