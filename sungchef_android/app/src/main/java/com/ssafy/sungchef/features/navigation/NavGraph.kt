@@ -27,9 +27,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
+import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
-import com.ssafy.sungchef.features.screen.login.LoginScreen
 import com.ssafy.sungchef.features.screen.login.navigation.loginScreen
 import com.ssafy.sungchef.features.screen.login.navigation.login_route
 import com.ssafy.sungchef.features.screen.menu.navigation.menuDetailScreen
@@ -41,9 +41,8 @@ import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
-import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
 import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
-import com.ssafy.sungchef.features.screen.survey.navigation.survey_route
+
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -109,6 +108,7 @@ fun NavGraph() {
             loginScreen(navController){
                 navVisibility = false
             }
+            cookingScreen()
         }
     }
 }

@@ -1,6 +1,6 @@
-package com.ssafy.sungchef.data.model.responsedto.recipe
+package com.ssafy.sungchef.data.model.responsedto.ingredient
 
-data class RecipeIngredientResponse(
+data class IngredientResponse(
     val recipeIngredientId: Int,
     val recipeIngredientName: String,
     val recipeIngredientVolume: String

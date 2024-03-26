@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +34,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,40 +48,62 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.domain.model.recipe.RecipeDetail
 import com.ssafy.sungchef.domain.model.recipe.RecipeDetailInfo
-import com.ssafy.sungchef.domain.model.recipe.RecipeIngredient
+import com.ssafy.sungchef.domain.model.ingredient.Ingredient
+import com.ssafy.sungchef.domain.model.ingredient.IngredientInfo
 import com.ssafy.sungchef.features.component.CardComponent
+import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.IconTextRowComponent
 import com.ssafy.sungchef.features.component.TextComponent
+import java.time.format.TextStyle
 
 @Composable
 fun MenuDetailScreen(
     recipeId: String = "",
     viewModel: MenuViewModel,
-    onBackNavigate:()->(Unit)
+    onBackNavigate: () -> (Unit),
+    onNavigateCooking: (Int) -> (Unit)
 ) {
-    val context:Context = LocalContext.current
+    val context: Context = LocalContext.current
+    var isCook by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = true) {
         viewModel.getDetailRecipe(recipeId.toInt())
     }
     val viewState = viewModel.uiState.collectAsState().value
-    if (viewState.isError){
-        Toast.makeText(context, "잘못된 접근입니다.",Toast.LENGTH_SHORT).show()
-        viewModel.resetError()
-        onBackNavigate()
+    if (viewState.isError) {
+        LaunchedEffect(true) {
+            Toast.makeText(context, "잘못된 접근입니다.", Toast.LENGTH_SHORT).show()
+            viewModel.resetError()
+            onBackNavigate()
+        }
     }
+
+    if (viewState.lackIngredient != null && isCook) {
+        DialogComponent(
+            ingredientList = viewState.lackIngredient.ingredientInfo,
+            id = viewState.lackIngredient.recipeId,
+            onChangeState = { isCook = false }
+        ) {
+            onNavigateCooking(it)
+        }
+    }
+
     // Todo 서버 통신
-    Scaffold {
+    Scaffold { paddingValues ->
         if (viewState.recipeDetail != null) {
             Content(
-                paddingValues = it,
+                paddingValues = paddingValues,
                 recipeDetail = viewState.recipeDetail
-            )
+            ) {
+                viewModel.getLackIngredient(it)
+                isCook = true
+            }
         }
     }
     BackHandler {
@@ -88,43 +116,91 @@ fun MenuDetailScreen(
 private fun Content(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
-    recipeDetail: RecipeDetail
+    recipeDetail: RecipeDetail,
+    checkLack: (Int) -> (Unit)
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = modifier
-            .padding(paddingValues)
-            .fillMaxSize()
-            .verticalScroll(scrollState)
+        modifier = modifier.fillMaxSize()
     ) {
-        // Todo 이미지
-        ImageComponent(
-            modifier
-                .fillMaxWidth()
-                .aspectRatio(1.5f),
-            recipeDetail.recipeImage
-        )
-        MenuInfoCard(
-            modifier = modifier,
-            title = recipeDetail.recipeName,
-            description = recipeDetail.recipeDescription,
-            volume = recipeDetail.recipeVolume,
-            time = recipeDetail.recipeCookingTime
-        )
-        CardComponent(text = "재료") {
-            // 반복문 돌려야함
-            for (recipeIngredientInfo in recipeDetail.recipeIngredientInfoList) {
-                if (recipeIngredientInfo.recipeIngredientList.isNotEmpty()) {
-                    IngredientCardComponent(
-                        classification = recipeIngredientInfo.recipeIngredientType,
-                        recipeIngredients = recipeIngredientInfo.recipeIngredientList
-                    )
+        Column(
+            modifier = modifier
+                .padding(paddingValues)
+                .weight(1f)
+                .verticalScroll(scrollState)
+        ) {
+            // Todo 이미지
+            ImageComponent(
+                modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1.5f),
+                recipeDetail.recipeImage
+            )
+            MenuInfoCard(
+                modifier = modifier,
+                title = recipeDetail.recipeName,
+                description = recipeDetail.recipeDescription,
+                volume = recipeDetail.recipeVolume,
+                time = recipeDetail.recipeCookingTime
+            )
+            CardComponent(text = "재료") {
+                for (recipeIngredientInfo in recipeDetail.recipeIngredientInfoList) {
+                    if (recipeIngredientInfo.recipeIngredientList.isNotEmpty()) {
+                        IngredientCardComponent(
+                            classification = recipeIngredientInfo.recipeIngredientType,
+                            recipeIngredients = recipeIngredientInfo.recipeIngredientList
+                        )
+                    }
                 }
             }
+            CardComponent(text = "레시피") {
+                for (recipeDetailInfo in recipeDetail.recipeDetailInfoList)
+                    RecipeCardComponent(modifier, recipeDetailInfo)
+            }
         }
-        CardComponent(text = "레시피") {
-            for (recipeDetailInfo in recipeDetail.recipeDetailInfoList)
-                RecipeCardComponent(modifier, recipeDetailInfo)
+        FilledButtonComponent(text = "요리하기") {
+            // 요리하는 화면으로 이동
+            checkLack(recipeDetail.recipeId)
+        }
+    }
+}
+
+@Composable
+fun DialogComponent(
+    modifier: Modifier = Modifier,
+    ingredientList: List<IngredientInfo>,
+    id: Int,
+    onChangeState: () -> (Unit),
+    navigateCook: (Int) -> (Unit)
+) {
+    Dialog(onDismissRequest = { onChangeState() }) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = modifier.background(Color.White)
+        ) {
+            TextComponent(text = "부족한 재료가 있습니다.", style = MaterialTheme.typography.titleMedium)
+            LazyColumn(
+                modifier = modifier.height(200.dp)
+            ) {
+                if (ingredientList.isNotEmpty()) {
+                    itemsIndexed(ingredientList) { index, item ->
+                        IngredientCardComponent(
+                            classification = item.recipeIngredientType,
+                            recipeIngredients = item.recipeIngredientList
+                        )
+                    }
+                }
+            }
+            Row {
+                FilledButtonComponent(text = "취소", modifier = modifier.weight(1f)) {
+                    onChangeState()
+                }
+                FilledButtonComponent(text = "확인", modifier = modifier.weight(1f)) {
+                    onChangeState()
+                    navigateCook(id)
+                }
+            }
         }
     }
 }
@@ -198,7 +274,7 @@ fun MenuInfoCard(
 fun IngredientCardComponent(
     modifier: Modifier = Modifier,
     classification: String = "",
-    recipeIngredients: List<RecipeIngredient>,
+    recipeIngredients: List<Ingredient>,
 ) {
     Row(
         modifier = modifier
@@ -226,7 +302,7 @@ fun IngredientCardComponent(
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start
             )
-            for (recipeIngredient in recipeIngredients){
+            for (recipeIngredient in recipeIngredients) {
                 Row(
                     modifier = modifier.padding(top = 5.dp),
                     verticalAlignment = Alignment.CenterVertically
