@@ -126,6 +126,9 @@ dependencies {
     // Kakao Login
     implementation ("com.kakao.sdk:v2-user:2.20.1")
 
+    // Naver Login
+    implementation("com.navercorp.nid:oauth-jdk8:5.9.0") // jdk 8
+
     ksp("com.github.bumptech.glide:glide:4.14.2")
 }
 
