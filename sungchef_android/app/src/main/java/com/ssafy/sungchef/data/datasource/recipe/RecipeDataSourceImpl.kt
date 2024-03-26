@@ -12,12 +12,6 @@ class RecipeDataSourceImpl @Inject constructor(
     private val recipeService: RecipeService
 ) : RecipeDataSource, BaseRemoteDataSource() {
 
-    override suspend fun getVisitRecipe(page: Int): DataState<ResponseDto<SearchedRecipeResponse>> =
-        getResult { recipeService.getVisitRecipe(page) }
-
-    override suspend fun getBookMarkRecipe(page: Int): DataState<ResponseDto<SearchedRecipeResponse>> =
-        getResult { recipeService.getBookMarkRecipe(page) }
-
     override suspend fun getDetailRecipe(id: Int): DataState<ResponseDto<RecipeDetailResponse>> =
         getResult { recipeService.getDetailRecipe(id) }
 }
