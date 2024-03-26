@@ -27,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
+import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.menu.navigation.menuDetailScreen
@@ -96,6 +97,7 @@ fun NavGraph() {
                 navController.popBackStack()
             }
             surveyScreen(navController)
+            cookingScreen()
         }
     }
 }

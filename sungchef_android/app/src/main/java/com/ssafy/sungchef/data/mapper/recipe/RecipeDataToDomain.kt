@@ -1,15 +1,12 @@
 package com.ssafy.sungchef.data.mapper.recipe
 
+import com.ssafy.sungchef.data.mapper.ingredient.toRecipeIngredientInfo
 import com.ssafy.sungchef.data.model.responsedto.recipe.RecipeDetailInfoResponse
 import com.ssafy.sungchef.data.model.responsedto.recipe.RecipeDetailResponse
 import com.ssafy.sungchef.data.model.responsedto.recipe.RecipeInfoResponse
-import com.ssafy.sungchef.data.model.responsedto.recipe.RecipeIngredientInfoResponse
-import com.ssafy.sungchef.data.model.responsedto.recipe.RecipeIngredientResponse
 import com.ssafy.sungchef.domain.model.recipe.RecipeDetail
 import com.ssafy.sungchef.domain.model.recipe.RecipeDetailInfo
 import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
-import com.ssafy.sungchef.domain.model.recipe.RecipeIngredient
-import com.ssafy.sungchef.domain.model.recipe.RecipeIngredientInfo
 
 fun RecipeInfoResponse.toRecipeInfo(): RecipeInfo {
     return RecipeInfo(
@@ -45,22 +42,5 @@ fun RecipeDetailInfoResponse.toRecipeDetailInfo(): RecipeDetailInfo {
         this.recipeDetailDescription,
         this.recipeDetailImage,
         this.recipeDetailStep
-    )
-}
-
-fun RecipeIngredientInfoResponse.toRecipeIngredientInfo(): RecipeIngredientInfo {
-    return RecipeIngredientInfo(
-        this.recipeIngredientList.map {
-            it.toRecipeIngredient()
-        },
-        this.recipeIngredientType
-    )
-}
-
-fun RecipeIngredientResponse.toRecipeIngredient(): RecipeIngredient {
-    return RecipeIngredient(
-        this.recipeIngredientId,
-        this.recipeIngredientName,
-        this.recipeIngredientVolume
     )
 }

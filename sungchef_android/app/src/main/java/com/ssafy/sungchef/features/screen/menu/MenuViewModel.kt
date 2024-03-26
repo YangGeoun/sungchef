@@ -1,9 +1,11 @@
 package com.ssafy.sungchef.features.screen.menu
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.ssafy.sungchef.commons.DataState
+import com.ssafy.sungchef.domain.usecase.cooking.GetLackIngredientUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetBookMarkRecipeUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetDetailRecipeUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetVisitRecipeUseCase
@@ -21,7 +23,8 @@ class MenuViewModel @Inject constructor(
     private val getVisitRecipeUseCase: GetVisitRecipeUseCase,
     private val getBookMarkRecipeUseCase: GetBookMarkRecipeUseCase,
     private val getDetailRecipeUseCase: GetDetailRecipeUseCase,
-    private val changeBookmarkRecipe: ChangeBookmarkRecipe
+    private val changeBookmarkRecipe: ChangeBookmarkRecipe,
+    private val getLackIngredientUseCase: GetLackIngredientUseCase
 ) : ViewModel() {
     private val initialState: RecipeViewState by lazy { RecipeViewState() }
     private val currentState: RecipeViewState get() = uiState.value
@@ -59,7 +62,7 @@ class MenuViewModel @Inject constructor(
                     is DataState.Error -> {
                         setState { currentState.copy(isLoading = false) }
                         when (it.apiError.code) {
-                            400.toLong() -> setState { currentState.copy(isError = true) }
+                            404.toLong() -> setState { currentState.copy(isError = true) }
                         }
                     }
 
@@ -92,7 +95,28 @@ class MenuViewModel @Inject constructor(
                     }
 
                     is DataState.Loading -> {
-                        setState { currentState.copy(isError = true, isLoading = true) }
+                        setState { currentState.copy(isLoading = true) }
+                    }
+                }
+            }
+        }
+    }
+
+    fun getLackIngredient(id: Int) {
+        viewModelScope.launch {
+            getLackIngredientUseCase(id).collect(){
+                when (it) {
+                    is DataState.Success -> {
+                        Log.d("TAG", "getLackIngredient: ${it.data.ingredientInfo}")
+                        setState { currentState.copy(isLoading = false, lackIngredient = it.data) }
+                    }
+
+                    is DataState.Error -> {
+                        setState { currentState.copy(isError = true, isLoading = false) }
+                    }
+
+                    is DataState.Loading -> {
+                        setState { currentState.copy(isLoading = true) }
                     }
                 }
             }

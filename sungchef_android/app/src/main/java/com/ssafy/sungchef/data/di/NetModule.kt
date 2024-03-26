@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.data.di
 
 import com.ssafy.sungchef.BuildConfig
+import com.ssafy.sungchef.data.api.CookingService
 import com.ssafy.sungchef.data.api.RecipeService
 import com.ssafy.sungchef.data.api.RecommendationService
 import com.ssafy.sungchef.data.api.UserService
@@ -12,7 +13,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -59,4 +59,9 @@ object NetModule {
     @Singleton
     fun provideRecipeService(retrofit: Retrofit): RecipeService =
         retrofit.create(RecipeService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideFridgeService(retrofit: Retrofit): CookingService =
+        retrofit.create(CookingService::class.java)
 }

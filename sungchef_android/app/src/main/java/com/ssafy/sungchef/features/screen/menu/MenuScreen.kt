@@ -58,10 +58,6 @@ fun MenuScreen(
     val context: Context = LocalContext.current
     val viewState = viewModel.uiState.collectAsState().value
 
-    if (viewState.isError) {
-        Toast.makeText(context, "즐겨찾기에 실패했습니다.", Toast.LENGTH_SHORT).show()
-        viewModel.resetError()
-    }
     Scaffold(
         topBar = {
             SearchBar(
