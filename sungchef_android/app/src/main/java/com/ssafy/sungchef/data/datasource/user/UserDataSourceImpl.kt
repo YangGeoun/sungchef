@@ -8,6 +8,7 @@ import com.ssafy.sungchef.data.datasource.BaseRemoteDataSource
 import com.ssafy.sungchef.data.model.APIError
 
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
+import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
@@ -83,4 +84,9 @@ class UserDataSourceImpl @Inject constructor(
             userService.login(userSnsIdRequestDTO)
         }
     }
+    override suspend fun inquire(contactRequestDTO: ContactRequestDTO) : Response<APIError> {
+        return userService.userContact(contactRequestDTO)
+    }
+
+
 }

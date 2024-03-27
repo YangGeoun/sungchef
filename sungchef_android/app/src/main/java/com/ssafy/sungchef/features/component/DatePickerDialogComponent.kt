@@ -17,9 +17,10 @@ import androidx.compose.runtime.Composable
 @Composable
 fun DatePickerDialogComponent(
     onAccept : (Long?) -> Unit,
-    onCancel : (Boolean) -> Unit
+    onCancel : (Boolean) -> Unit,
+    initialDateMillis : Long = System.currentTimeMillis()
 ) {
-    val state = rememberDatePickerState()
+    val state = rememberDatePickerState(initialSelectedDateMillis = initialDateMillis)
 
     DatePickerDialog(
         onDismissRequest = {
@@ -52,8 +53,10 @@ fun DatePickerDialogComponent(
                     text = "취소"
                 )
             }
-        }
+        },
+
     ) {
         DatePicker(state = state)
+
     }
 }

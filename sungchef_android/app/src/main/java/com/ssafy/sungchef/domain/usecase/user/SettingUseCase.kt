@@ -1,23 +1,29 @@
 package com.ssafy.sungchef.domain.usecase.user
 
-import android.util.Log
 import com.ssafy.sungchef.data.model.APIError
-import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
-import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
-import com.ssafy.sungchef.data.model.responsedto.ResponseDto
+import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
-import com.ssafy.sungchef.data.model.responsedto.UserSimple
+import com.ssafy.sungchef.domain.repository.UserDataStoreRepository
 import com.ssafy.sungchef.domain.repository.UserRepository
-import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import javax.inject.Inject
 
 class SettingUseCase @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userDataStoreRepository: UserDataStoreRepository
 ){
 
     suspend fun getUserSettingInfo() : UserSettingInfo {
         return userRepository.userSettingInfo()
     }
 
+    suspend fun setEmail(email : String){
+        userDataStoreRepository.setEmail(email)
+    }
+    suspend fun getEmail() : String {
+        return userDataStoreRepository.getEmail() ?: ""
+    }
+    suspend fun inquire(contactRequestDTO: ContactRequestDTO) : Response<APIError> {
+        return userRepository.inquire(contactRequestDTO)
+    }
 }

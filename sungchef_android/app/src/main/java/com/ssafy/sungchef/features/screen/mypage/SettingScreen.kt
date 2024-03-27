@@ -3,7 +3,6 @@ package com.ssafy.sungchef.features.screen.mypage
 import android.net.Uri
 import android.os.Build
 
-import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.util.Log
 import android.widget.Toast
 
@@ -22,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -54,9 +54,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewModelScope
 
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -66,12 +65,8 @@ import com.ssafy.sungchef.commons.BIRTH
 import com.ssafy.sungchef.features.component.DatePickerDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 
-import com.ssafy.sungchef.commons.BIRTH_FORMAT
 import com.ssafy.sungchef.commons.EMPTY_NICKNAME
 import com.ssafy.sungchef.domain.model.base.BaseModel
-import com.ssafy.sungchef.features.component.DatePickerDialogComponent
-import com.ssafy.sungchef.features.component.FilledButtonComponent
-import com.ssafy.sungchef.features.component.GenderButtonComponent
 import com.ssafy.sungchef.features.component.IconButtonComponent
 
 import com.ssafy.sungchef.features.component.IconComponent
@@ -91,7 +86,10 @@ import java.time.ZoneId
 @Composable
 fun SettingScreen(navController: NavController, viewModel: SettingViewModel){
 
+    val userProfileImage by viewModel.userProfileImage.collectAsState()
     val userNickname by viewModel.userNickname.collectAsState()
+    val userBirthDate by viewModel.userBirthDate.collectAsState()
+    val userGender by viewModel.userGender.collectAsState()
     val uiState: BaseModel by viewModel.isDuplicateName.collectAsState()
     val isDuplicateCheckNeeded by viewModel.isDuplicateCheckNeeded.collectAsState()
     val context = LocalContext.current
@@ -109,7 +107,6 @@ fun SettingScreen(navController: NavController, viewModel: SettingViewModel){
             else viewModel.setIsDuplicateCheckNeeded(true)
             Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
         }
-
     }
 
     Scaffold(
@@ -142,16 +139,16 @@ fun SettingScreen(navController: NavController, viewModel: SettingViewModel){
 
                 Log.d(TAG, "SettingScreen: 초기화면 : $userNickname")
                 
-                SetProfileImage()
+                SetProfileImage(userProfileImage, viewModel)
 
                 Column(modifier = Modifier.background(Color.White)) {
                     Spacer(modifier = Modifier.height(10.dp))
                     SetNickname(userNickname, viewModel)
-                    SetBirthDate()
-                    SetGender()
+                    SetBirthDate(userBirthDate, viewModel)
+                    SetGender(userGender, viewModel)
                     Spacer(modifier = Modifier.height(10.dp))
                 }
-                Acquire()
+                Inquire(viewModel)
                 Logout()
             }
         }
@@ -159,7 +156,7 @@ fun SettingScreen(navController: NavController, viewModel: SettingViewModel){
 }
 
 @Composable
-fun SetProfileImage(){
+fun SetProfileImage(userProfileImage: String?, viewModel: SettingViewModel) {
 
     Column(
         modifier = Modifier
@@ -169,24 +166,25 @@ fun SetProfileImage(){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        var imageUri by remember { mutableStateOf<Uri?>(null) }
+//        var imageUri by remember { mutableStateOf<Uri?>(null) }
         val galleryLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent()
         ) { uri : Uri?->
-            imageUri = uri
+            if(uri!=null) viewModel.setProfileImage(uri.toString())
         }
 
+        var uri : Uri? = userProfileImage?.let { Uri.parse(it) }
 
         // 선택된 이미지를 표시하는 Image 컴포넌트
-        imageUri?.let { uri ->
+        uri?.let { uri ->
             ImageComponent(modifier = Modifier
                 .size(120.dp)
-                .clip(CircleShape), imageResource = imageUri!!)
+                .clip(CircleShape), imageResource = uri)
         } ?: run {
             // 기본 이미지 또는 초기 이미지를 표시
             ImageComponent(modifier = Modifier
                 .size(120.dp)
-                .clip(CircleShape), imageResource = R.drawable.test_image)
+                .clip(CircleShape), imageResource = R.drawable.icon_image_fail)
         }
 
         TextComponent(
@@ -242,14 +240,13 @@ fun SetNickname(userNickname: String, viewModel: SettingViewModel){
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SetBirthDate(){
-    var birth by remember { mutableStateOf("1999-02-08") }
+fun SetBirthDate(userBirthDate: String, viewModel: SettingViewModel) {
+    val context = LocalContext.current
+    //    var birth by remember { mutableStateOf("1999-02-08") }
 
     //실제 유저 생일 가져와서 LocalDate로 매핑 필요
-    val date = remember { mutableStateOf(LocalDate.now())}
+    val date = remember { mutableStateOf(LocalDate.parse(userBirthDate))}
     val isOpen = remember { mutableStateOf(false) }
-
-
 
     TextFieldComponent(
         modifier = Modifier
@@ -257,9 +254,9 @@ fun SetBirthDate(){
             .clickable {
                 isOpen.value = true
             },
-        value = birth,
+        value = userBirthDate,
         onValueChange = {
-            birth = it
+            viewModel.setBirthDate(it)
         },
         hintText = BIRTH,
         trailingIcon = {
@@ -278,29 +275,29 @@ fun SetBirthDate(){
     )
 
     if (isOpen.value) {
+
         DatePickerDialogComponent(
             onAccept = { time ->
                 isOpen.value = false
 
                 time?.let {
-                    date.value = Instant
-                        .ofEpochMilli(it)
-                        .atZone(ZoneId.of("Asia/Seoul"))
-                        .toLocalDate()
-
-                    birth = date.value.toString()
+                    val dt = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                    Log.d(TAG, "SetBirthDate: $dt")
+                    date.value = dt
+                    viewModel.setBirthDate(date.value.toString())
                 }
             },
             onCancel = {
                 isOpen.value = false
-            }
+            },
+            initialDateMillis = LocalDate.parse(userBirthDate).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         )
     }
 }
 
 @Composable
-fun SetGender(){
-    var isMale by remember { mutableStateOf(true) }
+fun SetGender(userGender: Boolean, viewModel: SettingViewModel) {
+//    var isMale by remember { mutableStateOf(true) }
 
     Row(modifier = Modifier.padding(top = 10.dp)) {
         TextComponent(
@@ -311,30 +308,32 @@ fun SetGender(){
             ),
             modifier = Modifier.padding(start = 20.dp)
         )
-
         MyPageGenderButtonComponent(gender = "남자", genderResource = R.drawable.gender_man,
             modifier = Modifier
                 .weight(1f)
                 .height(60.dp)
                 .padding(start = 20.dp)
-                .clickable { isMale = true },
-            color = if (isMale) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer
+                .clickable { viewModel.setGender(true) },
+            color = if (userGender) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer
         )
+        Spacer(modifier = Modifier.width(10.dp))
         MyPageGenderButtonComponent(gender = "여자", genderResource = R.drawable.gender_woman,
             modifier = Modifier
                 .weight(1f)
                 .height(60.dp)
                 .padding(end = 20.dp)
-                .clickable { isMale = false },
-            color = if (isMale) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.primary
+                .clickable { viewModel.setGender(false) },
+            color = if (userGender) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.primary
             )
-
-
     }
 }
 
 @Composable
-fun Acquire(){
+fun Inquire(viewModel: SettingViewModel) {
+    val context = LocalContext.current
+    viewModel.getEmail()
+    val userEmail by viewModel.userEmail.collectAsState()
+
     Column(modifier = Modifier.padding(20.dp)) {
 
         var showDialog by remember { mutableStateOf(false) }
@@ -353,6 +352,7 @@ fun Acquire(){
         // 문의하기 다이얼로그
         if (showDialog) {
             var email by remember { mutableStateOf("") }
+            email = userEmail
             var text by remember { mutableStateOf("") } // 텍스트 필드의 현재 값을 저장하는 상태 변수
             var saveEmail by remember { mutableStateOf(false) }
 
@@ -398,9 +398,18 @@ fun Acquire(){
                             Text(text="이메일 자동저장", fontSize = 16.sp)
                             Spacer(modifier = Modifier.weight(1f))
                             Button(onClick = {
-                                //이메일 자동저장일 경우 앱 DB에 저장하고 메일 발송 후 종료
-
-                                showDialog = false
+                                if(email=="" || text=="" || !email.matches("[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+".toRegex())){
+                                    Toast.makeText(context, "올바른 이메일과 내용을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                                }
+                                else {
+                                    //이메일 자동저장일 경우 앱 DB에 저장하고 메일 발송 후 종료
+                                    if(saveEmail==true){
+                                        viewModel.setEmail(email)
+                                    }
+                                    Toast.makeText(context, "문의가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                                    viewModel.inquire(email, text)
+                                    showDialog = false
+                                }
                             }) {
                                 Text("문의하기")
                             }
@@ -410,9 +419,6 @@ fun Acquire(){
                 }
             }
         }
-
-
-
     }
 }
 

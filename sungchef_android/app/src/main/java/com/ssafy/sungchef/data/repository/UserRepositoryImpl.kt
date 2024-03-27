@@ -7,7 +7,9 @@ import com.ssafy.sungchef.data.mapper.survey.toSurvey
 import com.ssafy.sungchef.data.mapper.survey.toSurveyRequestDto
 import com.ssafy.sungchef.data.mapper.user.toBaseModel
 import com.ssafy.sungchef.data.mapper.user.toJwtToken
+import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
+import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
@@ -20,6 +22,7 @@ import com.ssafy.sungchef.domain.model.survey.Survey
 import com.ssafy.sungchef.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import retrofit2.Response
 
 
 import javax.inject.Inject
@@ -100,5 +103,9 @@ class UserRepositoryImpl @Inject constructor(
     }
     override suspend fun userSettingInfo(): UserSettingInfo {
         return userDataSource.userSettingInfo()
+    }
+
+    override suspend fun inquire(contactRequestDTO: ContactRequestDTO) : Response<APIError> {
+        return userDataSource.inquire(contactRequestDTO)
     }
 }

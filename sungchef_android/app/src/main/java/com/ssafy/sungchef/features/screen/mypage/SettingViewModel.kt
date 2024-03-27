@@ -7,6 +7,7 @@ import com.ssafy.sungchef.commons.ALREADY_NICKNAME
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.commons.SERVER_INSTABILITY
 import com.ssafy.sungchef.commons.WRONG_NICKNAME_FORMAT
+import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeListData
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
@@ -30,9 +31,20 @@ class SettingViewModel @Inject constructor(
     private val duplicateNicknameUseCase: DuplicateNicknameUseCase
 ) : ViewModel() {
 
+    private val _userProfileImage = MutableStateFlow<String?>("")
+    val userProfileImage : StateFlow<String?> = _userProfileImage.asStateFlow()
 
     private val _userNickname = MutableStateFlow<String>("")
     val userNickname : StateFlow<String> = _userNickname.asStateFlow()
+
+    private val _userBirthDate = MutableStateFlow<String>("2000-01-01")
+    val userBirthDate : StateFlow<String> = _userBirthDate.asStateFlow()
+
+    private val _userGender = MutableStateFlow<Boolean>(true)
+    val userGender : StateFlow<Boolean> = _userGender.asStateFlow()
+
+    private val _userEmail = MutableStateFlow<String>("")
+    val userEmail : StateFlow<String> = _userEmail.asStateFlow()
 
     private val _isDuplicateName = MutableStateFlow(BaseModel())
     val isDuplicateName : StateFlow<BaseModel> = _isDuplicateName
@@ -49,7 +61,11 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch {
             val userSettingInfo = settingUseCase.getUserSettingInfo()
             Log.d(TAG, "getUserSettingInfo: $userSettingInfo")
+            _userProfileImage.value = userSettingInfo.data.userImage
             _userNickname.value = userSettingInfo.data.userNickName
+            _userBirthDate.value = userSettingInfo.data.userBirthdate
+            if(userSettingInfo.data.userGender.equals("M")) _userGender.value = true
+            else _userGender.value = false
         }
     }
 
@@ -60,6 +76,39 @@ class SettingViewModel @Inject constructor(
 
     fun setIsDuplicateCheckNeeded(check : Boolean){
         _isDuplicateCheckNeeded.value = check
+    }
+
+    fun setBirthDate(newBirthDate : String){
+//        Log.d(TAG, "setBirthDate: $newNickname")
+        _userBirthDate.value = newBirthDate
+    }
+
+    fun setProfileImage(newProfileImage : String){
+//        Log.d(TAG, "setProfileImage: $newNickname")
+        _userProfileImage.value = newProfileImage
+    }
+
+    fun setGender(newGender : Boolean){
+//        Log.d(TAG, "setGender: newGender")
+        _userGender.value = newGender
+    }
+
+    fun getEmail(){
+        viewModelScope.launch {
+            _userEmail.value = settingUseCase.getEmail()
+        }
+    }
+
+    fun setEmail(email : String) {
+        viewModelScope.launch {
+            settingUseCase.setEmail(email)
+        }
+    }
+
+    fun inquire(email : String, detail : String){
+        viewModelScope.launch {
+            settingUseCase.inquire(ContactRequestDTO(email, detail))
+        }
     }
 
     fun checkNickname(): Boolean {

@@ -21,4 +21,6 @@ interface UserDataStoreRepository {
     suspend fun signupUser(userRequestDTO: UserRequestDTO) : Flow<DataState<Int>>
 
     suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO) : Flow<DataState<LoginState>>
+    suspend fun setEmail(email: String)
+    suspend fun getEmail() : String?
 }

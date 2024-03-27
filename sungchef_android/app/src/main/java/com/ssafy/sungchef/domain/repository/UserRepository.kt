@@ -2,10 +2,10 @@ package com.ssafy.sungchef.domain.repository
 
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
-import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
@@ -31,4 +31,5 @@ interface UserRepository {
     suspend fun userSettingInfo() : UserSettingInfo
 
 
+    suspend fun inquire(contactRequestDTO: ContactRequestDTO): Response<APIError>
 }
