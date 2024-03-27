@@ -84,7 +84,11 @@ import java.time.ZoneId
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(navController: NavController, viewModel: SettingViewModel){
+fun SettingScreen(
+    navController: NavController,
+    viewModel: SettingViewModel,
+    onMoveSurveyPage : (Boolean) -> Unit
+){
 
     val userProfileImage by viewModel.userProfileImage.collectAsState()
     val userNickname by viewModel.userNickname.collectAsState()
@@ -148,7 +152,7 @@ fun SettingScreen(navController: NavController, viewModel: SettingViewModel){
                     SetGender(userGender, viewModel)
                     Spacer(modifier = Modifier.height(10.dp))
                 }
-                Inquire(viewModel)
+                Inquire(viewModel, onMoveSurveyPage)
                 Logout()
             }
         }
@@ -329,7 +333,10 @@ fun SetGender(userGender: Boolean, viewModel: SettingViewModel) {
 }
 
 @Composable
-fun Inquire(viewModel: SettingViewModel) {
+fun Inquire(
+    viewModel: SettingViewModel,
+    onMoveSurveyPage: (Boolean) -> Unit
+) {
     val context = LocalContext.current
     viewModel.getEmail()
     val userEmail by viewModel.userEmail.collectAsState()
@@ -346,6 +353,7 @@ fun Inquire(viewModel: SettingViewModel) {
         }
         OutlinedButtonComponent(text = "다시 설문하기", borderColor = MaterialTheme.colorScheme.primary,
             shape = RoundedCornerShape(15)) {
+            onMoveSurveyPage(true)
         }
 
 
@@ -440,6 +448,6 @@ fun Logout(){
 @RequiresApi(Build.VERSION_CODES.O)
 fun SettingPreview(){
     val navController = rememberNavController()
-    SettingScreen(navController = navController, hiltViewModel())
+    SettingScreen(navController = navController, hiltViewModel(), {true})
 }
 

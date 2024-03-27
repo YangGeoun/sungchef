@@ -90,8 +90,7 @@ fun NavGraphBuilder.signupGraph(
             SignupCongratulationScreen(
                 // 설문 조사 페이지로 이동 및 모든 백스택 제거
                 onMoveSurveyPage = {
-                    navController.navigateSurvey(
-                        navOptions {
+                    navController.navigateSurvey(false, navOptions {
                             popUpTo(navController.graph.startDestinationId) {
                                 inclusive = true
                             }

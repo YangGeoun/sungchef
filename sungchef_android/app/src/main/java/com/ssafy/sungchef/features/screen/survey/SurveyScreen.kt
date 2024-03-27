@@ -51,9 +51,12 @@ import com.ssafy.sungchef.features.ui.theme.primaryContainer50
 private const val TAG = "SurveyScreen_성식당"
 @Composable
 fun SurveyScreen(
+    isRestart : Boolean,
     viewModel : SurveyViewModel,
     onMoveHomePage : () -> Unit
 ) {
+
+    Log.d(TAG, "isRestart: $isRestart")
     var selectSurveyCount by remember { mutableIntStateOf(0) }
 
     // 사용자가 선택된 설문조사를 담는 변수
@@ -292,6 +295,7 @@ fun setBackground(isSelected : Boolean) : Color {
 @Composable
 fun SurveyBodyPreview() {
     SurveyScreen(
+        false,
         viewModel = hiltViewModel(),
         {}
     )

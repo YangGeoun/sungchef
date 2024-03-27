@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.survey.navigation
 
+import android.util.Log
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -13,19 +14,26 @@ import com.ssafy.sungchef.features.screen.survey.SurveyScreen
 
 const val survey_route = "survey_screen"
 
+private const val TAG = "SurveyNavigation_성식당"
 
 fun NavController.navigateSurvey(
+    isRestart : Boolean,
     navOptions: NavOptions? = null,
 ) {
-    this.navigate(survey_route, navOptions)
+    this.navigate(survey_route.plus("/$isRestart"), navOptions)
 }
 
 fun NavGraphBuilder.surveyScreen(
     navController: NavController,
     navVisibility : (Boolean) -> Unit
 ){
-    composable(survey_route) {
+    composable(survey_route.plus("/{isRestart}")) {
+        val restart = it.arguments?.getString("isRestart", "false")
+
+        var isRestart = restart == "true"
+
         SurveyScreen(
+            isRestart,
             viewModel = hiltViewModel()
         ){
             navVisibility(true)

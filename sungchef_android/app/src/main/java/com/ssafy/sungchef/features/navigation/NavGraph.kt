@@ -28,6 +28,7 @@ import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
+import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.login.navigation.loginScreen
@@ -42,7 +43,7 @@ import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrig
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
 import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
-
+import com.ssafy.sungchef.features.screen.survey.navigation.survey_route
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -83,6 +84,7 @@ fun NavGraph() {
         NavHost(
             navController = navController,
             startDestination = login_route,
+//            startDestination = homeNavigationRoute,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen(){
