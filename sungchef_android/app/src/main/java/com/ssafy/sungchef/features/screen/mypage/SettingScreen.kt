@@ -419,9 +419,6 @@ fun Inquire(viewModel: SettingViewModel) {
                 }
             }
         }
-
-
-
     }
 }
 
