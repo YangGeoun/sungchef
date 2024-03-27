@@ -10,6 +10,7 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
 
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
@@ -76,6 +77,12 @@ class UserDataSourceImpl @Inject constructor(
 
     override suspend fun userSettingInfo(): UserSettingInfo {
         return userService.userSettingInfo()
+    }
+
+    override suspend fun signupUser(userRequestDTO: UserRequestDTO): DataState<ResponseDto<TokenResponse>> {
+        return getResult {
+            userService.signupUser(userRequestDTO)
+        }
     }
 
     override suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO): DataState<ResponseDto<TokenResponse>> {
