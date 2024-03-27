@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.features.navigation
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -29,6 +30,7 @@ import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
 import com.ssafy.sungchef.features.screen.cooking.navigation.navigateCooking
+import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.login.navigation.loginScreen
@@ -46,7 +48,7 @@ import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
 import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
 import com.ssafy.sungchef.features.screen.survey.navigation.survey_route
 
-
+private const val TAG = "NavGraph_성식당"
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(
@@ -86,9 +88,10 @@ fun NavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-//            startDestination = survey_route.plus("/false"),
+//            startDestination = survey_route.plus("/${false}"),
 //            startDestination = homeNavigationRoute,
             startDestination = signupRoute,
+//            startDestination = login_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen() {
@@ -138,6 +141,7 @@ fun navigateToBottomNavDestination(bottomNav: BottomNavigationItem, navControlle
             // Pop up to the start destination of the graph to
             // avoid building up a large stack of destinations
             // on the back stack as users select items
+            Log.d(TAG, "navigateToBottomNavDestination: ${navController.graph.findStartDestination().navigatorName}")
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }

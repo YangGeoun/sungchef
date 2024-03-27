@@ -31,12 +31,12 @@ fun NavGraphBuilder.surveyScreen(
         val restart = it.arguments?.getString("isRestart", "false")
 
         var isRestart = restart == "true"
+        navVisibility(false)
 
         SurveyScreen(
             isRestart,
             viewModel = hiltViewModel()
         ){
-            navVisibility(true)
             navController.navigate(
                 homeNavigationRoute,
                 navOptions {
@@ -48,6 +48,7 @@ fun NavGraphBuilder.surveyScreen(
                     launchSingleTop = true
                 }
             )
+            navVisibility(true)
         }
     }
 }
