@@ -5,6 +5,7 @@ import com.ssafy.sungchef.data.api.CookingService
 import com.ssafy.sungchef.data.datasource.BaseRemoteDataSource
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.IngredientListResponse
+import com.ssafy.sungchef.data.model.responsedto.recipe.RecipeStepResponse
 import javax.inject.Inject
 
 class CookingDataSourceImpl @Inject constructor(
@@ -15,4 +16,7 @@ class CookingDataSourceImpl @Inject constructor(
 
     override suspend fun getUsedIngredient(id: Int): DataState<ResponseDto<IngredientListResponse>> =
         getResult { cookingService.getUsedIngredient(id) }
+
+    override suspend fun getRecipeStep(id: Int): DataState<ResponseDto<RecipeStepResponse>> =
+        getResult { cookingService.getRecipeStep(id) }
 }

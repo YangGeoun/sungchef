@@ -211,7 +211,6 @@ fun ProfileImage(userSimple: UserSimple){
         .size(70.dp)
         .clickable { showDialog = true }
         .clip(CircleShape), imageResource = userSimple.data.userImage)
-    val imagePainter: Painter = painterResource(id = R.drawable.test_image) // 프로필사진
 
     // Dialog를 통해 이미지 확대 보기
     if (showDialog) {
@@ -220,14 +219,17 @@ fun ProfileImage(userSimple: UserSimple){
             properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
             // 확대된 이미지를 보여주는 Dialog 내용
-            Image(
-                painter = imagePainter,
-                contentDescription = "확대된 이미지",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp),
-                contentScale = ContentScale.Crop // 이미지가 Dialog 내부에 맞게 조정됨
-            )
+            ImageComponent(modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp),
+                imageResource = userSimple.data.userImage,
+                )
+//            Image(
+//                painter = imagePainter,
+//                contentDescription = "확대된 이미지",
+//
+//                contentScale = ContentScale.Crop // 이미지가 Dialog 내부에 맞게 조정됨
+//            )
         }
     }
 }
