@@ -3,7 +3,7 @@ package com.ssafy.sungchef.data.mapper.user
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
-import com.ssafy.sungchef.domain.model.JwtToken
+import com.ssafy.sungchef.domain.model.token.JwtToken
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.user.LoginState
 

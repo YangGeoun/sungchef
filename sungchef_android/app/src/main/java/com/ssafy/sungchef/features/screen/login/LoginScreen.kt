@@ -2,6 +2,7 @@ package com.ssafy.sungchef.features.screen.login
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,8 +27,14 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.NidOAuthLogin
+import com.navercorp.nid.oauth.OAuthLoginCallback
+import com.navercorp.nid.profile.NidProfileCallback
+import com.navercorp.nid.profile.data.NidProfileResponse
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.KAKAO
+import com.ssafy.sungchef.commons.NAVER
 import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
 import com.ssafy.sungchef.data.repository.UserDataStoreRepositoryImpl
 import com.ssafy.sungchef.domain.model.user.LoginState
@@ -124,7 +131,10 @@ fun LoginScreen(
         LoginImageComponent(
             modifier = Modifier
                 .width(300.dp)
-                .height(60.dp),
+                .height(60.dp)
+                .clickable {
+                    naverLogin(context, viewModel)
+                },
             imageResource = R.drawable.naver_login
         )
     }
@@ -250,6 +260,55 @@ fun showMovePageDialog(
         )
     }
 
+}
+
+// authenticate() 를 이용한 로그인
+private fun naverLogin(
+    context : Context,
+    viewModel : LoginViewModel
+){
+    /**
+     * OAuthLoginCallback을 authenticate() 메서드 호출 시 파라미터로 전달하거나 NidOAuthLoginButton 객체에 등록하면 인증이 종료되는 것을 확인할 수 있습니다.
+     */
+    val oauthLoginCallback = object : OAuthLoginCallback {
+        override fun onSuccess() {
+            // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
+            getNaverUserInfo(context, viewModel)
+        }
+        override fun onFailure(httpStatus: Int, message: String) {
+            val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+            val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+
+            Toast.makeText(context, errorDescription, Toast.LENGTH_SHORT).show()
+        }
+        override fun onError(errorCode: Int, message: String) {
+            onFailure(errorCode, message)
+        }
+    }
+    NaverIdLoginSDK.authenticate(context, oauthLoginCallback)
+}
+
+private fun getNaverUserInfo(context : Context, viewModel : LoginViewModel) {
+    // 네이버 로그인 API 호출 성공 시 유저 정보를 가져온다
+    NidOAuthLogin().callProfileApi(object : NidProfileCallback<NidProfileResponse> {
+        override fun onSuccess(result: NidProfileResponse) {
+            val naverId = result.profile?.id.toString()
+            val userSnsIdRequestDto =  UserSnsIdRequestDTO(naverId)
+            viewModel.login(userSnsIdRequestDto, NAVER)
+            Log.i(TAG, "사용자 정보 요청 성공" +
+                    "\n회원번호: ${result.profile?.id}" +
+                    "\n이메일: ${result.profile?.email}" +
+                    "\n닉네임: ${result.profile?.nickname}")
+        }
+
+        override fun onError(errorCode: Int, message: String) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onFailure(httpStatus: Int, message: String) {
+
+        }
+    })
 }
 
 @Preview(showBackground = true)

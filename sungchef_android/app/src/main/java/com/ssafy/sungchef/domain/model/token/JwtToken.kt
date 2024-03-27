@@ -1,4 +1,4 @@
-package com.ssafy.sungchef.domain.model
+package com.ssafy.sungchef.domain.model.token
 
 data class JwtToken(
     val accessToken : String,
