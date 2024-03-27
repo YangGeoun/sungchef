@@ -13,6 +13,8 @@ import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.UserUpdateRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
@@ -24,6 +26,7 @@ import com.ssafy.sungchef.domain.repository.UserDataStoreRepository
 import com.ssafy.sungchef.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MultipartBody
 import retrofit2.Response
 
 
@@ -110,6 +113,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun inquire(contactRequestDTO: ContactRequestDTO) : Response<APIError> {
         return userDataSource.inquire(contactRequestDTO)
+    }
+    override suspend fun updateUserInfo(userImage : MultipartBody.Part, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError> {
+        return userDataSource.updateUserInfo(userImage, userUpdateRequestDTO)
     }
 
     override suspend fun signupUser(userRequestDTO: UserRequestDTO): Flow<DataState<Int>> {

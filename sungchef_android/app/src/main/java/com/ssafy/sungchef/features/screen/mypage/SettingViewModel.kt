@@ -1,5 +1,7 @@
 package com.ssafy.sungchef.features.screen.mypage
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +10,7 @@ import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.commons.SERVER_INSTABILITY
 import com.ssafy.sungchef.commons.WRONG_NICKNAME_FORMAT
 import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.UserUpdateRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeListData
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
@@ -23,6 +26,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,6 +63,22 @@ class SettingViewModel @Inject constructor(
 //    init {
 //        getUserSimple()
 //    }
+
+    fun updateUserSettingInfo(context : Context) {
+        val contentResolver = context.contentResolver
+        val inputStream = contentResolver.openInputStream(Uri.parse(userProfileImage.value))
+        val tempFile = File.createTempFile("upload", ".jpg", context.cacheDir).apply {
+            outputStream().use { fileOut ->
+                inputStream?.copyTo(fileOut)
+            }
+        }
+        val requestFile = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        val multipart = MultipartBody.Part.createFormData("picture", tempFile.name, requestFile)
+        val updateRequestDTO = UserUpdateRequestDTO(userNickname.value, if(userGender.value==true) "M" else "F", userBirthDate.value)
+        viewModelScope.launch {
+            settingUseCase.updateUserInfo(multipart, updateRequestDTO)
+        }
+    }
 
     fun getUserSettingInfo() {
         viewModelScope.launch {
