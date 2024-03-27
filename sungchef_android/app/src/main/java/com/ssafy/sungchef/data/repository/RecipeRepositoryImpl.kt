@@ -6,14 +6,18 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.api.RecipeService
+import com.ssafy.sungchef.data.datasource.cooking.CookingDataSource
 import com.ssafy.sungchef.data.datasource.recipe.PagingRecipeDataSource
 import com.ssafy.sungchef.data.datasource.recipe.RecipeDataSource
 import com.ssafy.sungchef.data.mapper.recipe.toRecipeDetail
+import com.ssafy.sungchef.data.mapper.recipe.toRecipeDetailInfo
 import com.ssafy.sungchef.data.mapper.recipe.toRecipeInfo
+import com.ssafy.sungchef.data.mapper.recipe.toRecipeStep
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.recipe.RecipeDetail
 import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
+import com.ssafy.sungchef.domain.model.recipe.RecipeStep
 import com.ssafy.sungchef.domain.repository.RecipeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -24,7 +28,8 @@ import javax.inject.Inject
 
 class RecipeRepositoryImpl @Inject constructor(
     private val recipeDataSource: RecipeDataSource,
-    private val recipeService: RecipeService
+    private val recipeService: RecipeService,
+    private val cookingDataSource: CookingDataSource
 ) : RecipeRepository {
     override suspend fun getDetailRecipe(id: Int): Flow<DataState<RecipeDetail>> =
         flow {
@@ -70,4 +75,24 @@ class RecipeRepositoryImpl @Inject constructor(
                 it.toRecipeInfo()
             }
         }
+
+    override suspend fun getRecipeStep(id: Int): Flow<DataState<RecipeStep>> =
+        flow {
+            when(val recipeStep = cookingDataSource.getRecipeStep(id)){
+                is DataState.Success -> {
+                    emit(DataState.Success(recipeStep.data.data.toRecipeStep()))
+                }
+
+                is DataState.Loading -> {
+                    emit(
+                        DataState.Loading()
+                    )
+                }
+
+                is DataState.Error -> {
+                    emit(DataState.Error(recipeStep.apiError))
+                }
+            }
+        }
+
 }

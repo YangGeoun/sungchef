@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.domain.model.recipe.RecipeDetail
 import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
+import com.ssafy.sungchef.domain.model.recipe.RecipeStep
 import kotlinx.coroutines.flow.Flow
 
 
@@ -12,4 +13,6 @@ interface RecipeRepository {
 
     suspend fun getAllVisitRecipe(page: Int, isVisit: Boolean): Flow<PagingData<RecipeInfo>>
     suspend fun getAllBookmarkRecipe(page: Int, isVisit: Boolean): Flow<PagingData<RecipeInfo>>
+
+    suspend fun getRecipeStep(id:Int):Flow<DataState<RecipeStep>>
 }

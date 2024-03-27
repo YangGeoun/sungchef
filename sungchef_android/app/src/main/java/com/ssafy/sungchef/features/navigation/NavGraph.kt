@@ -28,6 +28,7 @@ import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
+import com.ssafy.sungchef.features.screen.cooking.navigation.navigateCooking
 import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
@@ -48,7 +49,9 @@ import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NavGraph() {
+fun NavGraph(
+    rotate: () -> (Unit),
+) {
     val navController = rememberNavController()
     val currentDestination = navController
         .currentBackStackEntryAsState().value?.destination
@@ -87,30 +90,43 @@ fun NavGraph() {
 //            startDestination = homeNavigationRoute,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
-            homeScreen(){
+            homeScreen() {
                 navVisibility = true
             }
-            menuScreen{
+            menuScreen {
                 navController.navigateMenuDetail(it)
                 navVisibility = false
             }
             refrigeratorScreen()
-            signupGraph(navController){
+            signupGraph(navController) {
                 navVisibility = false
             }
             myPageScreen(navController)
-            menuDetailScreen(navController){
+            menuDetailScreen(
+                navController,
+                onChangeNav = { navVisibility = false },
+                onNavigateCooking = {
+                    rotate()
+                    navController.navigateCooking(id = it.toString())
+                }
+            ) {
                 navVisibility = true
                 navController.popBackStack()
             }
-            surveyScreen(navController){
+            surveyScreen(navController) {
                 navVisibility = true
             }
 
-            loginScreen(navController){
+            loginScreen(navController) {
                 navVisibility = false
             }
-            cookingScreen()
+            cookingScreen(onNavigateBack = {
+                navController.popBackStack()
+                rotate()
+            }
+            ) {
+                navVisibility = false
+            }
         }
     }
 }
