@@ -77,6 +77,10 @@ import com.ssafy.sungchef.features.component.SmallTextButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -117,9 +121,18 @@ fun SettingScreen(navController: NavController, viewModel: SettingViewModel){
             )},
             actions = { IconButtonComponent(
                 onClick = {
-                    Log.d(TAG, "SettingScreen: 최종 저장 $isDuplicateCheckNeeded")
-//                    navController.popBackStack()
-                          },
+                    if(viewModel.isDuplicateCheckNeeded.value == false){
+                        Log.d(TAG, "SettingScreen: 최종 저장 $isDuplicateCheckNeeded")
+                        Toast.makeText(context, "프로필이 업데이트 되었습니다.", Toast.LENGTH_SHORT).show()
+
+                        //API 저장 필요//
+                        viewModel.updateUserSettingInfo(context)
+                        navController.popBackStack()
+                    }else{
+                        Toast.makeText(context, "닉네임 중복체크를 먼저 진행해주세요.", Toast.LENGTH_SHORT).show()
+                    }
+
+                  },
                 painter = painterResource(id = R.drawable.save),
                 size = 36
             )}
@@ -173,7 +186,10 @@ fun SetProfileImage(userProfileImage: String?, viewModel: SettingViewModel) {
             if(uri!=null) viewModel.setProfileImage(uri.toString())
         }
 
-        var uri : Uri? = userProfileImage?.let { Uri.parse(it) }
+        var uri : Uri? = userProfileImage?.let {
+            Log.d(TAG, "SetProfileImage: $it")
+            Uri.parse(it) 
+        }
 
         // 선택된 이미지를 표시하는 Image 컴포넌트
         uri?.let { uri ->

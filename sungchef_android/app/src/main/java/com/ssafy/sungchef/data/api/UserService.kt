@@ -7,6 +7,7 @@ import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.UserUpdateRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 
@@ -17,10 +18,15 @@ import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface UserService {
@@ -57,4 +63,10 @@ interface UserService {
     suspend fun login(@Body userSnsIdRequestDTO: UserSnsIdRequestDTO) : Response<ResponseDto<TokenResponse>>
     @POST("user/contact")
     suspend fun userContact(@Body contactRequestDTO: ContactRequestDTO) : Response<APIError>
+    @Multipart
+    @PUT("/user")
+    suspend fun updateUserInfo(
+        @Part userImage : MultipartBody.Part,
+        @Part("userUpdateRequestDTO") userUpdateRequestDTO: RequestBody,
+    ) : Response<APIError>
 }
