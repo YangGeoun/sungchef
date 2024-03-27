@@ -6,6 +6,7 @@ import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.UserUpdateRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
@@ -15,6 +16,7 @@ import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.survey.Survey
 import com.ssafy.sungchef.domain.model.user.LoginState
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
 import retrofit2.Response
 
 interface UserRepository {
@@ -37,4 +39,5 @@ interface UserRepository {
 
     suspend fun signupUser(userRequestDTO: UserRequestDTO) : Flow<DataState<Int>>
     suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO) : Flow<DataState<LoginState>>
+    suspend fun updateUserInfo(userImage : MultipartBody.Part, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError>
 }

@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.data.datasource.user
 
 import android.util.Log
+import com.google.gson.Gson
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.commons.SERVER_INSTABILITY
 import com.ssafy.sungchef.data.api.UserService
@@ -13,6 +14,7 @@ import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.UserUpdateRequestDTO
 
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
@@ -21,6 +23,9 @@ import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -93,6 +98,12 @@ class UserDataSourceImpl @Inject constructor(
     }
     override suspend fun inquire(contactRequestDTO: ContactRequestDTO) : Response<APIError> {
         return userService.userContact(contactRequestDTO)
+    }
+    override suspend fun updateUserInfo(userImage : MultipartBody.Part, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError> {
+        val gson = Gson()
+        val productJson = gson.toJson(userUpdateRequestDTO)
+        return userService.updateUserInfo(userImage, productJson.toRequestBody("application/json".toMediaTypeOrNull()))
+//        return userService.updateUserInfo(userImage, userUpdateRequestDTO)
     }
 
 
