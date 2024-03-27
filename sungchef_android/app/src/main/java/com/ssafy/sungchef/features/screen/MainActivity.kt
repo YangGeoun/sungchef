@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // TODO 자동 로그인 로직 필요
         setContent {
             SungchefTheme {
                 // A surface container using the 'background' color from the theme
