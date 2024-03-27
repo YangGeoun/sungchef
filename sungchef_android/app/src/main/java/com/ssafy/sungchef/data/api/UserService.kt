@@ -44,10 +44,10 @@ interface UserService {
     @POST("user/signup")
     suspend fun signupUser(@Body userRequestDTO: UserRequestDTO) : Response<ResponseDto<TokenResponse>>
 
-    @POST("survey/submit")
+    @POST("user/survey/submit")
     suspend fun submitSurvey(@Body surveyRequestDTO: SurveyRequestDTO) : Response<APIError>
 
-    @GET("survey")
+    @GET("user/survey")
     suspend fun getSurvey() : Response<ResponseDto<SurveyResponse>>
 
     @GET("user")

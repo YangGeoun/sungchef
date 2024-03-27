@@ -42,8 +42,9 @@ import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
+import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
 import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
-
+import com.ssafy.sungchef.features.screen.survey.navigation.survey_route
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -85,8 +86,9 @@ fun NavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = login_route,
+//            startDestination = survey_route.plus("/false"),
 //            startDestination = homeNavigationRoute,
+            startDestination = signupRoute,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen() {
@@ -113,7 +115,7 @@ fun NavGraph(
                 navController.popBackStack()
             }
             surveyScreen(navController) {
-                navVisibility = true
+                navVisibility = it
             }
 
             loginScreen(navController) {
