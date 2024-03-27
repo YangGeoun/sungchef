@@ -11,4 +11,6 @@ interface UserDataStoreRepository {
     suspend fun getToken() : JwtToken?
 
     suspend fun signupUser(userRequestDTO: UserRequestDTO) : Flow<DataState<Int>>
+    suspend fun setEmail(email: String)
+    suspend fun getEmail() : String?
 }

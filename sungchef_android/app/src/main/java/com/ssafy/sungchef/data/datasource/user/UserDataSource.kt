@@ -3,6 +3,7 @@ package com.ssafy.sungchef.data.datasource.user
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
+import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
@@ -31,5 +32,5 @@ interface UserDataSource {
     suspend fun getSurvey() : DataState<ResponseDto<SurveyResponse>>
 
     suspend fun userSettingInfo() : UserSettingInfo
-
+    suspend fun inquire(contactRequestDTO: ContactRequestDTO): Response<APIError>
 }

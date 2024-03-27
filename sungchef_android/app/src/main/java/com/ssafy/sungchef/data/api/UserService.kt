@@ -3,6 +3,7 @@ package com.ssafy.sungchef.data.api
 import com.ssafy.sungchef.data.model.APIError
 
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
+import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
@@ -50,4 +51,6 @@ interface UserService {
 
     @GET("user")
     suspend fun userSettingInfo() : UserSettingInfo
+    @POST("user/contact")
+    suspend fun userContact(@Body contactRequestDTO: ContactRequestDTO) : Response<APIError>
 }

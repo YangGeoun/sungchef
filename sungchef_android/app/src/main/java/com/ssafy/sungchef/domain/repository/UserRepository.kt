@@ -2,6 +2,7 @@ package com.ssafy.sungchef.domain.repository
 
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.SurveyRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
@@ -27,4 +28,5 @@ interface UserRepository {
     suspend fun getSubmit() : Flow<DataState<Survey>>
 
     suspend fun userSettingInfo() : UserSettingInfo
+    suspend fun inquire(contactRequestDTO: ContactRequestDTO): Response<APIError>
 }
