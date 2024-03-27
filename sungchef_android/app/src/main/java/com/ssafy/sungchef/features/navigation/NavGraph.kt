@@ -28,6 +28,7 @@ import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
+import com.ssafy.sungchef.features.screen.cooking.navigation.navigateCooking
 import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
@@ -48,7 +49,7 @@ import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(
-    rotate: () -> (Unit)
+    rotate: () -> (Unit),
 ) {
     val navController = rememberNavController()
     val currentDestination = navController
@@ -110,7 +111,14 @@ fun NavGraph(
                 navVisibility = false
             }
             myPageScreen(navController)
-            menuDetailScreen(navController, onNavigateCooking = {rotate()}) {
+            menuDetailScreen(
+                navController,
+                onChangeNav = { navVisibility = false },
+                onNavigateCooking = {
+                    rotate()
+                    navController.navigateCooking(id = it.toString())
+                }
+            ) {
                 navVisibility = true
                 navController.popBackStack()
             }
@@ -121,7 +129,13 @@ fun NavGraph(
             loginScreen(navController) {
                 navVisibility = false
             }
-            cookingScreen()
+            cookingScreen(onNavigateBack = {
+                navController.popBackStack()
+                rotate()
+            }
+            ) {
+                navVisibility = false
+            }
         }
     }
 }

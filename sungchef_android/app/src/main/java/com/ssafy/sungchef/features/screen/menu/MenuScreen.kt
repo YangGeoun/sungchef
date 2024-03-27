@@ -72,7 +72,7 @@ fun MenuScreen(
                 placeholder = { TextComponent(text = "레시피를 검색하세요.") },
                 modifier = Modifier
                     .background(Color.White)
-                    .padding(horizontal = 20.dp),
+                    .fillMaxWidth(),
                 colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.background)
             ) {
 

@@ -20,7 +20,8 @@ fun NavController.navigateMenuDetail(
 
 fun NavGraphBuilder.menuDetailScreen(
     navController: NavController,
-    onNavigateCooking: ()->(Unit),
+    onChangeNav: () -> (Unit),
+    onNavigateCooking: (Int) -> (Unit),
     onBackNavigate: () -> (Unit)
 ) {
     composable(menuDetailNavigationRoute.plus("/{recipeId}")) {
@@ -31,10 +32,10 @@ fun NavGraphBuilder.menuDetailScreen(
             MenuDetailScreen(
                 it1,
                 hiltViewModel(parentEntry),
+                onChangeNav = onChangeNav,
                 onBackNavigate = { onBackNavigate() }
-            ) {
-                onNavigateCooking()
-                navController.navigateCooking(id = it)
+            ) { id ->
+                onNavigateCooking(id)
             }
         }
     }
