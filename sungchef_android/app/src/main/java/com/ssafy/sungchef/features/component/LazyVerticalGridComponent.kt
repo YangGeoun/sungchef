@@ -13,16 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeDetailList
+import com.ssafy.sungchef.data.model.responsedto.MakeRecipeDetailList
 
 /**
  * @param photoUrls : 썸네일 링크 리스트
  * @param onClick : 클릭했을 때 수행 함수
  */
 @Composable
-fun LazyVerticalGridComponent(
+fun LazyVerticalGridComponentForUpload(
     modifier: Modifier = Modifier,
-    photoUrls: List<String>,
-    onClick:(String) -> (Unit)
+    makePhotoDataList : List<MakeRecipeDetailList> ,
+//    photoUrls: List<String>,
+    onClick:(MakeRecipeDetailList) -> (Unit)
 ){
     LazyVerticalGrid(
         modifier = modifier,
@@ -30,12 +33,35 @@ fun LazyVerticalGridComponent(
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        items(photoUrls) { item ->
+        items(makePhotoDataList) { item ->
             ImageComponent(modifier = Modifier.clickable {
                 onClick(item)
             },
                 //각 아이템 썸네일 이미지
-                imageResource = item)
+                imageResource = item.makeRecipeImage)
+        }
+    }
+}
+
+@Composable
+fun LazyVerticalGridComponentForBookmark(
+    modifier: Modifier = Modifier,
+    bookmarkPhotoDatalist : List<BookmarkRecipeDetailList> ,
+//    photoUrls: List<String>,
+    onClick:(BookmarkRecipeDetailList) -> (Unit)
+){
+    LazyVerticalGrid(
+        modifier = modifier,
+        columns = GridCells.Fixed(3),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        items(bookmarkPhotoDatalist) { item ->
+            ImageComponent(modifier = Modifier.clickable {
+                onClick(item)
+            },
+                //각 아이템 썸네일 이미지
+                imageResource = item.recipeImage)
         }
     }
 }
@@ -54,5 +80,5 @@ private fun BodyPreview() {
     lst.add("ㄷㄷ")
     lst.add("ㅜㅇ")
     lst.add("ㅌ")
-    LazyVerticalGridComponent(photoUrls = lst, onClick = { Log.d("TAG", "BodyPreview: $it")})
+//    LazyVerticalGridComponent(photoUrls = lst, onClick = { Log.d("TAG", "BodyPreview: $it")})
 }
