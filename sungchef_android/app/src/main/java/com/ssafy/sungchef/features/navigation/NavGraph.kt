@@ -31,7 +31,6 @@ import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
 import com.ssafy.sungchef.features.screen.cooking.navigation.deleteIngredientScreen
 import com.ssafy.sungchef.features.screen.cooking.navigation.navigateCooking
 import com.ssafy.sungchef.features.screen.cooking.navigation.navigateDeleteIngredient
-import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.login.navigation.loginScreen
