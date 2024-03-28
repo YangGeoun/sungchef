@@ -63,6 +63,7 @@ import com.ssafy.sungchef.features.component.TopAppBarComponent
 import com.ssafy.sungchef.features.screen.home.HomeScreen
 import com.ssafy.sungchef.features.screen.home.HomeViewModel
 import com.ssafy.sungchef.features.screen.menu.navigation.menuDetailNavigationRoute
+import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenuDetail
 import com.ssafy.sungchef.features.screen.mypage.navigation.settingNavigationRoute
 
 
@@ -179,6 +180,7 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
                             bookmarkPhotoDatalist = bookmarkRecipeList.data.bookmarkRecipeList,
                             onClick = {
                                     Log.d(       TAG,      "MyPage2: $it")
+                                navController.navigateMenuDetail(it.recipeId)
 //                                    navController.navigate(menuDetailNavigationRoute.plus("/${it.recipeId}"))
 
                                       }, )
