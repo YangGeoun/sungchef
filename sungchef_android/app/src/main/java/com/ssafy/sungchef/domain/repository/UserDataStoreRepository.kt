@@ -19,4 +19,7 @@ interface UserDataStoreRepository {
 
     suspend fun setEmail(email: String)
     suspend fun getEmail() : String?
+
+    suspend fun setUserSnsId(userSnsId : String)
+    suspend fun getUserSnsId() : String?
 }

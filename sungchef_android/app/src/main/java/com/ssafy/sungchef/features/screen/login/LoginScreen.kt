@@ -79,10 +79,8 @@ fun LoginScreen(
     showMovePageDialog(
         showDialog = showDialog,
         onCancel = {
-            Log.d(TAG, "LoginScreen: $showDialog")
            // 다이얼로그 닫기
            showDialog = false
-            Log.d(TAG, "LoginScreen2: $showDialog")
         },
         loginState = loginState,
         isNextPage = {
@@ -212,6 +210,10 @@ fun movePage(
     when (loginState.code) {
         200 -> {
             onMoveHomePage()
+
+            if (isNextPage) {
+                showDialog(false)
+            }
         }
         400 -> {
             showDialog(true)
@@ -234,6 +236,10 @@ fun movePage(
         }
         500 -> {
             showDialog(true)
+
+            if (isNextPage) {
+                showDialog(false)
+            }
         }
     }
 }

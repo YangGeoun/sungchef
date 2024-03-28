@@ -91,11 +91,11 @@ fun NavGraphBuilder.signupGraph(
                 // 설문 조사 페이지로 이동 및 모든 백스택 제거
                 onMoveSurveyPage = {
                     navController.navigateSurvey(false, navOptions {
-                            popUpTo(navController.graph.startDestinationId) {
+                            popUpTo(navController.graph.id) {
                                 inclusive = true
                             }
 
-                            // 새 화면을 백스택의 유일한 화면으로 만듭니다.ㅁㄴ
+                            // 새 화면을 백스택의 유일한 화면으로 만듭니다.
                             launchSingleTop = true
                         }
                     )

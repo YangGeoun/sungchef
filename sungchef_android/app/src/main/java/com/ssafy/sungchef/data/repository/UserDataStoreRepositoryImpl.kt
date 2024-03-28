@@ -66,11 +66,27 @@ class UserDataStoreRepositoryImpl @Inject constructor(
             email
         }.firstOrNull()
     }
+
+    override suspend fun setUserSnsId(userSnsId: String) {
+        dataStore.edit {
+            it[USER_SNS_ID_KEY] = userSnsId
+        }
+    }
+
+    override suspend fun getUserSnsId(): String? {
+        return dataStore.data.map { preference ->
+            val userSnsId = preference[USER_SNS_ID_KEY] ?: ""
+            userSnsId
+        }.firstOrNull()
+    }
+
     companion object {
         val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
         val REFRESH_TOKEN_KEY = stringPreferencesKey("refresh_token")
 
         val LOGIN_TYPE = stringPreferencesKey("login_type")
         val EMAIL_KEY = stringPreferencesKey("email")
+
+        val USER_SNS_ID_KEY = stringPreferencesKey("user_sns_id")
     }
 }

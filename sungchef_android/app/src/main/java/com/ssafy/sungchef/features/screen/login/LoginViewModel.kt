@@ -8,6 +8,7 @@ import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.user.LoginState
 import com.ssafy.sungchef.domain.usecase.user.GetLoginState
 import com.ssafy.sungchef.domain.usecase.user.SetLoginType
+import com.ssafy.sungchef.domain.usecase.user.SetUserSnsIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val getLoginState: GetLoginState,
-    private val setLoginType : SetLoginType
+    private val setLoginType : SetLoginType,
+    private val setUserSnsIdUseCase: SetUserSnsIdUseCase
 ) : ViewModel(){
 
     private val _loginState = MutableStateFlow(LoginState())
@@ -25,7 +27,8 @@ class LoginViewModel @Inject constructor(
 
     fun login(userSnsIdRequestDTO : UserSnsIdRequestDTO, loginType : String) {
         viewModelScope.launch {
-            setLoginType.setLoginType(loginType)
+            setLoginType.setLoginType(loginType)   // 로그인 타입 저장
+            setUserSnsIdUseCase.setUserSnsId(userSnsIdRequestDTO.userSnsId) // uid 저장
             getLoginState.getLoginStateCode(userSnsIdRequestDTO).collect {
                 when (it) {
                     is DataState.Success -> {

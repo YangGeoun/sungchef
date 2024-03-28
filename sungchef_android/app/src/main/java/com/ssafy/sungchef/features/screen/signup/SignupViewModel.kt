@@ -15,6 +15,8 @@ import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.usecase.signup.DuplicateNicknameUseCase
 import com.ssafy.sungchef.domain.usecase.signup.SignupUserUseCase
+import com.ssafy.sungchef.domain.usecase.user.GetUserLoginTypeUseCase
+import com.ssafy.sungchef.domain.usecase.user.GetUserSnsIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +28,9 @@ private const val TAG = "SignupViewModel_성식당"
 @HiltViewModel
 class SignupViewModel @Inject constructor(
     private val duplicateNicknameUseCase: DuplicateNicknameUseCase,
-    private val signupUserUseCase: SignupUserUseCase
+    private val signupUserUseCase: SignupUserUseCase,
+    private val getUserLoginTypeUseCase: GetUserLoginTypeUseCase,
+    private val getUserSnsIdUseCase: GetUserSnsIdUseCase
 ) : ViewModel(){
 
     val topBarNumber = mutableIntStateOf(1)
@@ -121,8 +125,8 @@ class SignupViewModel @Inject constructor(
     fun isSuccessSignup() {
         viewModelScope.launch {
             val userRequestDTO = UserRequestDTO(
-                "",
-                "Kakao",
+                getUserSnsIdUseCase.getUserSnsId(),
+                getUserLoginTypeUseCase.getUserLoginType(),
                 nickname.value,
                 gender.value,
                 birth.value

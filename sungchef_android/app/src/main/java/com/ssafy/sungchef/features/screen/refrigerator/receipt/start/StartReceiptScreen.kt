@@ -1,14 +1,11 @@
-package com.ssafy.sungchef.features.screen.refrigerator.receipt
+package com.ssafy.sungchef.features.screen.refrigerator.receipt.start
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,16 +31,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.ssafy.sungchef.commons.CAMERA_DENIED
 import com.ssafy.sungchef.commons.REGISTER_INGREDIENT
 import com.ssafy.sungchef.commons.START_RECEIPT_TITLE
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.PrimaryContainerButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
-import com.ssafy.sungchef.features.screen.signup.SignupCongratulationScreen
 import com.ssafy.sungchef.features.ui.theme.dialogBackgroundColor
 import java.io.File
 import java.text.SimpleDateFormat
@@ -56,13 +48,16 @@ import androidx.activity.compose.rememberLauncherForActivityResult as rememberLa
 private const val TAG = "StartReceiptScreen_성식당"
 @Composable
 fun StartReceiptScreen(
-
+    viewModel : StartReceiptViewModel,
+    onMoveRegisterPage : () -> Unit
 ) {
 
     var isShowDialog by remember { mutableStateOf(false) }
 
     ShowDialog(
-        isShowDialog = isShowDialog
+        viewModel = viewModel,
+        isShowDialog = isShowDialog,
+        onMoveRegisterPage
     ) {
         isShowDialog = false
     }
@@ -146,7 +141,9 @@ fun StartReceiptScreen(
 
 @Composable
 fun ShowDialog(
+    viewModel : StartReceiptViewModel,
     isShowDialog : Boolean,
+    onMoveRegisterPage : () -> Unit,
     onCancel : () -> Unit
 ) {
     if (isShowDialog){
@@ -155,7 +152,11 @@ fun ShowDialog(
                 onCancel()
             }
         ) {
-            DialogContext(onCancel)
+            DialogContext(
+                viewModel,
+                onCancel,
+                onMoveRegisterPage
+            )
 
         }
     }
@@ -163,7 +164,9 @@ fun ShowDialog(
 
 @Composable
 fun DialogContext(
-    onCancel: () -> Unit
+    viewModel : StartReceiptViewModel,
+    onCancel: () -> Unit,
+    onMoveRegisterPage : () -> Unit
 ) {
     val context = LocalContext.current
     val activity = context.findActivity()
@@ -190,7 +193,9 @@ fun DialogContext(
         onResult = { success ->
             if (success) {
                 // 사진 촬영 성공 후 처리 로직
+                // TODO 서버에 사진을 보내는 로직 필요
                 onCancel()
+                onMoveRegisterPage() // 영수증 등록화면으로 이동
                 Log.d(TAG, "cameraImageUri: $cameraImageUri")
             }
         }
@@ -202,8 +207,9 @@ fun DialogContext(
     ) { uri: Uri? ->
         Log.d(TAG, "uri: $uri")
 
-        // TODO 이미지 URI 처리 로직, 예: 이미지 뷰에 표시
+        // TODO 서버에 사진을 보내는 로직 필요
         onCancel()
+        onMoveRegisterPage() // 영수증 등록화면으로 이동
     }
 
     Column(
@@ -268,11 +274,3 @@ fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun StartReceiptPreview() {
-    DialogContext(
-        {}
-    )
-}

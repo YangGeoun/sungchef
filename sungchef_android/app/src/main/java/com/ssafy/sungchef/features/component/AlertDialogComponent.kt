@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 
+private const val TAG = "AlertDialogComponent_성식당"
 @Composable
 fun AlertDialogComponent(
     modifier : Modifier = Modifier,

@@ -33,7 +33,7 @@ fun NavGraphBuilder.loginScreen(
                 navController.navigate(signupRoute)
             },
             onMoveSurveyPage = {
-                navController.navigate(survey_route)
+                navController.navigate(survey_route.plus("/${false}"))
             },
             onMoveHomePage = {
                 navController.navigate(

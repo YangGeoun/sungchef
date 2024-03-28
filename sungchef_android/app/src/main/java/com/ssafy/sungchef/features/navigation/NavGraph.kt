@@ -44,6 +44,7 @@ import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateStartReceipt
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
+import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerReceiptScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.startReceiptScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
 import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
@@ -91,7 +92,7 @@ fun NavGraph(
         NavHost(
             navController = navController,
 //            startDestination = survey_route.plus("/${false}"),
-            startDestination = homeNavigationRoute,
+            startDestination = login_route,
 //            startDestination = signupRoute,
 //            startDestination = login_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
@@ -134,7 +135,10 @@ fun NavGraph(
                 navVisibility = false
             }
 
-            startReceiptScreen()
+            startReceiptScreen(navController){
+                navVisibility = false
+            }
+            registerReceiptScreen(navController)
         }
     }
 }
@@ -159,7 +163,7 @@ fun navigateToBottomNavDestination(bottomNav: BottomNavigationItem, navControlle
         when (bottomNav) {
             BottomNavigationItem.Home -> navController.navigateHome(bottomNavOptions)
             BottomNavigationItem.Menu -> navController.navigateMenu(bottomNavOptions)
-            BottomNavigationItem.Refrigerator -> navController.navigateStartReceipt(bottomNavOptions)
+            BottomNavigationItem.Refrigerator -> navController.navigateRefrigerator(bottomNavOptions)
             BottomNavigationItem.Profile -> navController.navigateMyPage(bottomNavOptions)
         }
     }
