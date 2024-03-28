@@ -8,13 +8,16 @@ import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.domain.usecase.cooking.GetLackIngredientUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetBookMarkRecipeUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetDetailRecipeUseCase
+import com.ssafy.sungchef.domain.usecase.recipe.GetSearchedBookmarkUseCase
+import com.ssafy.sungchef.domain.usecase.recipe.GetSearchedVisitRecipeUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetVisitRecipeUseCase
+import com.ssafy.sungchef.domain.usecase.recipe.SearchFoodNameUseCase
 import com.ssafy.sungchef.domain.usecase.user.ChangeBookmarkRecipe
 import com.ssafy.sungchef.domain.viewstate.recipe.RecipeViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,7 +27,10 @@ class MenuViewModel @Inject constructor(
     private val getBookMarkRecipeUseCase: GetBookMarkRecipeUseCase,
     private val getDetailRecipeUseCase: GetDetailRecipeUseCase,
     private val changeBookmarkRecipe: ChangeBookmarkRecipe,
-    private val getLackIngredientUseCase: GetLackIngredientUseCase
+    private val getLackIngredientUseCase: GetLackIngredientUseCase,
+    private val searchFoodNameUseCase: SearchFoodNameUseCase,
+    private val getSearchedVisitRecipeUseCase: GetSearchedVisitRecipeUseCase,
+    private val getSearchedBookmarkUseCase: GetSearchedBookmarkUseCase
 ) : ViewModel() {
     private val initialState: RecipeViewState by lazy { RecipeViewState() }
     private val currentState: RecipeViewState get() = uiState.value
@@ -34,7 +40,23 @@ class MenuViewModel @Inject constructor(
     fun getVisitRecipeInfo(page: Int) {
         viewModelScope.launch {
             setState { currentState.copy(isLoading = true) }
-            val pagedFlow = getVisitRecipeUseCase(page, true).cachedIn(viewModelScope)
+            val pagedFlow = getVisitRecipeUseCase(page).cachedIn(viewModelScope)
+            setState { currentState.copy(isLoading = false, pagedData = pagedFlow) }
+        }
+    }
+
+    fun getSearchedVisitRecipeInfo(page: Int, text: String) {
+        viewModelScope.launch {
+            setState { currentState.copy(isLoading = true) }
+            val pagedFlow = getSearchedVisitRecipeUseCase(page, text).cachedIn(viewModelScope)
+            setState { currentState.copy(isLoading = false, pagedData = pagedFlow) }
+        }
+    }
+
+    fun getSearchedBookmarkRecipeInfo(page: Int, text: String) {
+        viewModelScope.launch {
+            setState { currentState.copy(isLoading = true) }
+            val pagedFlow = getSearchedBookmarkUseCase(page, text).cachedIn(viewModelScope)
             setState { currentState.copy(isLoading = false, pagedData = pagedFlow) }
         }
     }
@@ -46,7 +68,7 @@ class MenuViewModel @Inject constructor(
     fun getBookMarkRecipeInfo(page: Int) {
         viewModelScope.launch {
             setState { currentState.copy(isLoading = true) }
-            val pagedFlow = getBookMarkRecipeUseCase(page, false).cachedIn(viewModelScope)
+            val pagedFlow = getBookMarkRecipeUseCase(page).cachedIn(viewModelScope)
             setState { currentState.copy(isLoading = false, pagedData = pagedFlow) }
         }
     }
@@ -104,7 +126,7 @@ class MenuViewModel @Inject constructor(
 
     fun getLackIngredient(id: Int) {
         viewModelScope.launch {
-            getLackIngredientUseCase(id).collect(){
+            getLackIngredientUseCase(id).collect() {
                 when (it) {
                     is DataState.Success -> {
                         Log.d("TAG", "getLackIngredient: ${it.data.ingredientInfo}")
@@ -126,5 +148,47 @@ class MenuViewModel @Inject constructor(
     private fun setState(reduce: RecipeViewState.() -> RecipeViewState) {
         val newState = currentState.reduce()
         _uiState.value = newState
+    }
+
+    //first state whether the search is happening or not
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
+
+    //second state the text typed by the user
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
+
+    fun onSearchTextChange(text: String) {
+        _searchText.value = text
+        if (text != "") {
+            searchMenu(text)
+        } else {
+            setState { currentState.copy(foodList = listOf()) }
+        }
+    }
+
+    fun onToggleSearch() {
+        _isSearching.value = !_isSearching.value
+    }
+
+    fun searchMenu(text: String) {
+        viewModelScope.launch {
+            searchFoodNameUseCase(text).collect {
+                when (it) {
+                    is DataState.Success -> {
+                        Log.d("TAG", "searchMenu:${it.data}")
+                        setState { currentState.copy(foodList = it.data) }
+                    }
+
+                    is DataState.Error -> {
+
+                    }
+
+                    is DataState.Loading -> {
+
+                    }
+                }
+            }
+        }
     }
 }

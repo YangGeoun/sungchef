@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 class PagingRecipeDataSource @Inject constructor(
     private val recipeService: RecipeService,
-    private val isVisit: Boolean = true
+    private val isVisit: Boolean = true,
+    private val name: String = ""
 ) : PagingSource<Int, RecipeInfoResponse>() {
     override fun getRefreshKey(state: PagingState<Int, RecipeInfoResponse>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -21,10 +22,12 @@ class PagingRecipeDataSource @Inject constructor(
         val page = params.key ?: 1
         return try {
             val response =
-                if (isVisit) recipeService.getAllVisitRecipe(page) else recipeService.getAllBookMarkRecipe(page)
-            if (response.code == 204) {
-                
+            if (isVisit) {
+                if (name=="") recipeService.getAllVisitRecipe(page) else recipeService.getSearchVisitRecipe(name,page)
+            } else {
+                if (name=="") recipeService.getAllBookMarkRecipe(page) else recipeService.getSearchBookmarkRecipe(name,page)
             }
+
             LoadResult.Page(
                 data = response.data.recipeList,
                 prevKey = if (page == 1) null else page.minus(1),
