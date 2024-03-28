@@ -28,7 +28,9 @@ import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
+import com.ssafy.sungchef.features.screen.cooking.navigation.deleteIngredientScreen
 import com.ssafy.sungchef.features.screen.cooking.navigation.navigateCooking
+import com.ssafy.sungchef.features.screen.cooking.navigation.navigateDeleteIngredient
 import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
@@ -86,13 +88,19 @@ fun NavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-//            startDestination = login_route,
-            startDestination = homeNavigationRoute,
+            startDestination = login_route,
+//            startDestination = homeNavigationRoute,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
-            homeScreen() {
-                navVisibility = true
-            }
+            homeScreen(
+                onNavigateDetail = {
+                    navController.navigateMenuDetail(it)
+                    navVisibility = false
+                },
+                navVisibility = {
+                    navVisibility = true
+                }
+            )
             menuScreen {
                 navController.navigateMenuDetail(it)
                 navVisibility = false
@@ -103,7 +111,6 @@ fun NavGraph(
             }
             myPageScreen(navController)
             menuDetailScreen(
-                navController,
                 onChangeNav = { navVisibility = false },
                 onNavigateCooking = {
                     rotate()
@@ -120,13 +127,20 @@ fun NavGraph(
             loginScreen(navController) {
                 navVisibility = false
             }
-            cookingScreen(onNavigateBack = {
-                navController.popBackStack()
-                rotate()
-            }
+            cookingScreen(
+                navController = navController,
+                onNavigateBack = {
+                    navController.popBackStack()
+                    rotate()
+                },
+                onNavigateDelete = {
+                    rotate()
+                    navController.navigateDeleteIngredient()
+                }
             ) {
                 navVisibility = false
             }
+            deleteIngredientScreen(navController)
         }
     }
 }

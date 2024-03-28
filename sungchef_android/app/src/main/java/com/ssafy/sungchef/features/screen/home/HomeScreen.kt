@@ -31,10 +31,13 @@ import com.ssafy.sungchef.features.component.TopAppBarComponent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    navVisibility : () -> Unit,
+    onNavigateDetail: (Int) -> (Unit)
 ) {
     LaunchedEffect(true) {
         viewModel.getRecommendation()
+        navVisibility()
     }
     val viewState = viewModel.uiState.collectAsState().value
 
@@ -43,6 +46,7 @@ fun HomeScreen(
     ) { paddingValues ->
         Content(
             paddingValues = paddingValues,
+            onNavigateDetail = {onNavigateDetail(it)},
             recommendedFoodList = viewState.recommendFood,
             recommendedRecipeList = viewState.recommendRecipe
         )
@@ -53,6 +57,7 @@ fun HomeScreen(
 private fun Content(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
+    onNavigateDetail: (Int) -> (Unit),
     recommendedFoodList: List<RecommendedFoodList>?,
     recommendedRecipeList: List<RecommendedRecipeList>?
 ) {
@@ -78,7 +83,7 @@ private fun Content(
                     text = "냉장고를 털어보자",
                     dataList = recommendedRecipeList[0].recommendedRecipeList,
                 ) {
-
+                    onNavigateDetail(it)
                 }
             }
             item {
@@ -167,7 +172,7 @@ private fun RecommendRecipeBody(
     modifier: Modifier = Modifier,
     text: String = "",
     dataList: List<RecommendedRecipe>?,
-    onClick: () -> (Unit)
+    onClick: (Int) -> (Unit)
 ) {
     Column {
         TextComponent(
@@ -190,7 +195,7 @@ private fun RecommendRecipeBody(
                         text = item.recipeName,
                         size = 120
                     ) {
-                        onClick()
+                        onClick(item.recipeId)
                     }
                 }
             }
@@ -201,5 +206,5 @@ private fun RecommendRecipeBody(
 @Preview(showBackground = true)
 @Composable
 fun RecommendBodyPreview() {
-    HomeScreen(viewModel = hiltViewModel())
+    HomeScreen(viewModel = hiltViewModel(), navVisibility = {}){}
 }

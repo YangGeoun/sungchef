@@ -19,19 +19,15 @@ fun NavController.navigateMenuDetail(
 }
 
 fun NavGraphBuilder.menuDetailScreen(
-    navController: NavController,
     onChangeNav: () -> (Unit),
     onNavigateCooking: (Int) -> (Unit),
     onBackNavigate: () -> (Unit)
 ) {
     composable(menuDetailNavigationRoute.plus("/{recipeId}")) {
-        val parentEntry = remember(it) {
-            navController.getBackStackEntry(menuNavigationRoute)
-        }
         it.arguments?.getString("recipeId", "")?.let { it1 ->
             MenuDetailScreen(
                 it1,
-                hiltViewModel(parentEntry),
+                hiltViewModel(),
                 onChangeNav = onChangeNav,
                 onBackNavigate = { onBackNavigate() }
             ) { id ->

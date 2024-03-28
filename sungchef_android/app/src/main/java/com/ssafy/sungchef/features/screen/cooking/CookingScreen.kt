@@ -1,7 +1,6 @@
 package com.ssafy.sungchef.features.screen.cooking
 
 import android.content.Context
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -11,11 +10,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -25,24 +25,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.domain.model.recipe.RecipeDetailInfo
-import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.IconButtonComponent
-import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.RecipeCardComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,11 +45,13 @@ fun CookingScreen(
     viewModel: CookingViewModel,
     id: Int,
     onNavigateBack: () -> (Unit),
+    onNavigateDelete: () -> Unit,
     changeNav: () -> (Unit)
 ) {
     var curNum by remember { mutableIntStateOf(1) }
     val uiState = viewModel.uiState.collectAsState().value
     val context: Context = LocalContext.current
+    var visibility by remember { mutableStateOf(false) }
     LaunchedEffect(true) {
         viewModel.getRecipeStep(id)
     }
@@ -74,15 +71,37 @@ fun CookingScreen(
                     },
                     title = { TextComponent(text = "국가 권력급 김치찌개($curNum/${uiState.count})") },
                 )
-            }
+            },
+            floatingActionButton = {
+                if (visibility){
+                    ExtendedFloatingActionButton(
+                        text = { TextComponent(text = "요리완료") },
+                        icon = { /*TODO*/ },
+                        onClick = { onNavigateDelete() })
+                }
+            },
+            floatingActionButtonPosition = FabPosition.End
         ) { paddingValues ->
             Content(
                 paddingValues = paddingValues,
                 recipeDetailList = uiState.recipeDetailList,
-                speakDescription = {viewModel.textToSpeech(context,uiState.recipeDetailList[it].recipeDetailDescription)}
+                speakDescription = {
+                    viewModel.textToSpeech?.stop()
+                    viewModel.textToSpeech(
+                        context,
+                        uiState.recipeDetailList[it].recipeDetailDescription
+                    )
+                },
+                changeVisibility = {
+                    visibility = true
+                }
             ) {
                 curNum = it + 1
-                viewModel.textToSpeech(context,uiState.recipeDetailList[it].recipeDetailDescription)
+                viewModel.textToSpeech?.stop()
+                viewModel.textToSpeech(
+                    context,
+                    uiState.recipeDetailList[it].recipeDetailDescription
+                )
             }
         }
     }
@@ -98,7 +117,8 @@ private fun Content(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     recipeDetailList: List<RecipeDetailInfo>,
-    speakDescription:(Int)-> (Unit),
+    speakDescription: (Int) -> (Unit),
+    changeVisibility: () -> (Unit),
     changeNum: (Int) -> (Unit)
 ) {
     if (recipeDetailList.isNotEmpty()) {
@@ -118,7 +138,8 @@ private fun Content(
             )
             HorizontalPager(
                 state = pagerState,
-                modifier = modifier.clickable { speakDescription(pagerState.currentPage) }
+                modifier = modifier
+                    .clickable { speakDescription(pagerState.currentPage) }
                     .fillMaxSize()
                     .background(Color.White),
                 contentPadding = PaddingValues(10.dp)
@@ -128,6 +149,9 @@ private fun Content(
                     size = 2,
                     recipeDetailInfo = recipeDetailList[it]
                 )
+                if ((pagerState.currentPage + 1) == pagerState.pageCount) {
+                    changeVisibility()
+                }
             }
         }
     }

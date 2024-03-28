@@ -51,4 +51,4 @@ const val KAKAO = "KAKAO"
 const val NAVER = "NAVER"
 
 
-const val DELETE_ALL = "전체 삭제"
+const val DELETE_ALL = "선택 삭제"
