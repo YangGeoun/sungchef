@@ -53,5 +53,10 @@ const val NAVER = "NAVER"
 // 냉장고 등록 시작
 const val START_RECEIPT_TITLE = "장 보고 오셨나요?"
 const val REGISTER_INGREDIENT = "재료를 등록해주세요."
+const val CAMERA_DENIED = "카메라 권한을 해주세요."
 
 const val DELETE_ALL = "전체 삭제"
+
+// 카메라 권한 설정
+const val CAMERA_PERMISSON_GRANTED = "카메라 권한 설정이 성공되었습니다."
+const val CAMERA_PERMISSON_DENIED = "카메라 권한 설정이 실패하였습니다.\n어플리케이션을 종료합니다."

@@ -42,7 +42,9 @@ import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenuDetail
 import com.ssafy.sungchef.features.screen.mypage.navigation.myPageScreen
 import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
+import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateStartReceipt
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
+import com.ssafy.sungchef.features.screen.refrigerator.navigation.startReceiptScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
 import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
 import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
@@ -88,8 +90,8 @@ fun NavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = survey_route.plus("/${false}"),
-//            startDestination = homeNavigationRoute,
+//            startDestination = survey_route.plus("/${false}"),
+            startDestination = homeNavigationRoute,
 //            startDestination = signupRoute,
 //            startDestination = login_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
@@ -131,6 +133,8 @@ fun NavGraph(
             ) {
                 navVisibility = false
             }
+
+            startReceiptScreen()
         }
     }
 }
@@ -155,7 +159,7 @@ fun navigateToBottomNavDestination(bottomNav: BottomNavigationItem, navControlle
         when (bottomNav) {
             BottomNavigationItem.Home -> navController.navigateHome(bottomNavOptions)
             BottomNavigationItem.Menu -> navController.navigateMenu(bottomNavOptions)
-            BottomNavigationItem.Refrigerator -> navController.navigateRefrigerator(bottomNavOptions)
+            BottomNavigationItem.Refrigerator -> navController.navigateStartReceipt(bottomNavOptions)
             BottomNavigationItem.Profile -> navController.navigateMyPage(bottomNavOptions)
         }
     }
