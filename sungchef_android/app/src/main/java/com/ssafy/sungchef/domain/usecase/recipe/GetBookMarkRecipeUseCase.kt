@@ -10,7 +10,7 @@ import javax.inject.Inject
 class GetBookMarkRecipeUseCase @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) {
-    suspend operator fun invoke(page: Int, isVisit: Boolean): Flow<PagingData<RecipeInfo>> {
-        return recipeRepository.getAllBookmarkRecipe(page, isVisit)
+    suspend operator fun invoke(page: Int): Flow<PagingData<RecipeInfo>> {
+        return recipeRepository.getAllBookmarkRecipe(page)
     }
 }

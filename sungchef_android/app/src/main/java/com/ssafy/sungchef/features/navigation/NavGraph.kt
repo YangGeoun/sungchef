@@ -29,8 +29,9 @@ import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
+import com.ssafy.sungchef.features.screen.cooking.navigation.deleteIngredientScreen
 import com.ssafy.sungchef.features.screen.cooking.navigation.navigateCooking
-import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
+import com.ssafy.sungchef.features.screen.cooking.navigation.navigateDeleteIngredient
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.login.navigation.loginScreen
@@ -42,14 +43,12 @@ import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenuDetail
 import com.ssafy.sungchef.features.screen.mypage.navigation.myPageScreen
 import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
-import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateStartReceipt
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerReceiptScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.startReceiptScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
-import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
 import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
-import com.ssafy.sungchef.features.screen.survey.navigation.survey_route
+
 
 private const val TAG = "NavGraph_성식당"
 @RequiresApi(Build.VERSION_CODES.O)
@@ -97,9 +96,15 @@ fun NavGraph(
 //            startDestination = login_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
-            homeScreen() {
-                navVisibility = true
-            }
+            homeScreen(
+                onNavigateDetail = {
+                    navController.navigateMenuDetail(it)
+                    navVisibility = false
+                },
+                navVisibility = {
+                    navVisibility = true
+                }
+            )
             menuScreen {
                 navController.navigateMenuDetail(it)
                 navVisibility = false
@@ -110,7 +115,6 @@ fun NavGraph(
             }
             myPageScreen(navController)
             menuDetailScreen(
-                navController,
                 onChangeNav = { navVisibility = false },
                 onNavigateCooking = {
                     rotate()
@@ -127,10 +131,16 @@ fun NavGraph(
             loginScreen(navController) {
                 navVisibility = false
             }
-            cookingScreen(onNavigateBack = {
-                navController.popBackStack()
-                rotate()
-            }
+            cookingScreen(
+                navController = navController,
+                onNavigateBack = {
+                    navController.popBackStack()
+                    rotate()
+                },
+                onNavigateDelete = {
+                    rotate()
+                    navController.navigateDeleteIngredient()
+                }
             ) {
                 navVisibility = false
             }
@@ -139,6 +149,8 @@ fun NavGraph(
                 navVisibility = false
             }
             registerReceiptScreen(navController)
+
+            deleteIngredientScreen(navController)
         }
     }
 }

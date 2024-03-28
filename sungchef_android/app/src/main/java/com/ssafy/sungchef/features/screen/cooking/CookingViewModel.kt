@@ -11,6 +11,7 @@ import com.ssafy.sungchef.domain.usecase.cooking.GetUsedIngredientUseCase
 import com.ssafy.sungchef.domain.viewstate.cooking.CookingViewState
 import com.ssafy.sungchef.features.screen.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
@@ -21,7 +22,7 @@ class CookingViewModel @Inject constructor(
     private val getUsedIngredientUseCase: GetUsedIngredientUseCase,
     private val getRecipeStepUseCase: GetRecipeStepUseCase,
 ) : BaseViewModel<CookingViewState, CookingEvent>() {
-    private  var  textToSpeech:TextToSpeech? = null
+    var textToSpeech: TextToSpeech? = null
     override fun createInitialState(): CookingViewState = CookingViewState()
     override fun onTriggerEvent(event: CookingEvent) {
         TODO("Not yet implemented")
@@ -59,10 +60,10 @@ class CookingViewModel @Inject constructor(
         ) {
             if (it == TextToSpeech.SUCCESS) {
                 textToSpeech?.let { txtToSpeech ->
-                    txtToSpeech.language = Locale.US
+                    txtToSpeech.language = Locale.KOREAN
                     txtToSpeech.setSpeechRate(1.0f)
-                    val params:Bundle = bundleOf(
-                        TextToSpeech.Engine.KEY_PARAM_VOLUME to "1.0"
+                    val params: Bundle = bundleOf(
+                        TextToSpeech.Engine.KEY_PARAM_VOLUME to "30.0"
                     )
                     txtToSpeech.speak(
                         string,
@@ -70,6 +71,28 @@ class CookingViewModel @Inject constructor(
                         params,
                         null
                     )
+                }
+            }
+        }
+    }
+
+    fun getUsedIngredient(id: Int) {
+        viewModelScope.launch {
+            getUsedIngredientUseCase(id).collect {
+                when (it) {
+                    is DataState.Success -> {
+                        setState {
+                            currentState.copy(isLoading = false, usedIngredient = it.data)
+                        }
+                    }
+
+                    is DataState.Error -> {
+                        setState { currentState.copy(isLoading = false) }
+                    }
+
+                    is DataState.Loading -> {
+                        setState { currentState.copy(isLoading = true) }
+                    }
                 }
             }
         }

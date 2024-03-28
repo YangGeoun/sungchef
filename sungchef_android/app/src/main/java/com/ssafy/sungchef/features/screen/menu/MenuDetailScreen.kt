@@ -16,7 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -49,7 +53,7 @@ import com.ssafy.sungchef.features.component.TextComponent
 @Composable
 fun MenuDetailScreen(
     recipeId: String = "",
-    viewModel: MenuViewModel,
+    viewModel: MenuDetailViewModel,
     onChangeNav: () -> (Unit),
     onBackNavigate: () -> (Unit),
     onNavigateCooking: (Int) -> (Unit)
@@ -64,7 +68,6 @@ fun MenuDetailScreen(
     if (viewState.isError) {
         LaunchedEffect(true) {
             Toast.makeText(context, "잘못된 접근입니다.", Toast.LENGTH_SHORT).show()
-            viewModel.resetError()
             onBackNavigate()
         }
     }
@@ -93,7 +96,6 @@ fun MenuDetailScreen(
     }
     BackHandler {
         onBackNavigate()
-        viewModel.resetDetailRecipe()
     }
 }
 
@@ -114,7 +116,6 @@ private fun Content(
                 .weight(1f)
                 .verticalScroll(scrollState)
         ) {
-            // Todo 이미지
             RecipeImageComponent(
                 modifier
                     .fillMaxWidth()
@@ -178,12 +179,24 @@ fun DialogComponent(
                 }
             }
             Row {
-                FilledButtonComponent(text = "취소", modifier = modifier.weight(1f)) {
-                    onChangeState()
+                Button(
+                    modifier = modifier.weight(1f).height(50.dp),
+                    onClick = { onChangeState() },
+                    shape = RoundedCornerShape(0),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+                ) {
+                    TextComponent(text = "취소", color = Color.Black)
                 }
-                FilledButtonComponent(text = "확인", modifier = modifier.weight(1f)) {
-                    onChangeState()
-                    navigateCook(id)
+                Button(
+                    modifier = modifier.weight(1f).height(50.dp),
+                    shape = RoundedCornerShape(0),
+                    onClick = {
+                        onChangeState()
+                        navigateCook(id)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    TextComponent(text = "확인",color = Color.Black)
                 }
             }
         }

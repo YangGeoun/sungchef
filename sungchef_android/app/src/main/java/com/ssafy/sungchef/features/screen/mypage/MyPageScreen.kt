@@ -1,9 +1,11 @@
 package com.ssafy.sungchef.features.screen.mypage
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,9 +14,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -32,9 +37,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,10 +56,14 @@ import com.ssafy.sungchef.R
 import com.ssafy.sungchef.data.model.responsedto.UserProfile
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.features.component.ImageComponent
-import com.ssafy.sungchef.features.component.LazyVerticalGridComponent
+import com.ssafy.sungchef.features.component.LazyVerticalGridComponentForBookmark
+import com.ssafy.sungchef.features.component.LazyVerticalGridComponentForUpload
+import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
 import com.ssafy.sungchef.features.screen.home.HomeScreen
 import com.ssafy.sungchef.features.screen.home.HomeViewModel
+import com.ssafy.sungchef.features.screen.menu.navigation.menuDetailNavigationRoute
+import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenuDetail
 import com.ssafy.sungchef.features.screen.mypage.navigation.settingNavigationRoute
 
 
@@ -147,25 +158,108 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
                         bookmarkRecipeURLList.add(lst.recipeImage)
                     }
 
+                    var showDialog by remember { mutableStateOf(false) }
+                    var recipeTitle by remember { mutableStateOf("기본 제목") }
+                    var recipeImage  by remember { mutableStateOf("") }
+                    var recipeDate  by remember { mutableStateOf("") }
+                    var recipeDescription   by remember { mutableStateOf("") }
 
                     // 선택된 탭의 내용을 표시
                     when (selectedTabIndex) {
-                        0 -> LazyVerticalGridComponent(photoUrls = makeRecipeURLList, onClick = {
-                            Log.d(
-                                TAG,
-                                "MyPage1: $it"
-                            )}, )
-                        1 -> LazyVerticalGridComponent(photoUrls = bookmarkRecipeURLList, onClick = {
-                            Log.d(
-                                TAG,
-                                "MyPage2: $it"
-                            )}, )
+                        0 -> LazyVerticalGridComponentForUpload(
+                            makePhotoDataList = makeRecipeList.data.makeRecipeList,
+                            onClick = {
+                                Log.d(     TAG,     "MyPage1: $it"    )
+                                showDialog = true;
+//                                recipeTitle = it.
+                                recipeImage = it.makeRecipeImage
+                                recipeDate = it.makeRecipeCreateDate
+                                recipeDescription = it.makeRecipeReview
+                                      }, )
+                        1 -> LazyVerticalGridComponentForBookmark(
+                            bookmarkPhotoDatalist = bookmarkRecipeList.data.bookmarkRecipeList,
+                            onClick = {
+                                    Log.d(       TAG,      "MyPage2: $it")
+                                navController.navigateMenuDetail(it.recipeId)
+//                                    navController.navigate(menuDetailNavigationRoute.plus("/${it.recipeId}"))
+
+                                      }, )
+                    }
+
+                    // 다이얼로그 상태에 따라 Dialog 컴포저블을 조건적으로 렌더링
+                    if (showDialog) {
+                        Log.d(TAG, "MyPageScreen: showDialog : $showDialog")
+                        Dialog(onDismissRequest = { showDialog = false }) {
+                            RecipeCard(
+                                recipeTitle = recipeTitle,
+                                recipeImage = Uri.parse(recipeImage),
+                                recipeDate = recipeDate,
+                                recipeDescription = recipeDescription
+                            )
+                        }
                     }
 
 
 
                 }
             }
+    }
+}
+
+@Composable
+fun RecipeCard(
+    recipeTitle: String,
+    recipeImage: Uri,
+    recipeDate: String,
+    recipeDescription: String
+) {
+//    Box(modifier = Modifier
+//        .padding(20.dp)
+//    ){
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+                .clip(RoundedCornerShape(12.dp)), // 모서리 둥글게
+            color = Color.White // 배경색 지정
+        )  {
+            Column(
+//                modifier = Modifier
+//                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+
+            ) {
+                ImageComponent(modifier = Modifier
+                    .height(200.dp)
+                    .fillMaxWidth()
+//                    .align(Alignment.CenterHorizontally)
+//                    .padding(top = 12.dp)
+                    , imageResource = recipeImage)
+
+                Text(
+                    text = recipeTitle,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+//                            .align(Alignment.CenterHorizontally)
+                        .padding(top = 50.dp, bottom = 10.dp)
+                )
+                Text(
+                    text = recipeDate,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+                Text(
+                    text = recipeDescription,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(8.dp)
+                )
+
+            }
+//        }
+
     }
 }
 

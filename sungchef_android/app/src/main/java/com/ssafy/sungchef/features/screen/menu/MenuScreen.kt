@@ -1,8 +1,7 @@
 package com.ssafy.sungchef.features.screen.menu
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,7 +21,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,9 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,24 +47,30 @@ import com.ssafy.sungchef.features.component.MenuCardComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import kotlinx.coroutines.flow.Flow
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MenuScreen(
     viewModel: MenuViewModel,
     navigateDetailScreen: (Int) -> (Unit)
 ) {
-    val context: Context = LocalContext.current
     val viewState = viewModel.uiState.collectAsState().value
+    val isSearching by viewModel.isSearching.collectAsState()
+    val searchText by viewModel.searchText.collectAsState()
 
     Scaffold(
         topBar = {
             SearchBar(
-                query = "",
-                onQueryChange = {},
-                onSearch = {},
-                active = false,
-                onActiveChange = {},
+                query = searchText,
+                onQueryChange = viewModel::onSearchTextChange,
+                onSearch = viewModel::onSearchTextChange,
+                active = isSearching,
+                onActiveChange = { viewModel.onToggleSearch() },
                 trailingIcon = {
+                    if (isSearching) {
+                        IconComponent(painter = painterResource(id = R.drawable.icon_delete))
+                    }
+                },
+                leadingIcon = {
                     IconComponent(painter = painterResource(id = R.drawable.search))
                 },
                 placeholder = { TextComponent(text = "레시피를 검색하세요.") },
@@ -75,7 +79,22 @@ fun MenuScreen(
                     .fillMaxWidth(),
                 colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.background)
             ) {
-
+                LazyColumn {
+                    itemsIndexed(viewState.foodList) { _, item ->
+                        TextComponent(
+                            text = item.name,
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    viewModel.onSearchTextChange(item.name)
+                                    viewModel.onToggleSearch()
+                                    viewModel.getSearchedVisitRecipeInfo(0, item.name)
+                                }
+                                .padding(start = 20.dp, top = 10.dp)
+                        )
+                    }
+                }
             }
         }
     ) { paddingValues ->
@@ -83,7 +102,9 @@ fun MenuScreen(
             paddingValues,
             viewState.pagedData,
             onVisitClick = { viewModel.getVisitRecipeInfo(0) },
-            onBookMarkClick = { viewModel.getBookMarkRecipeInfo(0) },
+            onBookMarkClick = {
+                if (searchText == "") viewModel.getBookMarkRecipeInfo(0) else viewModel.getSearchedBookmarkRecipeInfo(0, searchText)
+            },
             onClick = { navigateDetailScreen(it) }
         ) { recipeId, bookmark ->
             // Todo 즐겨찾기 통신 만들기
@@ -118,9 +139,9 @@ private fun Content(
             onBookMarkClick = { onBookMarkClick() }
         )
         LazyColumn(modifier = modifier.fillMaxWidth()) {
-            if(recipeInfoList != null && pagingItems != null){
+            if (recipeInfoList != null && pagingItems != null) {
                 Log.d("TAG", "Content: ${pagingItems!!.itemCount}")
-                items(pagingItems!!.itemCount){
+                items(pagingItems!!.itemCount) {
                     pagingItems!![it]?.let { it1 ->
                         MenuCardComponent(
                             modifier = modifier,

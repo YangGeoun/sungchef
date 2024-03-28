@@ -9,12 +9,14 @@ import com.ssafy.sungchef.data.api.RecipeService
 import com.ssafy.sungchef.data.datasource.cooking.CookingDataSource
 import com.ssafy.sungchef.data.datasource.recipe.PagingRecipeDataSource
 import com.ssafy.sungchef.data.datasource.recipe.RecipeDataSource
+import com.ssafy.sungchef.data.mapper.food.toFoodName
 import com.ssafy.sungchef.data.mapper.recipe.toRecipeDetail
 import com.ssafy.sungchef.data.mapper.recipe.toRecipeDetailInfo
 import com.ssafy.sungchef.data.mapper.recipe.toRecipeInfo
 import com.ssafy.sungchef.data.mapper.recipe.toRecipeStep
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.domain.model.base.BaseModel
+import com.ssafy.sungchef.domain.model.food.FoodName
 import com.ssafy.sungchef.domain.model.recipe.RecipeDetail
 import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
 import com.ssafy.sungchef.domain.model.recipe.RecipeStep
@@ -51,12 +53,30 @@ class RecipeRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getAllVisitRecipe(
-        page: Int,
-        isVisit: Boolean
+        page: Int
     ): Flow<PagingData<RecipeInfo>> =
         Pager(
             config = PagingConfig(10),
-            pagingSourceFactory = { PagingRecipeDataSource(recipeService, isVisit) }
+            pagingSourceFactory = { PagingRecipeDataSource(recipeService, isVisit = true) }
+        ).flow.map { pagingData ->
+            pagingData.map {
+                it.toRecipeInfo()
+            }
+        }
+
+    override suspend fun getSearchedVisitRecipe(
+        page: Int,
+        foodName: String
+    ): Flow<PagingData<RecipeInfo>> =
+        Pager(
+            config = PagingConfig(10),
+            pagingSourceFactory = {
+                PagingRecipeDataSource(
+                    recipeService,
+                    isVisit = true,
+                    name = foodName
+                )
+            }
         ).flow.map { pagingData ->
             pagingData.map {
                 it.toRecipeInfo()
@@ -64,12 +84,30 @@ class RecipeRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getAllBookmarkRecipe(
-        page: Int,
-        isVisit: Boolean
+        page: Int
     ): Flow<PagingData<RecipeInfo>> =
         Pager(
             config = PagingConfig(10),
-            pagingSourceFactory = { PagingRecipeDataSource(recipeService, isVisit) }
+            pagingSourceFactory = { PagingRecipeDataSource(recipeService, isVisit = false) }
+        ).flow.map { pagingData ->
+            pagingData.map {
+                it.toRecipeInfo()
+            }
+        }
+
+    override suspend fun getSearchedBookmarkRecipe(
+        page: Int,
+        foodName: String
+    ): Flow<PagingData<RecipeInfo>> =
+        Pager(
+            config = PagingConfig(10),
+            pagingSourceFactory = {
+                PagingRecipeDataSource(
+                    recipeService,
+                    isVisit = false,
+                    name = foodName
+                )
+            }
         ).flow.map { pagingData ->
             pagingData.map {
                 it.toRecipeInfo()
@@ -78,7 +116,7 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun getRecipeStep(id: Int): Flow<DataState<RecipeStep>> =
         flow {
-            when(val recipeStep = cookingDataSource.getRecipeStep(id)){
+            when (val recipeStep = cookingDataSource.getRecipeStep(id)) {
                 is DataState.Success -> {
                     emit(DataState.Success(recipeStep.data.data.toRecipeStep()))
                 }
@@ -94,5 +132,28 @@ class RecipeRepositoryImpl @Inject constructor(
                 }
             }
         }
+
+    override suspend fun searchFoodName(foodName: String): Flow<DataState<List<FoodName>>> =
+        flow<DataState<List<FoodName>>> {
+            when (val response = recipeDataSource.searchFoodName(foodName)) {
+                is DataState.Success -> {
+                    emit(
+                        DataState.Success(
+                            response.data.data.foodList.map {
+                                it.toFoodName()
+                            }
+                        )
+                    )
+                }
+
+                is DataState.Loading -> {
+
+                }
+
+                is DataState.Error -> {
+
+                }
+            }
+        }.onStart { emit(DataState.Loading()) }
 
 }
