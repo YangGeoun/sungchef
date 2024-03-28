@@ -13,6 +13,4 @@ data class RecipeViewState(
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val pagedData: Flow<PagingData<RecipeInfo>>? = null,
-    val recipeDetail: RecipeDetail? = null,
-    val lackIngredient: LackIngredient? = null
 ): ViewState

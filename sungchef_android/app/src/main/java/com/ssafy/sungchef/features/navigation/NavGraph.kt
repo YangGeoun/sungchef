@@ -102,9 +102,15 @@ fun NavGraph(
             startDestination = homeNavigationRoute,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
-            homeScreen() {
-                navVisibility = true
-            }
+            homeScreen(
+                onNavigateDetail = {
+                    navController.navigateMenuDetail(it)
+                    navVisibility = false
+                },
+                navVisibility = {
+                    navVisibility = true
+                }
+            )
             menuScreen {
                 navController.navigateMenuDetail(it)
                 navVisibility = false
@@ -115,7 +121,6 @@ fun NavGraph(
             }
             myPageScreen(navController)
             menuDetailScreen(
-                navController,
                 onChangeNav = { navVisibility = false },
                 onNavigateCooking = {
                     rotate()
@@ -133,6 +138,7 @@ fun NavGraph(
                 navVisibility = false
             }
             cookingScreen(
+                navController = navController,
                 onNavigateBack = {
                     navController.popBackStack()
                     rotate()

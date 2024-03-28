@@ -22,9 +22,7 @@ import javax.inject.Inject
 class MenuViewModel @Inject constructor(
     private val getVisitRecipeUseCase: GetVisitRecipeUseCase,
     private val getBookMarkRecipeUseCase: GetBookMarkRecipeUseCase,
-    private val getDetailRecipeUseCase: GetDetailRecipeUseCase,
     private val changeBookmarkRecipe: ChangeBookmarkRecipe,
-    private val getLackIngredientUseCase: GetLackIngredientUseCase
 ) : ViewModel() {
     private val initialState: RecipeViewState by lazy { RecipeViewState() }
     private val currentState: RecipeViewState get() = uiState.value
@@ -51,33 +49,6 @@ class MenuViewModel @Inject constructor(
         }
     }
 
-    fun getDetailRecipe(id: Int) {
-        viewModelScope.launch {
-            getDetailRecipeUseCase(id).collect {
-                when (it) {
-                    is DataState.Success -> {
-                        setState { currentState.copy(isLoading = false, recipeDetail = it.data) }
-                    }
-
-                    is DataState.Error -> {
-                        setState { currentState.copy(isLoading = false) }
-                        when (it.apiError.code) {
-                            404.toLong() -> setState { currentState.copy(isError = true) }
-                        }
-                    }
-
-                    is DataState.Loading -> {
-                        setState { currentState.copy(isLoading = true) }
-                    }
-                }
-            }
-        }
-    }
-
-    fun resetDetailRecipe() {
-        setState { currentState.copy(recipeDetail = null) }
-    }
-
     fun resetError() {
         setState { currentState.copy(isError = false) }
     }
@@ -88,27 +59,6 @@ class MenuViewModel @Inject constructor(
                 when (it) {
                     is DataState.Success -> {
                         setState { currentState.copy(isLoading = false) }
-                    }
-
-                    is DataState.Error -> {
-                        setState { currentState.copy(isError = true, isLoading = false) }
-                    }
-
-                    is DataState.Loading -> {
-                        setState { currentState.copy(isLoading = true) }
-                    }
-                }
-            }
-        }
-    }
-
-    fun getLackIngredient(id: Int) {
-        viewModelScope.launch {
-            getLackIngredientUseCase(id).collect(){
-                when (it) {
-                    is DataState.Success -> {
-                        Log.d("TAG", "getLackIngredient: ${it.data.ingredientInfo}")
-                        setState { currentState.copy(isLoading = false, lackIngredient = it.data) }
                     }
 
                     is DataState.Error -> {

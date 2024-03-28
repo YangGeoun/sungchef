@@ -86,6 +86,7 @@ fun CookingScreen(
                 paddingValues = paddingValues,
                 recipeDetailList = uiState.recipeDetailList,
                 speakDescription = {
+                    viewModel.textToSpeech?.stop()
                     viewModel.textToSpeech(
                         context,
                         uiState.recipeDetailList[it].recipeDetailDescription
@@ -96,6 +97,7 @@ fun CookingScreen(
                 }
             ) {
                 curNum = it + 1
+                viewModel.textToSpeech?.stop()
                 viewModel.textToSpeech(
                     context,
                     uiState.recipeDetailList[it].recipeDetailDescription
@@ -148,7 +150,6 @@ private fun Content(
                     recipeDetailInfo = recipeDetailList[it]
                 )
                 if ((pagerState.currentPage + 1) == pagerState.pageCount) {
-                    Log.d("TAG", "Content: 들어옴")
                     changeVisibility()
                 }
             }
