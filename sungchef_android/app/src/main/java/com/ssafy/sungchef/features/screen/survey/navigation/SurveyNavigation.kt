@@ -8,6 +8,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
+import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.refrigerator.RefrigeratorScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorNavigationRoute
 import com.ssafy.sungchef.features.screen.survey.SurveyScreen
@@ -37,10 +38,9 @@ fun NavGraphBuilder.surveyScreen(
             isRestart,
             viewModel = hiltViewModel()
         ){
-            navController.navigate(
-                homeNavigationRoute,
+            navController.navigateHome(
                 navOptions {
-                    popUpTo(navController.graph.startDestinationId) {
+                    popUpTo(navController.graph.id) {
                         inclusive = true
                     }
 

@@ -88,9 +88,9 @@ fun NavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-//            startDestination = survey_route.plus("/${false}"),
+            startDestination = survey_route.plus("/${false}"),
 //            startDestination = homeNavigationRoute,
-            startDestination = signupRoute,
+//            startDestination = signupRoute,
 //            startDestination = login_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {

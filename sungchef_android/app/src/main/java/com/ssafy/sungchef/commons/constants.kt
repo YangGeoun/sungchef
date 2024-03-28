@@ -50,5 +50,8 @@ const val NEED_SIGNUP = "회원가입이 필요합니다.\n확인 버튼을 누�
 const val KAKAO = "KAKAO"
 const val NAVER = "NAVER"
 
+// 냉장고 등록 시작
+const val START_RECEIPT_TITLE = "장 보고 오셨나요?"
+const val REGISTER_INGREDIENT = "재료를 등록해주세요."
 
 const val DELETE_ALL = "전체 삭제"
