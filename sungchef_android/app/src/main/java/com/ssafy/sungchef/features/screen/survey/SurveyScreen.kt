@@ -168,8 +168,6 @@ fun SurveyScreen(
                 .align(Alignment.BottomCenter),
             text = MOVE_HOME_SCREEN
         ) {
-            // TODO 설문 완료 API 붙히기
-
             // 설문을 5개 이상 고르지 않았다면
             if (selectSurveyCount < 5) {
                 showDialog = true
