@@ -128,7 +128,6 @@ dependencies {
     // Naver Login
     implementation("com.navercorp.nid:oauth-jdk8:5.9.0") // jdk 8
 
-
     ksp("com.github.bumptech.glide:glide:4.14.2")
 }
 
