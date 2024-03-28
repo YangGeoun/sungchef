@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.refrigerator.navigation
 
+import android.util.Log
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -8,7 +9,7 @@ import androidx.navigation.compose.composable
 import com.ssafy.sungchef.features.screen.refrigerator.receipt.start.StartReceiptScreen
 
 const val startReceiptNavigationRoute = "start_receipt_screen"
-
+private const val TAG = "StartReceiptNavigation_성식당"
 fun NavController.navigateStartReceipt(
     navOptions: NavOptions? = null
 ) {
@@ -17,15 +18,16 @@ fun NavController.navigateStartReceipt(
 
 fun NavGraphBuilder.startReceiptScreen(
     navController: NavController,
-    navVisibility : () -> Unit
+    onBackNavigate : () -> Unit
 ){
     composable(startReceiptNavigationRoute) {
-        navVisibility()
+        Log.d(TAG, "startReceiptScreen: 호출")
         StartReceiptScreen(
-            viewModel = hiltViewModel()
-        ){
-            navController.navigateRegisterReceipt()
-        }
-
+            viewModel = hiltViewModel(),
+            onMoveRegisterPage = {
+                navController.navigateRegisterReceipt()
+            },
+            onBackNavigate
+        )
     }
 }

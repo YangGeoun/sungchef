@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,8 +50,13 @@ private const val TAG = "StartReceiptScreen_성식당"
 @Composable
 fun StartReceiptScreen(
     viewModel : StartReceiptViewModel,
-    onMoveRegisterPage : () -> Unit
+    onMoveRegisterPage : () -> Unit,
+    onBackNavigate : () -> Unit
 ) {
+
+    BackHandler {
+        onBackNavigate()
+    }
 
     var isShowDialog by remember { mutableStateOf(false) }
 

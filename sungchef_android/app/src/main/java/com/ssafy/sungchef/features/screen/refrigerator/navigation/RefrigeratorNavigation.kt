@@ -15,8 +15,12 @@ fun NavController.navigateRefrigerator(
     this.navigate(refrigeratorNavigationRoute, navOptions)
 }
 
-fun NavGraphBuilder.refrigeratorScreen(){
+fun NavGraphBuilder.refrigeratorScreen(
+    onMoveReceiptPage : () -> Unit
+){
     composable(refrigeratorNavigationRoute) {
-        RefrigeratorScreen()
+        RefrigeratorScreen(
+            onMoveReceiptPage
+        )
     }
 }

@@ -40,9 +40,10 @@ import com.ssafy.sungchef.features.component.TextComponent
 
 @Composable
 fun RefrigeratorScreen(
+    onMoveReceiptScreen : () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize(1f)) {
-        RefridgeArray()
+        RefridgeArray(onMoveReceiptScreen)
 //        FridgeComponent(image = painterResource(id = R.drawable.fruit), number = 2, labelText = "과일")
     }
 }
@@ -99,7 +100,9 @@ fun FridgeComponent(
 }
 
 @Composable
-fun RefridgeArray(){
+fun RefridgeArray(
+    onMoveReceiptScreen : () -> Unit
+){
     val items = listOf(
         IngredientItem(painterResource(id = R.drawable.fruit), 3, "과일"),
         IngredientItem(painterResource(id = R.drawable.vegetable), 3, "채소"),
@@ -157,7 +160,7 @@ fun RefridgeArray(){
             // 신규 등록 버튼
             FilledButtonComponent(text = "신규 등록",
                 modifier = Modifier.align(Alignment.BottomCenter)) {
-
+                onMoveReceiptScreen()
             }
         }
     }
@@ -168,5 +171,7 @@ fun RefridgeArray(){
 @Preview
 @Composable
 fun FridgeComponentPreview() {
-    RefridgeArray()
+    RefridgeArray(
+        {}
+    )
 }

@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import com.ssafy.sungchef.features.screen.refrigerator.receipt.register.RegisterReceiptScreen
 import com.ssafy.sungchef.features.screen.refrigerator.receipt.start.StartReceiptScreen
 
-const val registerReceiptNavigationRoute = "start_receipt_screen"
+const val registerReceiptNavigationRoute = "register_receipt_screen"
 
 fun NavController.navigateRegisterReceipt(
     navOptions: NavOptions? = null
