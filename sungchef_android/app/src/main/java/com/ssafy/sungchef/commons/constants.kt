@@ -55,6 +55,11 @@ const val START_RECEIPT_TITLE = "장 보고 오셨나요?"
 const val REGISTER_INGREDIENT = "재료를 등록해주세요."
 const val CAMERA_DENIED = "카메라 권한을 해주세요."
 
+// 영수증 등록
+const val REGISTER_RECEIPT_TITLE = "냉장고에 추가할까요?"
+const val NEED_INGREDIENT_CONVERT = "회색 영역은 수정이 필요해요."
+const val REGISTER_INGREDIENT_BUTTON = "재료 등록하기"
+
 // 카메라 권한 설정
 const val CAMERA_PERMISSON_GRANTED = "카메라 권한 설정이 성공되었습니다."
 const val CAMERA_PERMISSON_DENIED = "카메라 권한 설정이 실패하였습니다.\n어플리케이션을 종료합니다."
