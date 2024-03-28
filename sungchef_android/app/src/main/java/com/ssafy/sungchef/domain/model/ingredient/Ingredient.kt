@@ -4,5 +4,5 @@ data class Ingredient(
     val recipeIngredientId: Int,
     val recipeIngredientName: String,
     val recipeIngredientVolume: String,
-    val selected:Boolean = false
+    var selected:Boolean = false
 )

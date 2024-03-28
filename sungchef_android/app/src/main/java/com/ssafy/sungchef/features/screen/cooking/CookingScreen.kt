@@ -45,7 +45,7 @@ fun CookingScreen(
     viewModel: CookingViewModel,
     id: Int,
     onNavigateBack: () -> (Unit),
-    onNavigateDelete: () -> Unit,
+    onNavigateDelete: (Int) -> Unit,
     changeNav: () -> (Unit)
 ) {
     var curNum by remember { mutableIntStateOf(1) }
@@ -77,7 +77,11 @@ fun CookingScreen(
                     ExtendedFloatingActionButton(
                         text = { TextComponent(text = "요리완료") },
                         icon = { /*TODO*/ },
-                        onClick = { onNavigateDelete() })
+                        onClick = {
+                            onNavigateDelete(id)
+                            viewModel.textToSpeech?.stop()
+                        }
+                    )
                 }
             },
             floatingActionButtonPosition = FabPosition.End

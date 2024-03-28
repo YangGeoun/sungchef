@@ -14,7 +14,7 @@ class RecipeDataSourceImpl @Inject constructor(
 ) : RecipeDataSource, BaseRemoteDataSource() {
 
     override suspend fun getDetailRecipe(id: Int): DataState<ResponseDto<RecipeDetailResponse>> =
-        getResult { recipeService.getDetailRecipe(id) }
+        getResult { recipeService.getDetailRecipe(id.toString()) }
 
     override suspend fun searchFoodName(foodName: String): DataState<ResponseDto<FoodListResponse>> =
         getResult { recipeService.searchFoodName(foodName) }

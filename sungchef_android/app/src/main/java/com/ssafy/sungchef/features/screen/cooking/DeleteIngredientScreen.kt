@@ -14,13 +14,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ssafy.sungchef.domain.model.ingredient.IngredientList
 import com.ssafy.sungchef.domain.model.ingredient.LackIngredient
+import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.IngredientSelectComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
@@ -29,11 +32,16 @@ import com.ssafy.sungchef.features.component.TotalSelectComponent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeleteIngredientScreen(
-    viewModel: CookingViewModel
+    viewModel: CookingViewModel,
+    id: Int,
+    onNavigateHome: () -> (Unit),
+    changeNavVisibility: () -> (Unit)
 ) {
     val uiState = viewModel.uiState.collectAsState().value
+    val selectedList = viewModel.selectedList.collectAsState()
     LaunchedEffect(true) {
-        viewModel.getUsedIngredient(0)
+        viewModel.getUsedIngredient(id)
+        changeNavVisibility()
     }
     Scaffold(
         topBar = {
@@ -49,8 +57,12 @@ fun DeleteIngredientScreen(
             Content(
                 paddingValues = paddingValues,
                 modifier = Modifier,
-                usedIngredient = uiState.usedIngredient
-            )
+                usedIngredient = uiState.usedIngredient,
+                selectedList = selectedList.value,
+                onNavigateHome = onNavigateHome
+            ) {
+                viewModel.changeAllSelect()
+            }
         }
     }
 }
@@ -59,9 +71,11 @@ fun DeleteIngredientScreen(
 private fun Content(
     paddingValues: PaddingValues,
     modifier: Modifier,
-    usedIngredient: LackIngredient
+    usedIngredient: LackIngredient,
+    selectedList: IngredientList,
+    onNavigateHome: () -> (Unit),
+    onSelectedAll: () -> (Unit)
 ) {
-    var allSelected: Boolean by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
             .padding(paddingValues)
@@ -75,23 +89,28 @@ private fun Content(
             fontSize = 18.sp
         )
         TotalSelectComponent(
-            selected = allSelected,
+            selected = usedIngredient.ingredientInfo.size == selectedList.ingredientList.size,
             totalCount = usedIngredient.ingredientInfo.size
         ) {
-            allSelected = !allSelected
+            onSelectedAll()
         }
         Spacer(modifier = modifier.padding(10.dp))
-        LazyColumn {
-            itemsIndexed(usedIngredient.ingredientInfo) { _, item ->
-                item.recipeIngredientList.map {
+        Column(
+            modifier = modifier.weight(1f)
+        ) {
+            usedIngredient.ingredientInfo.map { ingredientInfo ->
+                ingredientInfo.recipeIngredientList.map { ingredient ->
                     IngredientSelectComponent(
-                        selected = it.selected,
-                        name = it.recipeIngredientName
+                        selected = selectedList.ingredientList.any { it.ingredientId == ingredient.recipeIngredientId },
+                        name = ingredient.recipeIngredientName
                     ) {
 
                     }
                 }
             }
+        }
+        FilledButtonComponent(text = "다음") {
+            onNavigateHome()
         }
     }
 }

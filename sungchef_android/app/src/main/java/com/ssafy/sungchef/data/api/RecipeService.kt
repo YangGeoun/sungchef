@@ -9,8 +9,8 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface RecipeService {
-    @GET("recipe/{recipeid}")
-    suspend fun getDetailRecipe(@Path("recipeid") id: Int): Response<ResponseDto<RecipeDetailResponse>>
+    @GET("recipe/{recipeId}")
+    suspend fun getDetailRecipe(@Path("recipeId") id: String): Response<ResponseDto<RecipeDetailResponse>>
 
     @GET("recipe/visit/{page}")
     suspend fun getAllVisitRecipe(@Path("page") page: Int): ResponseDto<SearchedRecipeResponse>
