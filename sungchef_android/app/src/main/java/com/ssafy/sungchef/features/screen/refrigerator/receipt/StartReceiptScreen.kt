@@ -119,7 +119,6 @@ fun StartReceiptScreen(
                 text = "영수증으로 등록하기",
                 shape = RoundedCornerShape(15.dp)
             ) {
-                // TODO 다이얼로그 생성
                 isShowDialog = true
             }
 
@@ -167,6 +166,7 @@ fun DialogContext(
     onCancel: () -> Unit
 ) {
     val context = LocalContext.current
+    val activity = context.findActivity()
 
     var cameraImageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -179,6 +179,7 @@ fun DialogContext(
             ".jpg",
             storageDir
         )
+        // Manifest의 authority와 FileProvider.getUriForFile의 authority를 통일 시켜야함
         FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
     }
 
@@ -259,6 +260,12 @@ fun DialogContext(
             pickImageLauncher.launch("image/*")
         }
     }
+}
+
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 
