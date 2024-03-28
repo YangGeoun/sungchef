@@ -16,13 +16,18 @@ fun NavController.navigateCooking(
     this.navigate(cookingNavigationRoute.plus("/$id"), navOptions)
 }
 
-fun NavGraphBuilder.cookingScreen(onNavigateBack: () -> (Unit), changeNav: () -> (Unit)) {
+fun NavGraphBuilder.cookingScreen(
+    onNavigateBack: () -> (Unit),
+    onNavigateDelete: () -> Unit,
+    changeNav: () -> (Unit)
+) {
     composable(route = cookingNavigationRoute.plus("/{recipeId}")) {
         val id = it.arguments?.getString("recipeId", "-1")
         CookingScreen(
             viewModel = hiltViewModel(),
             id = id!!.toInt(),
-            onNavigateBack = {onNavigateBack()}
+            onNavigateBack = { onNavigateBack() },
+            onNavigateDelete = { onNavigateDelete() }
         ) {
             changeNav()
         }

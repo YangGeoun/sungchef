@@ -62,7 +62,7 @@ class CookingViewModel @Inject constructor(
                     txtToSpeech.language = Locale.US
                     txtToSpeech.setSpeechRate(1.0f)
                     val params:Bundle = bundleOf(
-                        TextToSpeech.Engine.KEY_PARAM_VOLUME to "1.0"
+                        TextToSpeech.Engine.KEY_PARAM_VOLUME to "10.0"
                     )
                     txtToSpeech.speak(
                         string,

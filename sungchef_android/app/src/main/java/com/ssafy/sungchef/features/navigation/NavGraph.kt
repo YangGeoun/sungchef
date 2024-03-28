@@ -28,7 +28,10 @@ import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
+import com.ssafy.sungchef.features.screen.cooking.navigation.deleteIngredientScreen
 import com.ssafy.sungchef.features.screen.cooking.navigation.navigateCooking
+import com.ssafy.sungchef.features.screen.cooking.navigation.navigateDeleteIngredient
+import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.login.navigation.loginScreen
@@ -45,7 +48,6 @@ import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
 import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
 
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(
@@ -54,17 +56,20 @@ fun NavGraph(
     val navController = rememberNavController()
     val currentDestination = navController
         .currentBackStackEntryAsState().value?.destination
-    var navVisibility by remember{ mutableStateOf(true) }
+    var navVisibility by remember { mutableStateOf(true) }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            if (navVisibility){
+            if (navVisibility) {
                 NavigationBar(
                     containerColor = Color.White
                 ) {
                     BottomNavigationItem.entries
-                        .forEach {bottomNavigationItem ->
-                            val navigationSelectedItem = currentDestination.isBottomNavDestinationInHierarchy(bottomNavigationItem)
+                        .forEach { bottomNavigationItem ->
+                            val navigationSelectedItem =
+                                currentDestination.isBottomNavDestinationInHierarchy(
+                                    bottomNavigationItem
+                                )
                             NavigationBarItem(
                                 selected = navigationSelectedItem,
                                 icon = {
@@ -74,9 +79,17 @@ fun NavGraph(
                                     )
                                 },
                                 onClick = {
-                                    navigateToBottomNavDestination(bottomNavigationItem, navController)
+                                    navigateToBottomNavDestination(
+                                        bottomNavigationItem,
+                                        navController
+                                    )
                                 },
-                                label = { TextComponent(text = bottomNavigationItem.label, fontSize = 12.sp) },
+                                label = {
+                                    TextComponent(
+                                        text = bottomNavigationItem.label,
+                                        fontSize = 12.sp
+                                    )
+                                },
                             )
                         }
                 }
@@ -85,8 +98,8 @@ fun NavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = login_route,
-//            startDestination = homeNavigationRoute,
+//            startDestination = login_route,
+            startDestination = homeNavigationRoute,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen() {
@@ -119,13 +132,19 @@ fun NavGraph(
             loginScreen(navController) {
                 navVisibility = false
             }
-            cookingScreen(onNavigateBack = {
-                navController.popBackStack()
-                rotate()
-            }
+            cookingScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                    rotate()
+                },
+                onNavigateDelete = {
+                    rotate()
+                    navController.navigateDeleteIngredient()
+                }
             ) {
                 navVisibility = false
             }
+            deleteIngredientScreen(navController)
         }
     }
 }
