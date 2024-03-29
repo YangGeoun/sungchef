@@ -114,7 +114,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun inquire(contactRequestDTO: ContactRequestDTO) : Response<APIError> {
         return userDataSource.inquire(contactRequestDTO)
     }
-    override suspend fun updateUserInfo(userImage : MultipartBody.Part, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError> {
+    override suspend fun updateUserInfo(userImage : MultipartBody.Part?, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError> {
         return userDataSource.updateUserInfo(userImage, userUpdateRequestDTO)
     }
 

@@ -28,7 +28,7 @@ class SettingUseCase @Inject constructor(
     suspend fun inquire(contactRequestDTO: ContactRequestDTO) : Response<APIError> {
         return userRepository.inquire(contactRequestDTO)
     }
-    suspend fun updateUserInfo(userImage : MultipartBody.Part, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError> {
+    suspend fun updateUserInfo(userImage : MultipartBody.Part?, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError> {
         return userRepository.updateUserInfo(userImage, userUpdateRequestDTO)
     }
 }

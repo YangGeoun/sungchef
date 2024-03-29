@@ -58,6 +58,7 @@ class SettingViewModel @Inject constructor(
 
     private val _isDuplicateCheckNeeded = MutableStateFlow<Boolean>(false)
     val isDuplicateCheckNeeded : StateFlow<Boolean> = _isDuplicateCheckNeeded
+    var isPictureChanged : StateFlow<Boolean> = MutableStateFlow(false);
 
 
 //    init {
@@ -65,15 +66,19 @@ class SettingViewModel @Inject constructor(
 //    }
 
     fun updateUserSettingInfo(context : Context) {
-        val contentResolver = context.contentResolver
-        val inputStream = contentResolver.openInputStream(Uri.parse(userProfileImage.value))
-        val tempFile = File.createTempFile("upload", ".jpg", context.cacheDir).apply {
-            outputStream().use { fileOut ->
-                inputStream?.copyTo(fileOut)
+        var multipart : MultipartBody.Part? = null
+        if(isPictureChanged.value){
+            val contentResolver = context.contentResolver
+            val inputStream = contentResolver.openInputStream(Uri.parse(userProfileImage.value))
+            val tempFile = File.createTempFile("upload", ".jpg", context.cacheDir).apply {
+                outputStream().use { fileOut ->
+                    inputStream?.copyTo(fileOut)
+                }
             }
+            val requestFile = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            multipart = MultipartBody.Part.createFormData("picture", tempFile.name, requestFile)
         }
-        val requestFile = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-        val multipart = MultipartBody.Part.createFormData("picture", tempFile.name, requestFile)
+
         val updateRequestDTO = UserUpdateRequestDTO(userNickname.value, if(userGender.value==true) "M" else "F", userBirthDate.value)
         viewModelScope.launch {
             settingUseCase.updateUserInfo(multipart, updateRequestDTO)

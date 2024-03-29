@@ -44,5 +44,5 @@ interface UserDataSource {
     suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO) : DataState<ResponseDto<TokenResponse>>
 
     suspend fun inquire(contactRequestDTO: ContactRequestDTO): Response<APIError>
-    suspend fun updateUserInfo(userImage : MultipartBody.Part, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError>
+    suspend fun updateUserInfo(userImage : MultipartBody.Part?, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError>
 }

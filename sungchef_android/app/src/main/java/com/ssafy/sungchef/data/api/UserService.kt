@@ -66,7 +66,7 @@ interface UserService {
     @Multipart
     @PUT("/user")
     suspend fun updateUserInfo(
-        @Part userImage : MultipartBody.Part,
+        @Part userImage : MultipartBody.Part?,
         @Part("userUpdateRequestDTO") userUpdateRequestDTO: RequestBody,
     ) : Response<APIError>
 }
