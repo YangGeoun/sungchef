@@ -11,7 +11,7 @@ interface CookingService {
     @GET("ingredient/need/{recipeid}")
     suspend fun getLackIngredient(@Path("recipeid") id: Int): Response<ResponseDto<IngredientListResponse>>
 
-    @GET("ingredient/recipe/{recipeId}")
+    @GET("ingredient/{recipeId}")
     suspend fun getUsedIngredient(@Path("recipeId") id: Int): Response<ResponseDto<IngredientListResponse>>
 
     @GET("recipe/detail/{recipeid}")
