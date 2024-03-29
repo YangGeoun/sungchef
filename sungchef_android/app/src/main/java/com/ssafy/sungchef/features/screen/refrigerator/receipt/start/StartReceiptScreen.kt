@@ -212,10 +212,11 @@ fun DialogContext(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         Log.d(TAG, "uri: $uri")
-
-        // TODO 서버에 사진을 보내는 로직 필요
-        onCancel()
-        onMoveRegisterPage() // 영수증 등록화면으로 이동
+        uri?.let {
+            // TODO 서버에 사진을 보내는 로직 필요
+            onCancel()
+            onMoveRegisterPage() // 영수증 등록화면으로 이동
+        }
     }
 
     Column(
