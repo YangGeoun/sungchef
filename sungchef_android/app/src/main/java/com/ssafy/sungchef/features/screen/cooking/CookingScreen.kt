@@ -69,7 +69,7 @@ fun CookingScreen(
                             painter = painterResource(id = R.drawable.icon_back)
                         )
                     },
-                    title = { TextComponent(text = "국가 권력급 김치찌개($curNum/${uiState.count})") },
+                    title = { TextComponent(text = "${uiState.recipeName} ($curNum/${uiState.count})") },
                 )
             },
             floatingActionButton = {
@@ -97,7 +97,7 @@ fun CookingScreen(
                     )
                 },
                 changeVisibility = {
-                    visibility = true
+                    visibility = it
                 }
             ) {
                 curNum = it + 1
@@ -122,7 +122,7 @@ private fun Content(
     paddingValues: PaddingValues,
     recipeDetailList: List<RecipeDetailInfo>,
     speakDescription: (Int) -> (Unit),
-    changeVisibility: () -> (Unit),
+    changeVisibility: (Boolean) -> (Unit),
     changeNum: (Int) -> (Unit)
 ) {
     if (recipeDetailList.isNotEmpty()) {
@@ -154,7 +154,9 @@ private fun Content(
                     recipeDetailInfo = recipeDetailList[it]
                 )
                 if ((pagerState.currentPage + 1) == pagerState.pageCount) {
-                    changeVisibility()
+                    changeVisibility(true)
+                }else{
+                    changeVisibility(false)
                 }
             }
         }

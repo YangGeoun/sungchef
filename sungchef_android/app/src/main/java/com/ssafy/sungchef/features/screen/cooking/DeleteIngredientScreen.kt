@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.cooking
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -43,6 +44,7 @@ fun DeleteIngredientScreen(
         viewModel.getUsedIngredient(id)
         changeNavVisibility()
     }
+
     Scaffold(
         topBar = {
             TopAppBarComponent(title = {

@@ -74,6 +74,7 @@ fun MenuDetailScreen(
 
     if (viewState.lackIngredient != null && isCook) {
         DialogComponent(
+            text = viewState.dialogTitle,
             ingredientList = viewState.lackIngredient.ingredientInfo,
             id = viewState.lackIngredient.recipeId,
             onChangeState = { isCook = false }
@@ -154,6 +155,7 @@ private fun Content(
 @Composable
 fun DialogComponent(
     modifier: Modifier = Modifier,
+    text: String = "",
     ingredientList: List<IngredientInfo>,
     id: Int,
     onChangeState: () -> (Unit),
@@ -165,7 +167,7 @@ fun DialogComponent(
             verticalArrangement = Arrangement.SpaceBetween,
             modifier = modifier.background(Color.White)
         ) {
-            TextComponent(text = "부족한 재료가 있습니다.", style = MaterialTheme.typography.titleMedium)
+            TextComponent(text = text, style = MaterialTheme.typography.titleMedium)
             LazyColumn(
                 modifier = modifier.height(200.dp)
             ) {
@@ -180,7 +182,9 @@ fun DialogComponent(
             }
             Row {
                 Button(
-                    modifier = modifier.weight(1f).height(50.dp),
+                    modifier = modifier
+                        .weight(1f)
+                        .height(50.dp),
                     onClick = { onChangeState() },
                     shape = RoundedCornerShape(0),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White)
@@ -188,7 +192,9 @@ fun DialogComponent(
                     TextComponent(text = "취소", color = Color.Black)
                 }
                 Button(
-                    modifier = modifier.weight(1f).height(50.dp),
+                    modifier = modifier
+                        .weight(1f)
+                        .height(50.dp),
                     shape = RoundedCornerShape(0),
                     onClick = {
                         onChangeState()
@@ -196,7 +202,7 @@ fun DialogComponent(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                 ) {
-                    TextComponent(text = "확인",color = Color.Black)
+                    TextComponent(text = "확인", color = Color.Black)
                 }
             }
         }

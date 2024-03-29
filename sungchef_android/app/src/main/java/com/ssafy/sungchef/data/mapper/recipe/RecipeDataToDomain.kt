@@ -50,6 +50,7 @@ fun RecipeDetailInfoResponse.toRecipeDetailInfo(): RecipeDetailInfo {
 fun RecipeStepResponse.toRecipeStep(): RecipeStep{
     return RecipeStep(
         this.recipeId,
+        this.recipeName,
         this.recipeDetailList.map {
             it.toRecipeDetailInfo()
         }
