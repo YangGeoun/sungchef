@@ -50,7 +50,8 @@ private const val TAG = "StartReceiptScreen_성식당"
 @Composable
 fun StartReceiptScreen(
     viewModel : StartReceiptViewModel,
-    onMoveRegisterPage : () -> Unit,
+    onMoveRegisterReceiptPage : () -> Unit,
+    onMoveRegisterIngredientPage : () -> Unit,
     onBackNavigate : () -> Unit
 ) {
 
@@ -63,7 +64,7 @@ fun StartReceiptScreen(
     ShowDialog(
         viewModel = viewModel,
         isShowDialog = isShowDialog,
-        onMoveRegisterPage
+        onMoveRegisterReceiptPage
     ) {
         isShowDialog = false
     }
@@ -134,7 +135,7 @@ fun StartReceiptScreen(
                 text = "직접 등록하기",
                 shape = RoundedCornerShape(15.dp)
             ) {
-
+                onMoveRegisterIngredientPage()
             }
         }
 
@@ -149,7 +150,7 @@ fun StartReceiptScreen(
 fun ShowDialog(
     viewModel : StartReceiptViewModel,
     isShowDialog : Boolean,
-    onMoveRegisterPage : () -> Unit,
+    onMoveRegisterReceiptPage : () -> Unit,
     onCancel : () -> Unit
 ) {
     if (isShowDialog){
@@ -161,7 +162,7 @@ fun ShowDialog(
             DialogContext(
                 viewModel,
                 onCancel,
-                onMoveRegisterPage
+                onMoveRegisterReceiptPage
             )
 
         }
@@ -172,7 +173,7 @@ fun ShowDialog(
 fun DialogContext(
     viewModel : StartReceiptViewModel,
     onCancel: () -> Unit,
-    onMoveRegisterPage : () -> Unit
+    onMoveRegisterReceiptPage : () -> Unit
 ) {
     val context = LocalContext.current
     val activity = context.findActivity()
@@ -201,7 +202,7 @@ fun DialogContext(
                 // 사진 촬영 성공 후 처리 로직
                 // TODO 서버에 사진을 보내는 로직 필요
                 onCancel()
-                onMoveRegisterPage() // 영수증 등록화면으로 이동
+                onMoveRegisterReceiptPage() // 영수증 등록화면으로 이동
                 Log.d(TAG, "cameraImageUri: $cameraImageUri")
             }
         }
@@ -215,7 +216,7 @@ fun DialogContext(
         uri?.let {
             // TODO 서버에 사진을 보내는 로직 필요
             onCancel()
-            onMoveRegisterPage() // 영수증 등록화면으로 이동
+            onMoveRegisterReceiptPage() // 영수증 등록화면으로 이동
         }
     }
 

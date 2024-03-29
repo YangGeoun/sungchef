@@ -46,6 +46,7 @@ import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateStartReceipt
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
+import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerIngredientScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerReceiptScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.startReceiptScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
@@ -159,6 +160,8 @@ fun NavGraph(
             deleteIngredientScreen(navController, onNavigateHome = {navController.navigateHome()}){
                 navVisibility = false
             }
+
+            registerIngredientScreen(navController)
         }
     }
 }

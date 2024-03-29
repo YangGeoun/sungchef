@@ -33,7 +33,7 @@ class AuthAuthenticator @Inject constructor(
         }
 
         return runBlocking {
-            val tokenResponse = tokenService.reissueToken(RefreshToken(refreshToken))
+            val tokenResponse = tokenService.reissueToken(refreshToken)
 
             if (!tokenResponse.isSuccessful || tokenResponse.body() == null) {
                 // 토큰 재갱신 실패하면 기존 토큰 삭제

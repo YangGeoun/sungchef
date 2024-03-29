@@ -65,3 +65,6 @@ const val CAMERA_PERMISSON_GRANTED = "카메라 권한 설정이 성공되었습
 const val CAMERA_PERMISSON_DENIED = "카메라 권한 설정이 실패하였습니다.\n어플리케이션을 종료합니다."
 
 const val DELETE_ALL = "선택 삭제"
+
+// 직접 등록 시작
+const val ADD_INGREDIENT = "추가하실 재료가 있으신가요?"
