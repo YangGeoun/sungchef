@@ -32,6 +32,7 @@ import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
 import com.ssafy.sungchef.features.screen.cooking.navigation.deleteIngredientScreen
 import com.ssafy.sungchef.features.screen.cooking.navigation.navigateCooking
 import com.ssafy.sungchef.features.screen.cooking.navigation.navigateDeleteIngredient
+import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.login.navigation.loginScreen
@@ -91,8 +92,7 @@ fun NavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-//            startDestination = survey_route.plus("/${false}"),
-            startDestination = login_route,
+            startDestination = homeNavigationRoute,
 //            startDestination = signupRoute,
 //            startDestination = login_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
@@ -143,7 +143,7 @@ fun NavGraph(
                 },
                 onNavigateDelete = {
                     rotate()
-                    navController.navigateDeleteIngredient()
+                    navController.navigateDeleteIngredient(recipeId = it)
                 }
             ) {
                 navVisibility = false
@@ -156,7 +156,9 @@ fun NavGraph(
 
             registerReceiptScreen(navController)
 
-            deleteIngredientScreen(navController)
+            deleteIngredientScreen(navController, onNavigateHome = {navController.navigateHome()}){
+                navVisibility = false
+            }
         }
     }
 }

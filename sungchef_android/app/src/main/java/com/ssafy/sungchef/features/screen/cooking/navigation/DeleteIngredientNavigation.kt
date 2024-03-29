@@ -11,13 +11,23 @@ import com.ssafy.sungchef.features.screen.cooking.DeleteIngredientScreen
 const val deleteIngredientRoute = "deleteIngredient_screen"
 
 fun NavController.navigateDeleteIngredient(
-    navOptions: NavOptions? = null
+    navOptions: NavOptions? = null,
+    recipeId: Int
 ) {
-    this.navigate(deleteIngredientRoute, navOptions)
+    this.navigate(deleteIngredientRoute.plus("/$recipeId"), navOptions)
 }
 
-fun NavGraphBuilder.deleteIngredientScreen(navController: NavController) {
-    composable(route = deleteIngredientRoute) {
-        DeleteIngredientScreen(hiltViewModel())
+fun NavGraphBuilder.deleteIngredientScreen(
+    navController: NavController,
+    onNavigateHome: () -> (Unit),
+    changeNavVisibility: () -> (Unit)
+) {
+    composable(route = deleteIngredientRoute.plus("/{recipeId}")) {
+        val id = it.arguments?.getString("recipeId", "-1")
+        if (id != null) {
+            DeleteIngredientScreen(hiltViewModel(), id.toInt(),onNavigateHome) {
+                changeNavVisibility()
+            }
+        }
     }
 }

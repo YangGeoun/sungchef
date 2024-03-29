@@ -39,7 +39,7 @@ fun MenuCardComponent(
     bookmark: Boolean,
     color: Color = Color.Black,
     onClick: () -> (Unit),
-    onBookMarkClick: () -> (Unit),
+    onBookMarkClick: (Boolean) -> (Unit),
 ) {
     var bookMarkState by remember{ mutableStateOf(bookmark) }
     Card(
@@ -79,8 +79,8 @@ fun MenuCardComponent(
                             modifier = modifier
                                 .padding(end = 10.dp)
                                 .clickable {
-                                    onBookMarkClick()
                                     bookMarkState=!bookMarkState
+                                    onBookMarkClick(bookMarkState)
                                 },
                             tint = Color.Green
                         )
@@ -91,8 +91,8 @@ fun MenuCardComponent(
                             modifier = modifier
                                 .padding(end = 10.dp)
                                 .clickable {
-                                    onBookMarkClick()
                                     bookMarkState=!bookMarkState
+                                    onBookMarkClick(bookMarkState)
                                 },
                             tint = color
                         )

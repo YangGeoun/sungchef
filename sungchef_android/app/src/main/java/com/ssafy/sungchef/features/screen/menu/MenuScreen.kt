@@ -103,7 +103,10 @@ fun MenuScreen(
             viewState.pagedData,
             onVisitClick = { viewModel.getVisitRecipeInfo(0) },
             onBookMarkClick = {
-                if (searchText == "") viewModel.getBookMarkRecipeInfo(0) else viewModel.getSearchedBookmarkRecipeInfo(0, searchText)
+                if (searchText == "") viewModel.getBookMarkRecipeInfo(0) else viewModel.getSearchedBookmarkRecipeInfo(
+                    0,
+                    searchText
+                )
             },
             onClick = { navigateDetailScreen(it) }
         ) { recipeId, bookmark ->
@@ -152,8 +155,8 @@ private fun Content(
                             timer = it1.recipeCookingTime,
                             bookmark = it1.bookmark,
                             onClick = { onClick(it1.recipeId) }
-                        ) {
-
+                        ) { bookmark ->
+                            changeBookMarkState(it, bookmark)
                         }
                     }
                 }

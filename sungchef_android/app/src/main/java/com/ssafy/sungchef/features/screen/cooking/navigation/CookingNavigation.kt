@@ -22,7 +22,7 @@ fun NavController.navigateCooking(
 fun NavGraphBuilder.cookingScreen(
     navController: NavController,
     onNavigateBack: () -> (Unit),
-    onNavigateDelete: () -> Unit,
+    onNavigateDelete: (Int) -> Unit,
     changeNav: () -> (Unit)
 ) {
     composable(route = cookingNavigationRoute.plus("/{recipeId}")) {
@@ -34,7 +34,7 @@ fun NavGraphBuilder.cookingScreen(
             viewModel = hiltViewModel(parentEntry),
             id = id!!.toInt(),
             onNavigateBack = { onNavigateBack() },
-            onNavigateDelete = { onNavigateDelete() }
+            onNavigateDelete = { onNavigateDelete(it) }
         ) {
             changeNav()
         }
