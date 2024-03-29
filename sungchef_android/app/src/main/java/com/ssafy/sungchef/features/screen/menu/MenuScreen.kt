@@ -45,6 +45,7 @@ import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.MenuCardComponent
 import com.ssafy.sungchef.features.component.TextComponent
+import com.ssafy.sungchef.features.component.TextFieldComponent
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -62,7 +63,10 @@ fun MenuScreen(
             SearchBar(
                 query = searchText,
                 onQueryChange = viewModel::onSearchTextChange,
-                onSearch = viewModel::onSearchTextChange,
+                onSearch = {
+                    viewModel.onSearchTextChange(it)
+                    viewModel.onToggleSearch()
+                },
                 active = isSearching,
                 onActiveChange = { viewModel.onToggleSearch() },
                 trailingIcon = {
