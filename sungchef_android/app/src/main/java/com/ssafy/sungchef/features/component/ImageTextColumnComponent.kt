@@ -43,6 +43,7 @@ fun ImageTextColumnComponent(
             TextComponent(
                 modifier = Modifier.width(size.dp),
                 text = text,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
         }

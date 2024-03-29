@@ -6,6 +6,7 @@ import com.ssafy.sungchef.domain.model.recipe.RecipeDetail
 data class RecipeDetailViewState(
     val isLoading: Boolean = false,
     val isError: Boolean = false,
+    val dialogTitle: String = "",
     val recipeDetail: RecipeDetail? = null,
     val lackIngredient: LackIngredient? = null
 )

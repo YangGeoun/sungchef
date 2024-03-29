@@ -25,7 +25,7 @@ fun NavGraphBuilder.deleteIngredientScreen(
     composable(route = deleteIngredientRoute.plus("/{recipeId}")) {
         val id = it.arguments?.getString("recipeId", "-1")
         if (id != null) {
-            DeleteIngredientScreen(hiltViewModel(), id.toInt(),onNavigateHome) {
+            DeleteIngredientScreen(hiltViewModel(), id.toInt(),onNavigateHome,) {
                 changeNavVisibility()
             }
         }
