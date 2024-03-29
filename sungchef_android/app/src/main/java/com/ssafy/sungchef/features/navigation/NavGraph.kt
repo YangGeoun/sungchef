@@ -93,9 +93,9 @@ fun NavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = homeNavigationRoute,
+//            startDestination = homeNavigationRoute,
 //            startDestination = signupRoute,
-//            startDestination = login_route,
+            startDestination = login_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen(

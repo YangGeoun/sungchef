@@ -51,7 +51,7 @@ class AuthAuthenticator @Inject constructor(
                 )
 
                 response.request.newBuilder()
-                    .header("Authorization", "Bearer ${tokenResponse.body()!!.data.accessToken}")
+                    .header("Authorization", tokenResponse.body()!!.data.accessToken)
                     .build()
             }
         }
