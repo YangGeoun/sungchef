@@ -18,7 +18,7 @@ open class BaseRemoteDataSource {
         return try {
             if (response.isSuccessful) {
                 val body = response.body()
-                if (body != null)DataState.Success(body)
+                if (body != null) DataState.Success(body)
 //                    DataState.Error(APIError(
 //                        404L,
 //                        NEED_SURVEY
