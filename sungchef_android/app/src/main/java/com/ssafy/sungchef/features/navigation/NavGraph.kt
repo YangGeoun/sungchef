@@ -32,6 +32,8 @@ import com.ssafy.sungchef.features.screen.cooking.navigation.cookingScreen
 import com.ssafy.sungchef.features.screen.cooking.navigation.deleteIngredientScreen
 import com.ssafy.sungchef.features.screen.cooking.navigation.navigateCooking
 import com.ssafy.sungchef.features.screen.cooking.navigation.navigateDeleteIngredient
+import com.ssafy.sungchef.features.screen.cooking.navigation.navigateRegisterCook
+import com.ssafy.sungchef.features.screen.cooking.navigation.registerCookScreen
 import com.ssafy.sungchef.features.screen.home.navigation.homeNavigationRoute
 import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
@@ -43,6 +45,7 @@ import com.ssafy.sungchef.features.screen.menu.navigation.menuScreen
 import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenu
 import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenuDetail
 import com.ssafy.sungchef.features.screen.menu.navigation.navigateSearch
+import com.ssafy.sungchef.features.screen.menu.navigation.searchScreen
 import com.ssafy.sungchef.features.screen.mypage.navigation.myPageScreen
 import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
@@ -131,7 +134,8 @@ fun NavGraph(
                     navController.navigateSearch(menu = it)
                 }
             ) {
-                navController.navigateMenuDetail(it)
+//                navController.navigateMenuDetail(it)
+                navController.navigateRegisterCook(recipeId = 1)
                 navVisibility = false
             }
             refrigeratorScreen() {
@@ -189,8 +193,12 @@ fun NavGraph(
                 onNavigateHome = { navController.navigateHome() }) {
                 navVisibility = false
             }
-
+            searchScreen{
+                navController.navigateMenuDetail(it)
+                navVisibility = false
+            }
             registerIngredientScreen(navController)
+            registerCookScreen()
         }
     }
 }

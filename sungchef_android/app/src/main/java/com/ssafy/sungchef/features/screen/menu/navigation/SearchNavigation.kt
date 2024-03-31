@@ -8,8 +8,9 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.screen.menu.MenuScreen
+import com.ssafy.sungchef.features.screen.menu.SearchMenuScreen
 
-const val searchNavigationRoute = "menu_screen"
+const val searchNavigationRoute = "search_screen"
 
 fun NavController.navigateSearch(
     navOptions: NavOptions? = null,
@@ -20,7 +21,6 @@ fun NavController.navigateSearch(
 }
 
 fun NavGraphBuilder.searchScreen(
-    navigateToMenu: (String) -> (Unit),
     navigateToMenuDetail: (Int) -> (Unit)
 ) {
     composable(searchNavigationRoute.plus("/{menu}")) {
@@ -29,10 +29,9 @@ fun NavGraphBuilder.searchScreen(
             menu = ""
         }
         Log.d("여기임2", "MenuScreen: $menu")
-        MenuScreen(
+        SearchMenuScreen(
             hiltViewModel(),
             menu = menu!!,
-            onNavigateToMenu = navigateToMenu
         ) { recipeId ->
             navigateToMenuDetail(recipeId)
         }
