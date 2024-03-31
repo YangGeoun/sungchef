@@ -84,12 +84,15 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun surveySubmit(selectSurveyList : List<Int>): Flow<DataState<Boolean>> {
         return flow {
-            val isSuccess = userDataSource.surveySubmit(selectSurveyList.toSurveyRequestDto())
+            val token = userDataSource.surveySubmit(selectSurveyList.toSurveyRequestDto())
 
-            if (isSuccess is DataState.Success) {
+            if (token is DataState.Success) {
+                Log.d(TAG, "surveySubmit: 설문제출성공")
+                userDataStoreRepository.setToken(token.data.data.toJwtToken())
                 emit(DataState.Success(true))
-            } else if (isSuccess is DataState.Error) {
-                emit(DataState.Error(isSuccess.apiError))
+            } else if (token is DataState.Error) {
+                Log.d(TAG, "surveySubmit: 설문 제출 실패, ${token.apiError}")
+                emit(DataState.Error(token.apiError))
             }
         }
     }
@@ -99,10 +102,9 @@ class UserRepositoryImpl @Inject constructor(
             val surveyList = userDataSource.getSurvey()
 
             if (surveyList is DataState.Success) {
-                Log.d(TAG, "success: $surveyList")
                 emit(DataState.Success(surveyList.data.data.toSurvey()))
             } else if (surveyList is DataState.Error) {
-                Log.d(TAG, "fail: $surveyList")
+                Log.d(TAG, "fail: ${surveyList.apiError}")
                 emit(DataState.Error(surveyList.apiError))
             }
         }
