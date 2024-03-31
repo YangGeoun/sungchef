@@ -120,6 +120,18 @@ class UserRepositoryImpl @Inject constructor(
         return userDataSource.updateUserInfo(userImage, userUpdateRequestDTO)
     }
 
+    override suspend fun autoLogin(): Flow<DataState<Boolean>> {
+        return flow {
+            val isSuccess = userDataSource.autoLogin()
+
+            if (isSuccess is DataState.Success) {
+                emit(DataState.Success(true))
+            } else if (isSuccess is DataState.Error) {
+                emit(DataState.Error(isSuccess.apiError))
+            }
+        }
+    }
+
     override suspend fun signupUser(userRequestDTO: UserRequestDTO): Flow<DataState<Int>> {
         return flow {
             val token = userDataSource.signupUser(userRequestDTO)

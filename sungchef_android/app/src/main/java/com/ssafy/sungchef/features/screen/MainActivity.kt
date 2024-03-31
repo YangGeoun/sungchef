@@ -14,17 +14,24 @@ import androidx.annotation.RequiresApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.ssafy.sungchef.commons.CAMERA_PERMISSON_DENIED
 import com.ssafy.sungchef.commons.CAMERA_PERMISSON_GRANTED
+import com.ssafy.sungchef.domain.model.survey.SurveyInfo
 import com.ssafy.sungchef.features.navigation.NavGraph
 import com.ssafy.sungchef.features.ui.theme.SungchefTheme
 import com.ssafy.sungchef.util.PermissionChecker
 import com.ssafy.sungchef.util.PermissionResultListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 private const val TAG = "MainActivity_성식당"
@@ -43,18 +50,25 @@ class MainActivity : ComponentActivity(), PermissionResultListener {
         permissionChecker.requestCameraPermission()
 //        naverUnlink()
 
-        // TODO 자동 로그인 로직 필요
-        setContent {
-            SungchefTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    NavGraph(){
-                        requestedOrientation = if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                        }else {
-                            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        // 자동 로그인 상태 기다리기
+        lifecycleScope.launch {
+            val isSuccessAutoLogin = viewModel.isSuccessAutoLogin.first { it != null }
+            val startDestination = if (isSuccessAutoLogin == true) {
+                "home_screen"
+            } else {
+                "login_screen"
+            }
+            // UI 설정
+            setContent {
+                SungchefTheme {
+                    Surface(color = MaterialTheme.colorScheme.background) {
+                        // 상태에 따라 동적으로 NavGraph 설정
+                        NavGraph(startDestination = startDestination) {
+                            requestedOrientation = if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                            } else {
+                                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                            }
                         }
                     }
                 }

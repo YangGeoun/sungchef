@@ -69,4 +69,7 @@ interface UserService {
         @Part userImage : MultipartBody.Part?,
         @Part("userUpdateRequestDTO") userUpdateRequestDTO: RequestBody,
     ) : Response<APIError>
+
+    @POST("user/autologin")
+    suspend fun autoLogin() : Response<APIError>
 }

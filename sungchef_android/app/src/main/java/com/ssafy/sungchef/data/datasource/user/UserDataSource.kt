@@ -45,4 +45,6 @@ interface UserDataSource {
 
     suspend fun inquire(contactRequestDTO: ContactRequestDTO): Response<APIError>
     suspend fun updateUserInfo(userImage : MultipartBody.Part?, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError>
+
+    suspend fun autoLogin() : DataState<APIError>
 }

@@ -107,5 +107,9 @@ class UserDataSourceImpl @Inject constructor(
 //        return userService.updateUserInfo(userImage, userUpdateRequestDTO)
     }
 
-
+    override suspend fun autoLogin(): DataState<APIError> {
+        return getResult {
+            userService.autoLogin()
+        }
+    }
 }
