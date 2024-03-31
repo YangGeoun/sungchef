@@ -35,6 +35,12 @@ class MenuViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<RecipeViewState> = MutableStateFlow(initialState)
     val uiState: StateFlow<RecipeViewState> = _uiState
 
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
+
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
+
     fun getVisitRecipeInfo(page: Int) {
         viewModelScope.launch {
             setState { currentState.copy(isLoading = true) }
@@ -60,7 +66,7 @@ class MenuViewModel @Inject constructor(
     }
 
     init {
-        getVisitRecipeInfo(0)
+        getSearchedVisitRecipeInfo(0, _searchText.value)
     }
 
     fun getBookMarkRecipeInfo(page: Int) {
@@ -95,14 +101,6 @@ class MenuViewModel @Inject constructor(
         val newState = currentState.reduce()
         _uiState.value = newState
     }
-
-    //first state whether the search is happening or not
-    private val _isSearching = MutableStateFlow(false)
-    val isSearching = _isSearching.asStateFlow()
-
-    //second state the text typed by the user
-    private val _searchText = MutableStateFlow("")
-    val searchText = _searchText.asStateFlow()
 
     fun onSearchTextChange(text: String) {
         _searchText.value = text

@@ -32,7 +32,8 @@ import com.ssafy.sungchef.features.component.TopAppBarComponent
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-    navVisibility : () -> Unit,
+    navVisibility: () -> Unit,
+    onNavigateMenu: (String) -> (Unit),
     onNavigateDetail: (Int) -> (Unit)
 ) {
     LaunchedEffect(true) {
@@ -46,7 +47,8 @@ fun HomeScreen(
     ) { paddingValues ->
         Content(
             paddingValues = paddingValues,
-            onNavigateDetail = {onNavigateDetail(it)},
+            onNavigateDetail = { onNavigateDetail(it) },
+            onNavigateMenu = onNavigateMenu,
             recommendedFoodList = viewState.recommendFood,
             recommendedRecipeList = viewState.recommendRecipe
         )
@@ -58,6 +60,7 @@ private fun Content(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     onNavigateDetail: (Int) -> (Unit),
+    onNavigateMenu: (String) -> (Unit),
     recommendedFoodList: List<RecommendedFoodList>?,
     recommendedRecipeList: List<RecommendedRecipeList>?
 ) {
@@ -74,7 +77,7 @@ private fun Content(
                     dataList = recommendedFoodList[0].recommendedFoodList,
                     size = 300
                 ) {
-
+                    onNavigateMenu(it)
                 }
             }
             item {
@@ -93,7 +96,7 @@ private fun Content(
                     dataList = recommendedFoodList[1].recommendedFoodList,
                     size = 120
                 ) {
-
+                    onNavigateMenu(it)
                 }
             }
             item {
@@ -103,7 +106,7 @@ private fun Content(
                     dataList = recommendedFoodList[2].recommendedFoodList,
                     size = 120
                 ) {
-
+                    onNavigateMenu(it)
                 }
             }
             item {
@@ -113,7 +116,7 @@ private fun Content(
                     dataList = recommendedFoodList[3].recommendedFoodList,
                     size = 120
                 ) {
-
+                    onNavigateMenu(it)
                 }
             }
             item {
@@ -123,7 +126,7 @@ private fun Content(
                     dataList = recommendedFoodList[4].recommendedFoodList,
                     size = 120
                 ) {
-
+                    onNavigateMenu(it)
                 }
             }
         }
@@ -136,7 +139,7 @@ private fun RecommendFoodBody(
     text: String = "",
     size: Int,
     dataList: List<RecommendedFood>?,
-    onClick: () -> (Unit)
+    onClick: (String) -> (Unit)
 ) {
     Column {
         TextComponent(
@@ -159,7 +162,7 @@ private fun RecommendFoodBody(
                         text = item.foodName,
                         size = size
                     ) {
-                        onClick()
+                        onClick(item.foodName)
                     }
                 }
             }
@@ -206,5 +209,5 @@ private fun RecommendRecipeBody(
 @Preview(showBackground = true)
 @Composable
 fun RecommendBodyPreview() {
-    HomeScreen(viewModel = hiltViewModel(), navVisibility = {}){}
+    HomeScreen(viewModel = hiltViewModel(), navVisibility = {}, onNavigateMenu = {}) {}
 }

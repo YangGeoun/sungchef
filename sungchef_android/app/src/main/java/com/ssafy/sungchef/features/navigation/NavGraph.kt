@@ -42,6 +42,7 @@ import com.ssafy.sungchef.features.screen.menu.navigation.menuDetailScreen
 import com.ssafy.sungchef.features.screen.menu.navigation.menuScreen
 import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenu
 import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenuDetail
+import com.ssafy.sungchef.features.screen.menu.navigation.navigateSearch
 import com.ssafy.sungchef.features.screen.mypage.navigation.myPageScreen
 import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
@@ -106,9 +107,9 @@ fun NavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-//            startDestination = homeNavigationRoute,
+            startDestination = homeNavigationRoute,
 //            startDestination = signupRoute,
-            startDestination = login_route,
+//            startDestination = login_route,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen(
@@ -116,11 +117,20 @@ fun NavGraph(
                     navController.navigateMenuDetail(it)
                     navVisibility = false
                 },
+                onNavigateMenu = {
+                    navController.navigateSearch(
+                        menu = it
+                    )
+                },
                 navVisibility = {
                     navVisibility = true
                 }
             )
-            menuScreen {
+            menuScreen(
+                navigateToMenu = {
+                    navController.navigateSearch(menu = it)
+                }
+            ) {
                 navController.navigateMenuDetail(it)
                 navVisibility = false
             }
@@ -133,6 +143,7 @@ fun NavGraph(
             }
             myPageScreen(navController)
             menuDetailScreen(
+                navController,
                 onChangeNav = { navVisibility = false },
                 onNavigateCooking = {
                     rotate()
@@ -190,11 +201,7 @@ fun navigateToBottomNavDestination(bottomNav: BottomNavigationItem, navControlle
             // Pop up to the start destination of the graph to
             // avoid building up a large stack of destinations
             // on the back stack as users select items
-            Log.d(
-                TAG,
-                "navigateToBottomNavDestination: ${navController.graph.findStartDestination().navigatorName}"
-            )
-            popUpTo(navController.graph.findStartDestination().id) {
+            popUpTo(homeNavigationRoute) {
                 saveState = true
             }
             // Avoid multiple copies of the same destination when
@@ -206,7 +213,7 @@ fun navigateToBottomNavDestination(bottomNav: BottomNavigationItem, navControlle
 
         when (bottomNav) {
             BottomNavigationItem.Home -> navController.navigateHome(bottomNavOptions)
-            BottomNavigationItem.Menu -> navController.navigateMenu(bottomNavOptions)
+            BottomNavigationItem.Menu -> navController.navigateMenu(bottomNavOptions, "-1")
             BottomNavigationItem.Refrigerator -> navController.navigateRefrigerator(bottomNavOptions)
             BottomNavigationItem.Profile -> navController.navigateMyPage(bottomNavOptions)
         }
