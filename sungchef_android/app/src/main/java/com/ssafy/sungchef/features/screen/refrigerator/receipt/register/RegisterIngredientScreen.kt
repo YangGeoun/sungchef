@@ -2,6 +2,7 @@ package com.ssafy.sungchef.features.screen.refrigerator.receipt.register
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +39,7 @@ import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.ADD_INGREDIENT
 import com.ssafy.sungchef.commons.REGISTER_INGREDIENT_BUTTON
 import com.ssafy.sungchef.commons.SEARCH_INGREDIENT
+import com.ssafy.sungchef.domain.model.refrigerator.SearchIngredient
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.ImageComponent
@@ -53,11 +56,10 @@ fun RegisterIngredientScreen(
     val searchText by viewModel.searchText.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
     val searchResult by viewModel.searchIngredientList.collectAsState()
+    val ingredientList by viewModel.ingredientList.collectAsState()
+    val ingredientIdList by viewModel.ingredientIdList.collectAsState()
 
-    // 등록한 재료의 id를 담는 리스트
-    val ingredientIdList by remember{ mutableStateOf(listOf<Int>()) }
-
-    Log.d(TAG, "RegisterIngredientScreen: $searchResult")
+    Log.d(TAG, "ingredientIdList: $ingredientIdList")
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -99,6 +101,7 @@ fun RegisterIngredientScreen(
                             .clickable {
                                 // TODO 클릭 시 LazyColumn을 닫고 화면에 띄우기
                                 viewModel.onToggleSearch()
+                                viewModel.addIngredient(value)
                             }
                     ){
                         ImageComponent(
@@ -133,12 +136,40 @@ fun RegisterIngredientScreen(
                     shape = RoundedCornerShape(15.dp)
                 )
         ){
-            // TODO LazyColumn으로 재료 추가하기
+            // 추가된 재료를 보여준다.
             LazyColumn (
                 modifier = Modifier
-                    .padding(top = 20.dp)
+                    .padding(start = 15.dp, end = 15.dp, top = 20.dp)
             ){
+                // Map의 Key는 header, value는 items로 나타냄
+                ingredientList.forEach { (header, items) ->
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .padding(start = 10.dp, top = 10.dp)
+                        ) {
+                            ImageComponent(
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clip(CircleShape),
+                                imageResource = IngredientType.ingredientType[header] ?: R.drawable.etc
+                            )
 
+                            TextComponent(
+                                modifier = Modifier
+                                    .padding(start = 10.dp),
+                                text = header
+                            )
+                        }
+                    }
+
+                    items(items) { searchIngredient ->
+                        IngredientItem(
+                            item = searchIngredient,
+                            viewModel = viewModel
+                        )
+                    }
+                }
             }
         }
 
@@ -149,6 +180,51 @@ fun RegisterIngredientScreen(
         ) {
             // TODO 서버에 재료를 등록하고 냉장고 조회 화면으로 넘어가기
         }
+    }
+}
+
+@Composable
+fun IngredientItem(
+    item : SearchIngredient,
+    viewModel: RegisterIngredientViewModel
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, top = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Row(
+            modifier = Modifier
+                .border(
+                    width = 1.dp, // 테두리 두께
+                    color = Color.Black, // 테두리 색상
+                    shape = RoundedCornerShape(15.dp) // 테두리 모양 (여기서는 둥근 모서리)
+                )
+                .background(
+                    color = Color.White
+                )
+                .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
+                .weight(9f)
+        ){
+            TextComponent(
+                text = item.ingredientName
+//                text = "김치찌개"
+            )
+        }
+        Spacer(
+            modifier = Modifier
+                .weight(0.1f)
+        )
+
+        IconComponent(
+            modifier = Modifier
+                .weight(1f)
+                .clickable {
+                    viewModel.deleteIngredient(item)
+                },
+            painter = painterResource(id = R.drawable.icon_cancel)
+        )
     }
 }
 
