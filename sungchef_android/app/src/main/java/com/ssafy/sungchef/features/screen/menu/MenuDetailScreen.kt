@@ -131,7 +131,7 @@ private fun Content(
                 time = recipeDetail.recipeCookingTime
             )
             CardComponent(text = "재료") {
-                for (recipeIngredientInfo in recipeDetail.recipeIngredientInfoList) {
+                for (recipeIngredientInfo in recipeDetail.recipeIngredientInfoList.ingredientInfo) {
                     if (recipeIngredientInfo.recipeIngredientList.isNotEmpty()) {
                         IngredientCardComponent(
                             classification = recipeIngredientInfo.recipeIngredientType,

@@ -50,72 +50,26 @@ import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
 import kotlinx.coroutines.flow.Flow
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun MenuScreen(
+fun SearchMenuScreen(
     viewModel: MenuViewModel,
     menu: String,
-    onNavigateToMenu: (String) -> (Unit),
     navigateDetailScreen: (Int) -> (Unit)
 ) {
     val viewState = viewModel.uiState.collectAsState().value
-    val isSearching by viewModel.isSearching.collectAsState()
     val searchText by viewModel.searchText.collectAsState()
     var standard by remember { mutableStateOf("조회순") }
 
-    Scaffold(
-        topBar = {
-            SearchBar(
-                query = searchText,
-                onQueryChange = viewModel::onSearchTextChange,
-                onSearch = {
-                    viewModel.onToggleSearch()
-                    viewModel.onSearchTextChange(it)
-                    viewModel.getSearchedVisitRecipeInfo(0, it)
-                    standard = "조회순"
-                },
-                active = isSearching,
-                onActiveChange = { viewModel.onToggleSearch() },
-                trailingIcon = {
-                    if (isSearching) {
-                        IconButtonComponent(
-                            onClick = { viewModel.onSearchTextChange("") },
-                            painter = painterResource(id = R.drawable.icon_delete)
-                        )
-                    }
-                },
-                leadingIcon = {
-                    IconComponent(painter = painterResource(id = R.drawable.search))
-                },
-                placeholder = { TextComponent(text = "레시피를 검색하세요.") },
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth(),
-                colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.background)
-            ) {
-                LazyColumn {
-                    itemsIndexed(viewState.foodList) { _, item ->
-                        TextComponent(
-                            text = item.name,
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    viewModel.onToggleSearch()
-                                    viewModel.onSearchTextChange(item.name)
-                                    viewModel.getSearchedVisitRecipeInfo(0, item.name)
-                                    standard = "조회순"
-                                }
-                                .padding(start = 20.dp, top = 10.dp)
-                        )
-                    }
-                }
-            }
-        }
-    ) { paddingValues ->
+    LaunchedEffect(true) {
+        viewModel.onSearchTextChange(menu)
+        viewModel.getSearchedVisitRecipeInfo(0, menu)
+    }
+
+    Scaffold{ paddingValues ->
         Content(
             paddingValues,
             viewState.pagedData,
+            menu = menu,
             standard = standard,
             changeStandard = { standard = it },
             onVisitClick = { viewModel.getVisitRecipeInfo(0) },
@@ -137,6 +91,7 @@ private fun Content(
     paddingValues: PaddingValues,
     recipeInfoList: Flow<PagingData<RecipeInfo>>? = null,
     modifier: Modifier = Modifier,
+    menu: String,
     standard: String,
     changeStandard: (String) -> (Unit),
     onVisitClick: () -> (Unit),
@@ -155,7 +110,7 @@ private fun Content(
     ) {
         RecipeInfo(
             modifier = modifier,
-            300,
+            menu = menu,
             standard = standard,
             onVisitClick = { onVisitClick() },
             changeStandard = changeStandard,
@@ -188,7 +143,7 @@ private fun Content(
 @Composable
 private fun RecipeInfo(
     modifier: Modifier,
-    count: Int,
+    menu: String,
     standard: String,
     onVisitClick: () -> (Unit),
     changeStandard: (String) -> (Unit),
@@ -203,7 +158,7 @@ private fun RecipeInfo(
     ) {
         TextComponent(
             modifier = modifier,
-            text = "성식당 레시피($count)",
+            text = menu,
             color = Color.Black,
             fontSize = 16.sp
         )
@@ -242,19 +197,4 @@ private fun RecipeInfo(
             }
         }
     }
-}
-
-@Composable
-fun <T> rememberFlowWithLifecycle(
-    flow: Flow<T>,
-    lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
-    minActiveState: Lifecycle.State = Lifecycle.State.STARTED
-): Flow<T> = remember(flow, lifecycle) {
-    flow.flowWithLifecycle(lifecycle, minActiveState)
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun Preview() {
-    MenuScreen(hiltViewModel(), "", {}) {}
 }

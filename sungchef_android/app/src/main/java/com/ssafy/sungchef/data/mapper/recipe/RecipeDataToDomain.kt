@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.data.mapper.recipe
 
+import com.ssafy.sungchef.data.mapper.ingredient.toLackIngredient
 import com.ssafy.sungchef.data.mapper.ingredient.toRecipeIngredientInfo
 import com.ssafy.sungchef.data.model.responsedto.recipe.RecipeDetailInfoResponse
 import com.ssafy.sungchef.data.model.responsedto.recipe.RecipeDetailResponse
@@ -31,9 +32,7 @@ fun RecipeDetailResponse.toRecipeDetail(): RecipeDetail {
         },
         this.recipeId,
         this.recipeImage,
-        this.recipeIngredientInfoList.map {
-            it.toRecipeIngredientInfo()
-        },
+        this.recipeIngredientInfoList.toLackIngredient(),
         this.recipeName,
         this.recipeVolume,
     )
