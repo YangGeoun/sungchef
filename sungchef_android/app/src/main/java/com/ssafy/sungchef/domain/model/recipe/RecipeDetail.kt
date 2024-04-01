@@ -1,6 +1,6 @@
 package com.ssafy.sungchef.domain.model.recipe
 
-import com.ssafy.sungchef.domain.model.ingredient.IngredientInfo
+import com.ssafy.sungchef.domain.model.ingredient.LackIngredient
 
 data class RecipeDetail(
     val recipeCookingTime: String,
@@ -8,7 +8,7 @@ data class RecipeDetail(
     val recipeDetailInfoList: List<RecipeDetailInfo>,
     val recipeId: Int,
     val recipeImage: String,
-    val recipeIngredientInfoList: List<IngredientInfo>,
+    val recipeIngredientInfoList: LackIngredient,
     val recipeName: String,
     val recipeVolume: String
 )

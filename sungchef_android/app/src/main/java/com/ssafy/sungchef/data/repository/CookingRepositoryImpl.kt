@@ -1,16 +1,25 @@
 package com.ssafy.sungchef.data.repository
 
+import com.google.gson.Gson
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.datasource.cooking.CookingDataSource
 import com.ssafy.sungchef.data.mapper.ingredient.toLackIngredient
-import com.ssafy.sungchef.data.mapper.ingredient.toRecipeIngredientInfo
-import com.ssafy.sungchef.domain.model.ingredient.IngredientInfo
+import com.ssafy.sungchef.data.mapper.user.toBaseModel
+import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.ingredient.LackIngredient
 import com.ssafy.sungchef.domain.repository.CookingRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
+
 
 class CookingRepositoryImpl @Inject constructor(
     private val cookingDataSource: CookingDataSource
@@ -48,4 +57,34 @@ class CookingRepositoryImpl @Inject constructor(
                 }
             }
         }.onStart { emit(DataState.Loading()) }
+
+    override suspend fun registerCook(
+        file: File,
+        id: Int,
+        review: String
+    ): Flow<DataState<BaseModel>> {
+        val image = file.asRequestBody("image/*".toMediaTypeOrNull())
+        val requestImage = MultipartBody.Part.createFormData("makeRecipeImage", file.name, image)
+        val recipeId:RequestBody =
+            RequestBody.create("application/json".toMediaTypeOrNull(), id.toString())
+        val makeRecipeReview =
+            RequestBody.create("application/json".toMediaTypeOrNull(), review)
+        val requestMap= hashMapOf("recipeId" to recipeId,"makeRecipeReview" to makeRecipeReview)
+        return flow {
+            when (val result =
+                cookingDataSource.registerCook(requestImage, requestMap )) {
+                is DataState.Success -> {
+                    emit(DataState.Success(result.data.toBaseModel()))
+                }
+
+                is DataState.Loading -> {
+                    emit(DataState.Loading())
+                }
+
+                is DataState.Error -> {
+
+                }
+            }
+        }.onStart { emit(DataState.Loading()) }
+    }
 }
