@@ -60,6 +60,7 @@ private const val TAG = "NavGraph_성식당"
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(
+    startDestination : String,
     rotate: () -> (Unit),
 ) {
     val navController = rememberNavController()
@@ -107,9 +108,9 @@ fun NavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = homeNavigationRoute,
 //            startDestination = signupRoute,
 //            startDestination = login_route,
+            startDestination = startDestination,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen(

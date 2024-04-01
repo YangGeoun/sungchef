@@ -61,12 +61,13 @@ class UserDataSourceImpl @Inject constructor(
         getResult { userService.changeBookmarkRecipe(bookMarkRequest) }
 
 
-    override suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO): DataState<APIError> {
+    override suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO): DataState<ResponseDto<TokenResponse>> {
         return try {
             getResult {
                 userService.submitSurvey(surveyRequestDTO)
             }
         } catch (e : Exception) {
+            Log.d(TAG, "surveySubmit: 설문 제출 실패, ${e.message}")
             DataState.Error(APIError(500, ""))
         }
     }
@@ -106,5 +107,9 @@ class UserDataSourceImpl @Inject constructor(
 //        return userService.updateUserInfo(userImage, userUpdateRequestDTO)
     }
 
-
+    override suspend fun autoLogin(): DataState<APIError> {
+        return getResult {
+            userService.autoLogin()
+        }
+    }
 }
