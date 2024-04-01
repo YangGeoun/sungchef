@@ -26,7 +26,7 @@ class PagingRecipeDataSource @Inject constructor(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RecipeInfo> {
-        val page = params.key ?: 1
+        val page = params.key ?: 0
         return try {
             val response =
                 if (isVisit) {
@@ -61,7 +61,7 @@ class PagingRecipeDataSource @Inject constructor(
 
             LoadResult.Page(
                 data = recipeList,
-                prevKey = if (page == 1) null else page.minus(1),
+                prevKey = if (page == 0) null else page.minus(1),
                 nextKey = if (recipeList.isEmpty()) null else page.plus(1)
             )
         } catch (exception: Exception) {
