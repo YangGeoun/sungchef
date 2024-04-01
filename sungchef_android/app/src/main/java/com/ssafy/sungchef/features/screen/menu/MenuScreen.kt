@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,32 +43,49 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
+import com.ssafy.sungchef.features.component.IconButtonComponent
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.MenuCardComponent
 import com.ssafy.sungchef.features.component.TextComponent
+import com.ssafy.sungchef.features.component.TextFieldComponent
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MenuScreen(
     viewModel: MenuViewModel,
+    menu: String,
+    onNavigateToMenu: (String) -> (Unit),
     navigateDetailScreen: (Int) -> (Unit)
 ) {
     val viewState = viewModel.uiState.collectAsState().value
     val isSearching by viewModel.isSearching.collectAsState()
     val searchText by viewModel.searchText.collectAsState()
+    var standard by remember { mutableStateOf("조회순") }
+
+    LaunchedEffect(true) {
+        viewModel.onSearchTextChange(menu)
+        viewModel.getSearchedVisitRecipeInfo(0, menu)
+    }
 
     Scaffold(
         topBar = {
             SearchBar(
                 query = searchText,
                 onQueryChange = viewModel::onSearchTextChange,
-                onSearch = viewModel::onSearchTextChange,
+                onSearch = {
+                    viewModel.onToggleSearch()
+                    onNavigateToMenu(it)
+                    standard = "조회순"
+                },
                 active = isSearching,
                 onActiveChange = { viewModel.onToggleSearch() },
                 trailingIcon = {
                     if (isSearching) {
-                        IconComponent(painter = painterResource(id = R.drawable.icon_delete))
+                        IconButtonComponent(
+                            onClick = { viewModel.onSearchTextChange("") },
+                            painter = painterResource(id = R.drawable.icon_delete)
+                        )
                     }
                 },
                 leadingIcon = {
@@ -87,9 +105,9 @@ fun MenuScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    viewModel.onSearchTextChange(item.name)
                                     viewModel.onToggleSearch()
-                                    viewModel.getSearchedVisitRecipeInfo(0, item.name)
+                                    onNavigateToMenu(item.name)
+                                    standard = "조회순"
                                 }
                                 .padding(start = 20.dp, top = 10.dp)
                         )
@@ -101,6 +119,8 @@ fun MenuScreen(
         Content(
             paddingValues,
             viewState.pagedData,
+            standard = standard,
+            changeStandard = { standard = it },
             onVisitClick = { viewModel.getVisitRecipeInfo(0) },
             onBookMarkClick = {
                 if (searchText == "") viewModel.getBookMarkRecipeInfo(0) else viewModel.getSearchedBookmarkRecipeInfo(
@@ -110,7 +130,6 @@ fun MenuScreen(
             },
             onClick = { navigateDetailScreen(it) }
         ) { recipeId, bookmark ->
-            // Todo 즐겨찾기 통신 만들기
             viewModel.changeBookmarkRecipe(recipeId, bookmark)
         }
     }
@@ -121,6 +140,8 @@ private fun Content(
     paddingValues: PaddingValues,
     recipeInfoList: Flow<PagingData<RecipeInfo>>? = null,
     modifier: Modifier = Modifier,
+    standard: String,
+    changeStandard: (String) -> (Unit),
     onVisitClick: () -> (Unit),
     onBookMarkClick: () -> (Unit),
     onClick: (Int) -> (Unit),
@@ -138,7 +159,9 @@ private fun Content(
         RecipeInfo(
             modifier = modifier,
             300,
+            standard = standard,
             onVisitClick = { onVisitClick() },
+            changeStandard = changeStandard,
             onBookMarkClick = { onBookMarkClick() }
         )
         LazyColumn(modifier = modifier.fillMaxWidth()) {
@@ -169,11 +192,12 @@ private fun Content(
 private fun RecipeInfo(
     modifier: Modifier,
     count: Int,
+    standard: String,
     onVisitClick: () -> (Unit),
+    changeStandard: (String) -> (Unit),
     onBookMarkClick: () -> (Unit)
 ) {
     var menuVisibility by remember { mutableStateOf(false) }
-    var standard by remember { mutableStateOf("조회순") }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -206,7 +230,7 @@ private fun RecipeInfo(
                     text = { TextComponent(text = "조회순") },
                     onClick = {
                         menuVisibility = !menuVisibility
-                        standard = "조회순"
+                        changeStandard("조회순")
                         onVisitClick()
                     }
                 )
@@ -214,7 +238,7 @@ private fun RecipeInfo(
                     text = { TextComponent(text = "즐겨찾기순") },
                     onClick = {
                         menuVisibility = !menuVisibility
-                        standard = "즐겨찾기순"
+                        changeStandard("즐겨찾기순")
                         onBookMarkClick()
                     }
                 )
@@ -235,5 +259,5 @@ fun <T> rememberFlowWithLifecycle(
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    MenuScreen(hiltViewModel()) {}
+    MenuScreen(hiltViewModel(), "", {}) {}
 }

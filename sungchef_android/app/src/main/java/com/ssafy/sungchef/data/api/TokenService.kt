@@ -6,11 +6,12 @@ import com.ssafy.sungchef.domain.model.token.JwtToken
 import com.ssafy.sungchef.domain.model.token.RefreshToken
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface TokenService {
     @POST("user/reissue")
     suspend fun reissueToken(
-        @Body refreshToken: RefreshToken
+        @Header("Refresh") refreshToken : String
     ) : Response<ResponseDto<TokenResponse>>
 }

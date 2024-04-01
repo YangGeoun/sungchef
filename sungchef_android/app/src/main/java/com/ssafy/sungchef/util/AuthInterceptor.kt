@@ -22,7 +22,7 @@ class AuthInterceptor @Inject constructor(
         if (accessToken.isNotEmpty()) {
             request = chain.request()
                 .newBuilder()
-                .addHeader("Authorization", "Bearer $accessToken")
+                .addHeader("Authorization", accessToken)
                 .build()
         }
 

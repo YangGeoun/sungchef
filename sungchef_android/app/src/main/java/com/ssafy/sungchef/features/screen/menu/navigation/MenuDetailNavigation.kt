@@ -19,6 +19,7 @@ fun NavController.navigateMenuDetail(
 }
 
 fun NavGraphBuilder.menuDetailScreen(
+    navController: NavController,
     onChangeNav: () -> (Unit),
     onNavigateCooking: (Int) -> (Unit),
     onBackNavigate: () -> (Unit)

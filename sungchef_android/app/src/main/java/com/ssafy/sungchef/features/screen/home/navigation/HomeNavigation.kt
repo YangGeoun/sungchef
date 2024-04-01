@@ -17,11 +17,16 @@ fun NavController.navigateHome(
 }
 
 fun NavGraphBuilder.homeScreen(
-    navVisibility : () -> Unit,
-    onNavigateDetail:(Int) -> Unit,
-){
+    navVisibility: () -> Unit,
+    onNavigateDetail: (Int) -> Unit,
+    onNavigateMenu: (String) -> (Unit)
+) {
     composable(homeNavigationRoute) {
-        HomeScreen(hiltViewModel(), navVisibility = navVisibility ){
+        HomeScreen(
+            hiltViewModel(),
+            navVisibility = navVisibility,
+            onNavigateMenu = onNavigateMenu
+        ) {
             onNavigateDetail(it)
         }
     }

@@ -37,15 +37,18 @@ import com.ssafy.sungchef.features.screen.home.navigation.homeScreen
 import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.login.navigation.loginScreen
 import com.ssafy.sungchef.features.screen.login.navigation.login_route
+import com.ssafy.sungchef.features.screen.menu.navigation.menuDetailNavigationRoute
 import com.ssafy.sungchef.features.screen.menu.navigation.menuDetailScreen
 import com.ssafy.sungchef.features.screen.menu.navigation.menuScreen
 import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenu
 import com.ssafy.sungchef.features.screen.menu.navigation.navigateMenuDetail
+import com.ssafy.sungchef.features.screen.menu.navigation.navigateSearch
 import com.ssafy.sungchef.features.screen.mypage.navigation.myPageScreen
 import com.ssafy.sungchef.features.screen.mypage.navigation.navigateMyPage
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateRefrigerator
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateStartReceipt
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
+import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerIngredientScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerReceiptScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.startReceiptScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
@@ -53,6 +56,7 @@ import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
 
 
 private const val TAG = "NavGraph_성식당"
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(
@@ -61,17 +65,20 @@ fun NavGraph(
     val navController = rememberNavController()
     val currentDestination = navController
         .currentBackStackEntryAsState().value?.destination
-    var navVisibility by remember{ mutableStateOf(true) }
+    var navVisibility by remember { mutableStateOf(true) }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            if (navVisibility){
+            if (navVisibility) {
                 NavigationBar(
                     containerColor = Color.White
                 ) {
                     BottomNavigationItem.entries
-                        .forEach {bottomNavigationItem ->
-                            val navigationSelectedItem = currentDestination.isBottomNavDestinationInHierarchy(bottomNavigationItem)
+                        .forEach { bottomNavigationItem ->
+                            val navigationSelectedItem =
+                                currentDestination.isBottomNavDestinationInHierarchy(
+                                    bottomNavigationItem
+                                )
                             NavigationBarItem(
                                 selected = navigationSelectedItem,
                                 icon = {
@@ -81,9 +88,17 @@ fun NavGraph(
                                     )
                                 },
                                 onClick = {
-                                    navigateToBottomNavDestination(bottomNavigationItem, navController)
+                                    navigateToBottomNavDestination(
+                                        bottomNavigationItem,
+                                        navController
+                                    )
                                 },
-                                label = { TextComponent(text = bottomNavigationItem.label, fontSize = 12.sp) },
+                                label = {
+                                    TextComponent(
+                                        text = bottomNavigationItem.label,
+                                        fontSize = 12.sp
+                                    )
+                                },
                             )
                         }
                 }
@@ -102,15 +117,24 @@ fun NavGraph(
                     navController.navigateMenuDetail(it)
                     navVisibility = false
                 },
+                onNavigateMenu = {
+                    navController.navigateSearch(
+                        menu = it
+                    )
+                },
                 navVisibility = {
                     navVisibility = true
                 }
             )
-            menuScreen {
+            menuScreen(
+                navigateToMenu = {
+                    navController.navigateSearch(menu = it)
+                }
+            ) {
                 navController.navigateMenuDetail(it)
                 navVisibility = false
             }
-            refrigeratorScreen(){
+            refrigeratorScreen() {
                 navController.navigateStartReceipt()
                 navVisibility = false
             }
@@ -119,6 +143,7 @@ fun NavGraph(
             }
             myPageScreen(navController)
             menuDetailScreen(
+                navController,
                 onChangeNav = { navVisibility = false },
                 onNavigateCooking = {
                     rotate()
@@ -143,22 +168,29 @@ fun NavGraph(
                 },
                 onNavigateDelete = {
                     rotate()
-                    navController.navigateDeleteIngredient(recipeId = it)
+                    navController.navigateDeleteIngredient(recipeId = it, navOptions = navOptions {
+                        popUpTo(menuDetailNavigationRoute.plus("/$it"))
+                    }
+                    )
                 }
             ) {
                 navVisibility = false
             }
 
-            startReceiptScreen(navController){
+            startReceiptScreen(navController) {
                 navController.popBackStack()
                 navVisibility = true
             }
 
             registerReceiptScreen(navController)
 
-            deleteIngredientScreen(navController, onNavigateHome = {navController.navigateHome()}){
+            deleteIngredientScreen(
+                navController,
+                onNavigateHome = { navController.navigateHome() }) {
                 navVisibility = false
             }
+
+            registerIngredientScreen(navController)
         }
     }
 }
@@ -169,8 +201,7 @@ fun navigateToBottomNavDestination(bottomNav: BottomNavigationItem, navControlle
             // Pop up to the start destination of the graph to
             // avoid building up a large stack of destinations
             // on the back stack as users select items
-            Log.d(TAG, "navigateToBottomNavDestination: ${navController.graph.findStartDestination().navigatorName}")
-            popUpTo(navController.graph.findStartDestination().id) {
+            popUpTo(homeNavigationRoute) {
                 saveState = true
             }
             // Avoid multiple copies of the same destination when
@@ -182,7 +213,7 @@ fun navigateToBottomNavDestination(bottomNav: BottomNavigationItem, navControlle
 
         when (bottomNav) {
             BottomNavigationItem.Home -> navController.navigateHome(bottomNavOptions)
-            BottomNavigationItem.Menu -> navController.navigateMenu(bottomNavOptions)
+            BottomNavigationItem.Menu -> navController.navigateMenu(bottomNavOptions, "-1")
             BottomNavigationItem.Refrigerator -> navController.navigateRefrigerator(bottomNavOptions)
             BottomNavigationItem.Profile -> navController.navigateMyPage(bottomNavOptions)
         }

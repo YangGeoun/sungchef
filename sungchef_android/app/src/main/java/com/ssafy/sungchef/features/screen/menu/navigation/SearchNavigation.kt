@@ -9,21 +9,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.screen.menu.MenuScreen
 
-const val menuNavigationRoute = "menu_screen"
+const val searchNavigationRoute = "menu_screen"
 
-fun NavController.navigateMenu(
+fun NavController.navigateSearch(
     navOptions: NavOptions? = null,
     menu: String
 ) {
     Log.d("여기임1", "MenuScreen: $menu")
-    this.navigate(menuNavigationRoute.plus("/$menu"),navOptions)
+    this.navigate(searchNavigationRoute.plus("/$menu"),navOptions)
 }
 
-fun NavGraphBuilder.menuScreen(
+fun NavGraphBuilder.searchScreen(
     navigateToMenu: (String) -> (Unit),
     navigateToMenuDetail: (Int) -> (Unit)
 ) {
-    composable(menuNavigationRoute.plus("/{menu}")) {
+    composable(searchNavigationRoute.plus("/{menu}")) {
         var menu = it.arguments?.getString("menu")
         if (menu == "-1") {
             menu = ""

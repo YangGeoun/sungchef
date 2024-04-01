@@ -48,6 +48,7 @@ class CookingViewModel @Inject constructor(
                         setState {
                             currentState.copy(
                                 isLoading = false,
+                                recipeName = it.data.recipeName,
                                 recipeDetailList = it.data.recipeDetailInfoList,
                                 count = it.data.recipeDetailInfoList.size
                             )
