@@ -23,6 +23,7 @@ import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
+import com.ssafy.sungchef.data.model.responsedto.user.LoginResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -61,7 +62,7 @@ class UserDataSourceImpl @Inject constructor(
         getResult { userService.changeBookmarkRecipe(bookMarkRequest) }
 
 
-    override suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO): DataState<ResponseDto<TokenResponse>> {
+    override suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO): DataState<APIError> {
         return try {
             getResult {
                 userService.submitSurvey(surveyRequestDTO)
@@ -92,7 +93,7 @@ class UserDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO): DataState<ResponseDto<TokenResponse>> {
+    override suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO): DataState<ResponseDto<LoginResponse>> {
         return getResult {
             userService.login(userSnsIdRequestDTO)
         }
