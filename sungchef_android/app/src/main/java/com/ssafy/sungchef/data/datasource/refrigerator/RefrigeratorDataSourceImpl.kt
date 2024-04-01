@@ -10,7 +10,7 @@ import javax.inject.Inject
 class RefrigeratorDataSourceImpl @Inject constructor(
     private val refrigeratorService: RefrigeratorService
 ) : RefrigeratorDataSource, BaseRemoteDataSource() {
-    override suspend fun searchIngredient(ingredientName: String): DataState<ResponseDto<SearchIngredientResponse>> {
+    override suspend fun searchIngredient(ingredientName: String): DataState<ResponseDto<List<SearchIngredientResponse>>> {
         return getResult {
             refrigeratorService.searchIngredient(ingredientName)
         }

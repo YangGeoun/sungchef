@@ -5,3 +5,5 @@ data class SearchIngredientResponse(
     val ingredientType : String,
     val ingredientName : String
 )
+
+

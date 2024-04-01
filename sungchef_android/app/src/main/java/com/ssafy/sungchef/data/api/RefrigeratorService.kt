@@ -11,5 +11,5 @@ interface RefrigeratorService {
     @GET("search/ingredient/{ingredientname}")
     suspend fun searchIngredient(
         @Path("ingredientname") ingredientName : String
-    ) : Response<ResponseDto<SearchIngredientResponse>>
+    ) : Response<ResponseDto<List<SearchIngredientResponse>>>
 }

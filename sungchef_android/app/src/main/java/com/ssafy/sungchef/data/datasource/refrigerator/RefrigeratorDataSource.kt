@@ -6,5 +6,5 @@ import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredi
 
 interface RefrigeratorDataSource {
 
-    suspend fun searchIngredient(ingredientName : String) : DataState<ResponseDto<SearchIngredientResponse>>
+    suspend fun searchIngredient(ingredientName : String) : DataState<ResponseDto<List<SearchIngredientResponse>>>
 }

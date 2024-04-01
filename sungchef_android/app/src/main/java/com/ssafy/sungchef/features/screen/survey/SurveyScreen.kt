@@ -221,6 +221,7 @@ fun SurveyLazyGrid(
                         ImageComponent(
                             modifier = Modifier
                                 .clickable {
+                                    // TODO 아이템 선택을 index로 바꾸고 서버에 전송할 때는 Id로 보내기
                                     val newSelectedIndices =
                                         if (selectedIndices.contains(surveyInfo.foodId)) {
                                             selectedIndices - surveyInfo.foodId
@@ -256,7 +257,7 @@ fun SurveyLazyGrid(
                         }
                     }
                     TextComponent(
-                        text = "김치찌개"
+                        text = surveyInfo.foodName
                     )
                 }
             }
