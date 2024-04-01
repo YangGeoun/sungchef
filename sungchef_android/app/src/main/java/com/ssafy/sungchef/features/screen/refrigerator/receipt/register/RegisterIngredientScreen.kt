@@ -178,6 +178,7 @@ fun RegisterIngredientScreen(
                 .fillMaxWidth(),
             text = REGISTER_INGREDIENT_BUTTON
         ) {
+            viewModel.registerIngredient()
             // TODO 서버에 재료를 등록하고 냉장고 조회 화면으로 넘어가기
         }
     }

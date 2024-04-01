@@ -1,9 +1,11 @@
 package com.ssafy.sungchef.features.screen.refrigerator.receipt.register
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.domain.model.refrigerator.SearchIngredient
+import com.ssafy.sungchef.domain.usecase.refrigerator.RegisterIngredientUseCase
 import com.ssafy.sungchef.domain.usecase.refrigerator.SearchIngredientUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -13,9 +15,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "RegisterIngredientViewM_성식당"
 @HiltViewModel
 class RegisterIngredientViewModel @Inject constructor(
-    private val searchIngredientUseCase: SearchIngredientUseCase
+    private val searchIngredientUseCase: SearchIngredientUseCase,
+    private val registerIngredientUseCase: RegisterIngredientUseCase
 ) : ViewModel(){
 
     private val _isSearching = MutableStateFlow(false)
@@ -45,7 +49,7 @@ class RegisterIngredientViewModel @Inject constructor(
                 _searchIngredientList.value = emptyList()
                 return@launch
             }
-            delay(500) // Debouncing
+            delay(300) // Debouncing
             searchIngredient(text)
         }
     }
@@ -127,5 +131,25 @@ class RegisterIngredientViewModel @Inject constructor(
             _ingredientList.value = updatedMap
         }
         _ingredientIdList.value = _ingredientIdList.value.filter { it != ingredient.ingredientId }
+    }
+
+    fun registerIngredient() {
+        viewModelScope.launch {
+            registerIngredientUseCase.registerIngredient(_ingredientIdList.value).collect {
+                when (it) {
+                    is DataState.Success -> {
+                        Log.d(TAG, "registerSuccess: ${it.data.code}")
+                    }
+
+                    is DataState.Loading -> {
+
+                    }
+
+                    is DataState.Error -> {
+                        Log.d(TAG, "registerSuccess: ${it.apiError.code}")
+                    }
+                }
+            }
+        }
     }
 }
