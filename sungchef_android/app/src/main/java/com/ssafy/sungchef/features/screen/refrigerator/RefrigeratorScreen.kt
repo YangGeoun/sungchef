@@ -6,28 +6,26 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,25 +42,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.ssafy.sungchef.R
-import com.ssafy.sungchef.data.model.responsedto.IngredientItem
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.ssafy.sungchef.data.model.responsedto.IngredientListData
 import com.ssafy.sungchef.features.component.FilledButtonComponent
+import com.ssafy.sungchef.features.component.OutlinedButtonComponentNotMax
 import com.ssafy.sungchef.features.component.TextComponent
+import java.lang.StringBuilder
 
 val TAG = "태그";
 @Composable
 fun RefrigeratorScreen(
-    onMoveReceiptScreen : () -> Unit
+    onMoveReceiptScreen : () -> Unit,
+    viewModel: RefrigeratorViewModel
 ) {
     Column(modifier = Modifier.fillMaxSize(1f)) {
-        RefridgeArray(onMoveReceiptScreen)
+        RefridgeArray(viewModel, onMoveReceiptScreen)
 //        FridgeComponent(image = painterResource(id = R.drawable.fruit), number = 2, labelText = "과일")
     }
 }
 
 @Composable
 fun FridgeComponent(
-    image: Painter, // 여기서 image는 Painter 객체를 받습니다. 예를 들면 painterResource(id = R.drawable.fruit_image) 같은 것을 사용하세요.
+    image: Int, // 여기서 image는 Painter 객체를 받습니다. 예를 들면 painterResource(id = R.drawable.fruit_image) 같은 것을 사용하세요.
     number: Int,
     labelText: String,
     onClick : () -> Unit
@@ -74,7 +74,7 @@ fun FridgeComponent(
 //        ,contentAlignment = Alignment.Center
         ,) { // Box를 사용하여 겹치는 레이아웃을 만듭니다.
         Image(
-            painter = image,
+            painter = painterResource(id = image),
             contentDescription = "Fruits", // contentDescription은 접근성을 위한 것입니다.
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -123,23 +123,14 @@ fun FridgeComponent(
 
 @Composable
 fun RefridgeArray(
-    onMoveReceiptScreen : () -> Unit
+    viewModel: RefrigeratorViewModel,
+    onMoveReceiptScreen: () -> Unit
 ){
-    val items = listOf(
-        IngredientItem(painterResource(id = R.drawable.fruit), 3, "과일"),
-        IngredientItem(painterResource(id = R.drawable.vegetable), 3, "채소"),
-        IngredientItem(painterResource(id = R.drawable.rice_grain), 3, "쌀/잡곡"),
-        IngredientItem(painterResource(id = R.drawable.meat_egg), 3, "육류"),
-        IngredientItem(painterResource(id = R.drawable.fish), 4, "수산"),
-        IngredientItem(painterResource(id = R.drawable.milk), 4, "유제품"),
-        IngredientItem(painterResource(id = R.drawable.sauce), 3, "조미료"),
-        IngredientItem(painterResource(id = R.drawable.etc), 3, "기타"),
-
-    )
-    val numberOfColumns = 2
+    val items by viewModel.items.collectAsState()
 
     var showDialog by remember { mutableStateOf(false) }
     var showNestedDialog by remember { mutableStateOf(false) }
+    var selectedFoodCategory by remember { mutableIntStateOf(-1) }
 
     Column {
         TextComponent(text = "냉장고를 관리해보세요",
@@ -174,11 +165,13 @@ fun RefridgeArray(
                             FridgeComponent(items[i].painter, items[i].num, items[i].label){
                                 Log.d(TAG, "RefridgeArray: FridgeComponent clicked")
                                 showDialog = true
+                                selectedFoodCategory = i;
                             }
                             Spacer(modifier = Modifier.padding(30.dp))
                             FridgeComponent(items[i+1].painter, items[i+1].num, items[i+1].label){
                                 Log.d(TAG, "RefridgeArray: FridgeComponent clicked")
                                 showDialog = true
+                                selectedFoodCategory = i+1;
                             }
                         }
                     }
@@ -193,54 +186,87 @@ fun RefridgeArray(
         }
     }
 
-    val foodItems = listOf<String>("삼겹살","소고기")
-    var selectedFoodItem by remember { mutableStateOf<String?>(null) }
+    var foodItems = mutableListOf<IngredientListData>(IngredientListData("기본재료1", 1),IngredientListData("기본재료2", 2))
+    var selectedItems by remember { mutableStateOf(mutableSetOf<IngredientListData>()) }
 
     // 첫 번째 다이얼로그
     if (showDialog) {
-        Dialog(onDismissRequest = { showDialog = false }) {
-            Column(
+        //API 통신하여 foodItems 업데이트
+        selectedFoodCategory
+
+        Dialog(onDismissRequest = {
+            showDialog = false
+            selectedItems.clear()
+        }) {
+            Surface(
                 modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                color = Color.White,
+                shape = MaterialTheme.shapes.medium
             ) {
-                // 라디오 버튼들과 음식 이름들을 표시
-                foodItems.forEach { foodItem ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { selectedFoodItem = foodItem }
-                            .padding(vertical = 8.dp)
-                    ) {
-                        RadioButton(
-                            selected = selectedFoodItem == foodItem,
-                            onClick = { selectedFoodItem = foodItem }
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(modifier = Modifier.padding(bottom = 10.dp)) {
+//                        ImageComponent(modifier = Modifier.padding(end = 10.dp), imageResource = items[selectedFoodCategory].painter)
+                        Image(painter = painterResource(id = items[selectedFoodCategory].painter), contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                                .align(Alignment.CenterVertically)
+//                                .padding(end = 10.dp)
                         )
-//                        Image(
-//                            painter = painterResource(id = foodItem.imageResource),
-//                            contentDescription = foodItem.name,
-//                            modifier = Modifier.size(40.dp)
-//                        )
-//                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = foodItem)
-                    }
-                }
+                        TextComponent(text = items[selectedFoodCategory].label, fontSize = 24.sp,
+                            modifier = Modifier.padding(start = 10.dp))
 
-                // 삭제하기 버튼
-                Button(
-                    onClick = {
-                        selectedFoodItem?.let {
-                            showNestedDialog = true
-//                            showDialog = false
+                    }
+                    // 음식 목록과 체크박스를 표시
+                    foodItems.forEach { foodItem ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { // 이제 여기서 체크 상태를 토글합니다.
+                                    val currentSet = selectedItems.toMutableSet()
+                                    if (selectedItems.contains(foodItem)) {
+                                        currentSet.remove(foodItem)
+                                    } else {
+                                        currentSet.add(foodItem)
+                                    }
+                                    selectedItems = currentSet
+                                }
+                                .padding(vertical = 8.dp)
+                        ) {
+                            Checkbox(
+                                checked = selectedItems.contains(foodItem),
+                                onCheckedChange = null // `Row`가 클릭 처리를 담당하므로 null로 설정합니다.
+                            )
+                            Text(
+                                text = foodItem.ingredientName,
+                                modifier = Modifier
+                                    .padding(start = 8.dp)
+                                    .weight(1f) // 체크박스 옆의 텍스트가 모든 공간을 차지하도록 합니다.
+                            )
                         }
-                    },
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(top = 16.dp),
-                    enabled = selectedFoodItem != null // 선택된 항목이 있을 때만 버튼 활성화
-                ) {
-                    Text("삭제하기")
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // 확인 버튼
+                    Button(
+                        onClick = {
+//                            onConfirm(selectedItems.toList())
+//                            selectedItems.clear() // 선택 상태 초기화
+                            selectedItems?.let {
+                                showNestedDialog = true
+//                            showDialog = false
+                            }
+                        },
+                        modifier = Modifier.align(Alignment.End),
+                        enabled = selectedItems.isNotEmpty()
+                    ) {
+                        Text("삭제하기")
+                    }
                 }
             }
         }
@@ -249,11 +275,41 @@ fun RefridgeArray(
     // 중첩된 다이얼로그
     if (showNestedDialog) {
         Dialog(onDismissRequest = { showNestedDialog = false }) {
-            Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("중첩된 다이얼로그")
-                Spacer(Modifier.height(8.dp))
-                Button(onClick = { showNestedDialog = false }) {
-                    Text("닫기")
+            Surface(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                color = Color.White,
+                shape = MaterialTheme.shapes.small
+            ){
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    var nestedText : StringBuilder= StringBuilder();
+                    selectedItems.forEach {
+                        nestedText.append(it.ingredientName + ", ")
+                    }
+
+                    Text("${nestedText}을(를) 냉장고에서 삭제하시겠습니까?")
+                    Spacer(Modifier.height(8.dp))
+                    Row {
+                        OutlinedButtonComponentNotMax(text = "닫기", borderColor = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(end = 10.dp)) {
+                            showNestedDialog = false
+                        }
+                        Button(onClick = {
+                            showNestedDialog = false
+                            showDialog = false
+                            selectedItems.clear()
+
+                            //API 통신하여 삭제
+
+                        }) {
+                            Text("삭제")
+                        }
+
+                    }
                 }
             }
         }
@@ -266,6 +322,6 @@ fun RefridgeArray(
 @Composable
 fun FridgeComponentPreview() {
     RefridgeArray(
-        {}
-    )
+        hiltViewModel()
+    ) {}
 }

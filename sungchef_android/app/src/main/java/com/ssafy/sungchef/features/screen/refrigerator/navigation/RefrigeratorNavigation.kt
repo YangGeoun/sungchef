@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.refrigerator.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -20,7 +21,7 @@ fun NavGraphBuilder.refrigeratorScreen(
 ){
     composable(refrigeratorNavigationRoute) {
         RefrigeratorScreen(
-            onMoveReceiptPage
+            onMoveReceiptPage, hiltViewModel()
         )
     }
 }

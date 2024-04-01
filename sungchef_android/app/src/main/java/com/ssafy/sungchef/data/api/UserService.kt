@@ -9,6 +9,9 @@ import com.ssafy.sungchef.data.model.requestdto.UserRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserSnsIdRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserUpdateRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
+
+import com.ssafy.sungchef.data.model.responsedto.FridgeData
+import com.ssafy.sungchef.data.model.responsedto.FridgeDto
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
