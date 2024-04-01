@@ -6,7 +6,9 @@ import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.commons.SERVER_INSTABILITY
 import com.ssafy.sungchef.data.api.UserService
 import com.ssafy.sungchef.data.datasource.BaseRemoteDataSource
+import com.ssafy.sungchef.data.local.dao.BookmarkDao
 import com.ssafy.sungchef.data.model.APIError
+import com.ssafy.sungchef.data.model.entity.BookmarkEntity
 
 import com.ssafy.sungchef.data.model.requestdto.BookMarkRequest
 import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
@@ -31,7 +33,8 @@ import javax.inject.Inject
 
 private const val TAG = "UserDataSourceImpl_성식당"
 class UserDataSourceImpl @Inject constructor(
-    private val userService : UserService
+    private val userService : UserService,
+    private val bookmarkDataSource: BookmarkDataSource
 ) : UserDataSource, BaseRemoteDataSource(){
     override suspend fun duplicateNickname(nickname: String): DataState<APIError> {
         return try {
@@ -57,8 +60,14 @@ class UserDataSourceImpl @Inject constructor(
         return userService.bookmarkRecipeList(page)
     }
 
-    override suspend fun changeBookmarkRecipe(bookMarkRequest: BookMarkRequest): DataState<APIError> =
-        getResult { userService.changeBookmarkRecipe(bookMarkRequest) }
+    override suspend fun changeBookmarkRecipe(bookMarkRequest: BookMarkRequest): DataState<APIError> {
+        if (bookMarkRequest.isBookmark) {
+            bookmarkDataSource.insert(BookmarkEntity(bookMarkRequest.recipeId))
+        } else {
+            bookmarkDataSource.delete(BookmarkEntity(bookMarkRequest.recipeId))
+        }
+        return getResult { userService.changeBookmarkRecipe(bookMarkRequest) }
+    }
 
 
     override suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO): DataState<APIError> {

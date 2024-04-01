@@ -4,20 +4,21 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.ssafy.sungchef.commons.DataState
-import com.ssafy.sungchef.domain.usecase.cooking.GetLackIngredientUseCase
+import com.ssafy.sungchef.domain.model.recipe.RecipeInfo
 import com.ssafy.sungchef.domain.usecase.recipe.GetBookMarkRecipeUseCase
-import com.ssafy.sungchef.domain.usecase.recipe.GetDetailRecipeUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetSearchedBookmarkUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetSearchedVisitRecipeUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.GetVisitRecipeUseCase
 import com.ssafy.sungchef.domain.usecase.recipe.SearchFoodNameUseCase
-import com.ssafy.sungchef.domain.usecase.user.ChangeBookmarkRecipe
+import com.ssafy.sungchef.domain.usecase.user.ChangeBookmarkRecipeUseCase
 import com.ssafy.sungchef.domain.viewstate.recipe.RecipeViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,7 +26,7 @@ import javax.inject.Inject
 class MenuViewModel @Inject constructor(
     private val getVisitRecipeUseCase: GetVisitRecipeUseCase,
     private val getBookMarkRecipeUseCase: GetBookMarkRecipeUseCase,
-    private val changeBookmarkRecipe: ChangeBookmarkRecipe,
+    private val changeBookmarkRecipeUseCase: ChangeBookmarkRecipeUseCase,
     private val searchFoodNameUseCase: SearchFoodNameUseCase,
     private val getSearchedVisitRecipeUseCase: GetSearchedVisitRecipeUseCase,
     private val getSearchedBookmarkUseCase: GetSearchedBookmarkUseCase
@@ -79,7 +80,7 @@ class MenuViewModel @Inject constructor(
 
     fun changeBookmarkRecipe(recipeId: Int, isBookmark: Boolean) {
         viewModelScope.launch {
-            changeBookmarkRecipe.invoke(recipeId, isBookmark).collect() {
+            changeBookmarkRecipeUseCase(recipeId, isBookmark).collect {
                 when (it) {
                     is DataState.Success -> {
                         setState { currentState.copy(isLoading = false) }
