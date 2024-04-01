@@ -176,7 +176,7 @@ private fun Content(
                             bookmark = it1.bookmark,
                             onClick = { onClick(it1.recipeId) }
                         ) { bookmark ->
-                            changeBookMarkState(it, bookmark)
+                            changeBookMarkState(it1.recipeId, bookmark)
                         }
                     }
                 }

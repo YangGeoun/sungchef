@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
-class ChangeBookmarkRecipe @Inject constructor(
+class ChangeBookmarkRecipeUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(recipeId: Int, isBookmark: Boolean): Flow<DataState<BaseModel>> =

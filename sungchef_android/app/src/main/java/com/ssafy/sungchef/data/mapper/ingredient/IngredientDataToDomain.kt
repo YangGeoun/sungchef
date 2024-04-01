@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.data.mapper.ingredient
 
+import com.ssafy.sungchef.R
 import com.ssafy.sungchef.data.model.responsedto.ingredient.IngredientInfoResponse
 import com.ssafy.sungchef.data.model.responsedto.ingredient.IngredientListResponse
 import com.ssafy.sungchef.data.model.responsedto.ingredient.IngredientResponse
@@ -27,11 +28,22 @@ fun IngredientInfoResponse.toRecipeIngredientInfo(): IngredientInfo {
         "SAUCE" to "소스/양념",
         "ETC" to "기타"
     )
+    val image: Map<String, Int> = mapOf(
+        "FRUIT" to R.drawable.fruit,
+        "VEGETABLE" to R.drawable.vegetable,
+        "RICE_GRAIN" to R.drawable.rice_grain,
+        "MEAT_EGG" to R.drawable.meat_egg,
+        "FISH" to R.drawable.fish,
+        "MILK" to R.drawable.milk,
+        "SAUCE" to R.drawable.sauce,
+        "ETC" to R.drawable.etc
+    )
     return IngredientInfo(
         this.recipeIngredientList.map {
             it.toRecipeIngredient()
         },
-        map.get(this.recipeIngredientType)!!
+        map[this.recipeIngredientType]!!,
+        image[this.recipeIngredientType]!!
     )
 }
 
