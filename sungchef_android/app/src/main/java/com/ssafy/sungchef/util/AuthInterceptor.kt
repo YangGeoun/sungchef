@@ -16,6 +16,7 @@ class AuthInterceptor @Inject constructor(
         var request = chain.request()
 
         val accessToken = runBlocking {
+            Log.d(TAG, "refreshToken: ${getToken.getToken()?.refreshToken}")
             getToken.getToken()?.accessToken ?: ""
         }
         Log.d(TAG, "intercept: $accessToken")

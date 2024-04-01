@@ -24,6 +24,7 @@ class AuthAuthenticator @Inject constructor(
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         val refreshToken = runBlocking {
+            Log.d(TAG, "authenticate: ")
             getTokenUseCase.getToken()?.refreshToken
         }
 

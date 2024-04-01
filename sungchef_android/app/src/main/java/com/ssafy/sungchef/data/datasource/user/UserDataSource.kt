@@ -32,7 +32,7 @@ interface UserDataSource {
 
     suspend fun changeBookmarkRecipe(bookMarkRequest: BookMarkRequest): DataState<APIError>
 
-    suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO) : DataState<APIError>
+    suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO) : DataState<ResponseDto<TokenResponse>>
 
     suspend fun getSurvey() : DataState<ResponseDto<SurveyResponse>>
 
@@ -45,4 +45,6 @@ interface UserDataSource {
 
     suspend fun inquire(contactRequestDTO: ContactRequestDTO): Response<APIError>
     suspend fun updateUserInfo(userImage : MultipartBody.Part?, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError>
+
+    suspend fun autoLogin() : DataState<APIError>
 }

@@ -51,7 +51,7 @@ interface UserService {
     suspend fun signupUser(@Body userRequestDTO: UserRequestDTO) : Response<ResponseDto<TokenResponse>>
 
     @POST("user/survey/submit")
-    suspend fun submitSurvey(@Body surveyRequestDTO: SurveyRequestDTO) : Response<APIError>
+    suspend fun submitSurvey(@Body surveyRequestDTO: SurveyRequestDTO) : Response<ResponseDto<TokenResponse>>
 
     @GET("user/survey")
     suspend fun getSurvey() : Response<ResponseDto<SurveyResponse>>
@@ -69,4 +69,7 @@ interface UserService {
         @Part userImage : MultipartBody.Part?,
         @Part("userUpdateRequestDTO") userUpdateRequestDTO: RequestBody,
     ) : Response<APIError>
+
+    @POST("user/autologin")
+    suspend fun autoLogin() : Response<APIError>
 }

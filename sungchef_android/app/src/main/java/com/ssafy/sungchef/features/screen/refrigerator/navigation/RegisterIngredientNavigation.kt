@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.refrigerator.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -18,7 +19,7 @@ fun NavController.navigateRegisterIngredient(
 fun NavGraphBuilder.registerIngredientScreen(navController: NavController){
     composable(registerIngredientNavigationRoute) {
         RegisterIngredientScreen(
-
+            viewModel = hiltViewModel()
         )
     }
 }
