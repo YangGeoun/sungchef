@@ -26,10 +26,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -44,6 +46,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieAnimatable
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ssafy.sungchef.R
+import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
@@ -57,12 +60,22 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun RegisterCookScreen(
-    id: Int
+    viewModel: CookingViewModel,
+    navigateHome: () -> (Unit)
 ) {
+    val uiState = viewModel.uiState.collectAsState().value
+    
     Scaffold(
-        topBar = { TopAppBarComponent(title = { TextComponent(text = "국가 권력급 김치찌개")}) }
-    ) {
-        Content(paddingValues = it)
+        topBar = { TopAppBarComponent(title = { TextComponent(text = "국가 권력급 김치찌개") }) }
+    ) { paddingValues ->
+        Content(
+            paddingValues = paddingValues,
+            setFile = {
+                viewModel.setFile(it)
+            }
+        ) {
+            viewModel.registerCooking(uiState.usedIngredient!!.recipeId, it)
+        }
     }
 }
 
@@ -70,7 +83,9 @@ fun RegisterCookScreen(
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    setFile: (File) -> (Unit),
+    registerCooking: (String) -> (Unit)
 ) {
     val context = LocalContext.current
     var cameraImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -82,8 +97,6 @@ private fun Content(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
             if (success) {
-                // 사진 촬영 성공 후 처리 로직
-                // TODO 서버에 사진을 보내는 로직 필요
                 bitmap = setImgUri(cameraImageUri!!, context)
             }
         }
@@ -97,6 +110,7 @@ private fun Content(
             ".jpg",
             storageDir
         )
+        setFile(file)
         // Manifest의 authority와 FileProvider.getUriForFile의 authority를 통일 시켜야함
         FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
     }
@@ -116,15 +130,23 @@ private fun Content(
                             takePictureLauncher.launch(uri)
                         }
                     }
-                }
+                },
+            contentAlignment = Alignment.Center
         ) {
             if (bitmap == null) {
                 LottieAnimationComponent()
             } else {
-                Image(bitmap = bitmap!!.asImageBitmap(), contentDescription = "dlalsl")
+                Image(
+                    modifier = modifier.fillMaxSize(),
+                    bitmap = bitmap!!.asImageBitmap(),
+                    contentDescription = "dlalsl"
+                )
             }
         }
-        TextFieldComponent(value = text, onValueChange = { text = it}, hintText = "한 줄 평을 입력하세요.")
+        TextFieldComponent(value = text, onValueChange = { text = it }, hintText = "한 줄 평을 입력하세요.")
+        FilledButtonComponent(text = "다음") {
+            registerCooking(text)
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 package com.ssafy.sungchef.domain.model.ingredient
 
 data class IngredientList(
-    val ingredientList: List<IngredientId> = mutableListOf()
+    val ingredientList: MutableList<IngredientId> = mutableListOf()
 )
 
 data class IngredientId(

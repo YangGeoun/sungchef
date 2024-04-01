@@ -1,10 +1,13 @@
 package com.ssafy.sungchef.features.screen.cooking
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -19,7 +22,9 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.sungchef.domain.model.ingredient.IngredientList
@@ -35,7 +40,7 @@ import com.ssafy.sungchef.features.component.TotalSelectComponent
 fun DeleteIngredientScreen(
     viewModel: CookingViewModel,
     id: Int,
-    onNavigateHome: () -> (Unit),
+    onNavigateRegisterCook: (Int) -> (Unit),
     changeNavVisibility: () -> (Unit)
 ) {
     val uiState = viewModel.uiState.collectAsState().value
@@ -61,9 +66,9 @@ fun DeleteIngredientScreen(
                 modifier = Modifier,
                 usedIngredient = uiState.usedIngredient,
                 selectedList = selectedList.value,
-                onNavigateHome = onNavigateHome
-            ) {
-                viewModel.changeAllSelect()
+                onNavigateRegisterCook = { onNavigateRegisterCook(id) }
+            ){
+                viewModel.selectIngredient(it)
             }
         }
     }
@@ -75,8 +80,8 @@ private fun Content(
     modifier: Modifier,
     usedIngredient: LackIngredient,
     selectedList: IngredientList,
-    onNavigateHome: () -> (Unit),
-    onSelectedAll: () -> (Unit)
+    onNavigateRegisterCook: () -> (Unit),
+    onClick: (Int) -> (Unit)
 ) {
     Column(
         modifier = modifier
@@ -90,13 +95,16 @@ private fun Content(
             text = "소진된 재료를 선택해주세요.\n메뉴 추천이 더욱 정확해져요.",
             fontSize = 18.sp
         )
-        TotalSelectComponent(
-            selected = usedIngredient.ingredientInfo.size == selectedList.ingredientList.size,
-            totalCount = usedIngredient.ingredientInfo.size
-        ) {
-            onSelectedAll()
-        }
         Spacer(modifier = modifier.padding(10.dp))
+        Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd){
+            TextComponent(
+                modifier = modifier
+                    .padding(end = 20.dp)
+                    .clickable { },
+                text = "선택 삭제",
+                fontSize = 14.sp,
+            )
+        }
         Column(
             modifier = modifier.weight(1f)
         ) {
@@ -106,13 +114,13 @@ private fun Content(
                         selected = selectedList.ingredientList.any { it.ingredientId == ingredient.recipeIngredientId },
                         name = ingredient.recipeIngredientName
                     ) {
-
+                        onClick(ingredient.recipeIngredientId)
                     }
                 }
             }
         }
         FilledButtonComponent(text = "다음") {
-            onNavigateHome()
+            onNavigateRegisterCook()
         }
     }
 }

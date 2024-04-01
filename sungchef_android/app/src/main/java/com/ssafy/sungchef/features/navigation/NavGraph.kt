@@ -134,8 +134,7 @@ fun NavGraph(
                     navController.navigateSearch(menu = it)
                 }
             ) {
-//                navController.navigateMenuDetail(it)
-                navController.navigateRegisterCook(recipeId = 1)
+                navController.navigateMenuDetail(it)
                 navVisibility = false
             }
             refrigeratorScreen() {
@@ -189,16 +188,15 @@ fun NavGraph(
             registerReceiptScreen(navController)
 
             deleteIngredientScreen(
-                navController,
-                onNavigateHome = { navController.navigateHome() }) {
+                onNavigateRegisterCook = { navController.navigateRegisterCook(id = it) }) {
                 navVisibility = false
             }
-            searchScreen{
+            searchScreen {
                 navController.navigateMenuDetail(it)
                 navVisibility = false
             }
             registerIngredientScreen(navController)
-            registerCookScreen()
+            registerCookScreen(navController = navController)
         }
     }
 }
