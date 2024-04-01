@@ -4,6 +4,7 @@ import com.ssafy.sungchef.BuildConfig
 import com.ssafy.sungchef.data.api.CookingService
 import com.ssafy.sungchef.data.api.RecipeService
 import com.ssafy.sungchef.data.api.RecommendationService
+import com.ssafy.sungchef.data.api.RefrigeratorService
 import com.ssafy.sungchef.data.api.TokenService
 import com.ssafy.sungchef.data.api.UserService
 import com.ssafy.sungchef.util.AuthAuthenticator
@@ -103,6 +104,11 @@ object NetModule {
     @Singleton
     fun provideFridgeService(@MainRetrofit retrofit: Retrofit): CookingService =
         retrofit.create(CookingService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideRefrigeratorService(@MainRetrofit retrofit: Retrofit) : RefrigeratorService =
+        retrofit.create(RefrigeratorService::class.java)
 
     @Provides
     @Singleton
