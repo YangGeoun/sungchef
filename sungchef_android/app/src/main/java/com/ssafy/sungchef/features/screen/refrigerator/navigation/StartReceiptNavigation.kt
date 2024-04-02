@@ -25,7 +25,7 @@ fun NavGraphBuilder.startReceiptScreen(
         StartReceiptScreen(
             viewModel = hiltViewModel(),
             onMoveRegisterReceiptPage = {
-                navController.navigateRegisterReceipt()
+                navController.navigateRegisterReceipt(it)
             },
             onMoveRegisterIngredientPage = {
                 navController.navigateRegisterIngredient()

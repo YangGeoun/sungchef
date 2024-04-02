@@ -11,15 +11,19 @@ import com.ssafy.sungchef.features.screen.refrigerator.receipt.start.StartReceip
 const val registerReceiptNavigationRoute = "register_receipt_screen"
 
 fun NavController.navigateRegisterReceipt(
+    imageUrl : String,
     navOptions: NavOptions? = null
 ) {
-    this.navigate(registerReceiptNavigationRoute, navOptions)
+    this.navigate(registerReceiptNavigationRoute.plus("/$imageUrl"), navOptions)
 }
 
 fun NavGraphBuilder.registerReceiptScreen(navController: NavController){
-    composable(registerReceiptNavigationRoute) {
-        RegisterReceiptScreen(
+    composable(registerReceiptNavigationRoute.plus("/{imageUrl}")) {
 
+        val imageUrl = it.arguments?.getString("imageUrl")
+        RegisterReceiptScreen(
+            viewModel = hiltViewModel(),
+            imageUrl = imageUrl!!
         )
     }
 }

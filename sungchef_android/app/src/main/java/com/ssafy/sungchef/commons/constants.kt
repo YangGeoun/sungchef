@@ -71,3 +71,5 @@ const val ADD_INGREDIENT = "추가하실 재료가 있으신가요?"
 const val SEARCH_INGREDIENT = "재료를 검색해주세요."
 const val RETRY_SEARCH = "재료 검색을 다시해주세요."
 
+// OCR
+const val FAIL_OCR = "영수증 등록이 실패하였습니다."

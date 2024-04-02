@@ -33,7 +33,7 @@ interface RefrigeratorService {
     ) : Response<APIError>
 
     @Multipart
-    @POST("ingredient/ocr/convert")
+    @POST("ingredient/convert/ocr")
     suspend fun registerReceipt(
         @Part convertImage : MultipartBody.Part?
     ) : Response<ResponseDto<String>>

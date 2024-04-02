@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,9 +36,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.content.FileProvider
 import com.ssafy.sungchef.commons.REGISTER_INGREDIENT
 import com.ssafy.sungchef.commons.START_RECEIPT_TITLE
+import com.ssafy.sungchef.features.component.AlertDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.PrimaryContainerButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
+import com.ssafy.sungchef.features.screen.login.ShowLoadingDialog
 import com.ssafy.sungchef.features.ui.theme.dialogBackgroundColor
 import java.io.File
 import java.text.SimpleDateFormat
@@ -50,10 +53,29 @@ private const val TAG = "StartReceiptScreen_성식당"
 @Composable
 fun StartReceiptScreen(
     viewModel : StartReceiptViewModel,
-    onMoveRegisterReceiptPage : () -> Unit,
+    onMoveRegisterReceiptPage : (String) -> Unit,
     onMoveRegisterIngredientPage : () -> Unit,
     onBackNavigate : () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
+
+    ShowLoadingDialog(isLoading = uiState.isLoading)
+
+    when (uiState.code) {
+        200 -> {
+            onMoveRegisterReceiptPage(uiState.imageUrl)
+        }
+        else -> {
+            ShowErrorDialog(
+                showDialog = showDialog,
+                dialogText = uiState.dialogTitle,
+                onCancel = {
+                    showDialog = false
+                }
+            )
+        }
+    }
 
     BackHandler {
         onBackNavigate()
@@ -150,7 +172,7 @@ fun StartReceiptScreen(
 fun ShowDialog(
     viewModel : StartReceiptViewModel,
     isShowDialog : Boolean,
-    onMoveRegisterReceiptPage : () -> Unit,
+    onMoveRegisterReceiptPage : (String) -> Unit,
     onCancel : () -> Unit
 ) {
     if (isShowDialog){
@@ -173,7 +195,7 @@ fun ShowDialog(
 fun DialogContext(
     viewModel : StartReceiptViewModel,
     onCancel: () -> Unit,
-    onMoveRegisterReceiptPage : () -> Unit
+    onMoveRegisterReceiptPage : (String) -> Unit
 ) {
     val context = LocalContext.current
     val activity = context.findActivity()
@@ -202,7 +224,7 @@ fun DialogContext(
                 // 사진 촬영 성공 후 처리 로직
                 // TODO 서버에 사진을 보내는 로직 필요
                 onCancel()
-                onMoveRegisterReceiptPage() // 영수증 등록화면으로 이동
+//                onMoveRegisterReceiptPage() // 영수증 등록화면으로 이동
                 Log.d(TAG, "cameraImageUri: $cameraImageUri")
             }
         }
@@ -214,9 +236,10 @@ fun DialogContext(
     ) { uri: Uri? ->
         Log.d(TAG, "uri: $uri")
         uri?.let {
-            // TODO 서버에 사진을 보내는 로직 필요
             onCancel()
-            onMoveRegisterReceiptPage() // 영수증 등록화면으로 이동
+            // 서버에 사진을 보냅니다.
+            viewModel.registerReceipt(it, context)
+//            onMoveRegisterReceiptPage() // 영수증 등록화면으로 이동
         }
     }
 
@@ -274,6 +297,26 @@ fun DialogContext(
             pickImageLauncher.launch("image/*")
         }
     }
+}
+
+@Composable
+fun ShowErrorDialog(
+    showDialog : Boolean,
+    dialogText : String,
+    onCancel: () -> Unit
+) {
+    if (showDialog){
+        AlertDialogComponent(
+            dialogText = dialogText,
+            onDismissRequest = {
+                onCancel()
+            },
+            showDialog = {
+                onCancel()
+            }
+        )
+    }
+
 }
 
 fun Context.findActivity(): Activity? = when (this) {

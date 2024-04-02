@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.refrigerator.receipt.register
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.MOVE_HOME_SCREEN
 import com.ssafy.sungchef.commons.NEED_INGREDIENT_CONVERT
@@ -29,10 +31,14 @@ import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.refrigerator.RefridgeArray
+
+private const val TAG = "RegisterReceiptScreen_성식당"
 @Composable
 fun RegisterReceiptScreen(
-    
+    viewModel : RegisterReceiptViewModel,
+    imageUrl : String
 ) {
+    Log.d(TAG, "imageUrl: $imageUrl")
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -109,5 +115,8 @@ fun RegisterReceiptScreen(
 @Preview
 @Composable
 fun RegisterReceiptPreview() {
-    RegisterReceiptScreen()
+    RegisterReceiptScreen(
+        hiltViewModel(),
+        ""
+    )
 }
