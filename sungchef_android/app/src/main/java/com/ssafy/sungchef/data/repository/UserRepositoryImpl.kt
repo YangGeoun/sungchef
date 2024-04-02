@@ -88,7 +88,6 @@ class UserRepositoryImpl @Inject constructor(
 
             if (token is DataState.Success) {
                 Log.d(TAG, "surveySubmit: 설문제출성공")
-                userDataStoreRepository.setToken(token.data.data.toJwtToken())
                 emit(DataState.Success(true))
             } else if (token is DataState.Error) {
                 Log.d(TAG, "surveySubmit: 설문 제출 실패, ${token.apiError}")
@@ -147,14 +146,14 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO): Flow<DataState<LoginState>> {
         return flow {
-            val tokenResponse = userDataSource.login(userSnsIdRequestDTO)
+            val loginResponse = userDataSource.login(userSnsIdRequestDTO)
 
-            if (tokenResponse is DataState.Success) {
-                Log.d(TAG, "login: 로그인 성공 : ${tokenResponse.data.code}}")
-                userDataStoreRepository.setToken(tokenResponse.data.data.toJwtToken())
-                emit(DataState.Success(tokenResponse.data.toLoginState()))
-            } else if (tokenResponse is DataState.Error) {
-                emit(DataState.Error(tokenResponse.apiError))
+            if (loginResponse is DataState.Success) {
+                Log.d(TAG, "login: 로그인 성공 : ${loginResponse.data.code}}")
+                userDataStoreRepository.setToken(loginResponse.data.data.toJwtToken())
+                emit(DataState.Success(loginResponse.data.toLoginState(loginResponse.data.data.needSurvey)))
+            } else if (loginResponse is DataState.Error) {
+                emit(DataState.Error(loginResponse.apiError))
             }
         }
 

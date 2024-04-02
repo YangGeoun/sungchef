@@ -56,6 +56,7 @@ fun LoginScreen(
 ) {
     val context = LocalContext.current
     val loginState : LoginState by viewModel.loginState.collectAsState()
+    val needSurvey : Boolean by viewModel.needSurvey.collectAsState()
 
     var isNextPage by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
@@ -73,7 +74,8 @@ fun LoginScreen(
         isNextPage = isNextPage,
         initLoginState = {
             viewModel.initLoginStateCode()
-        }
+        },
+        needSurvey = needSurvey
     )
 
     showMovePageDialog(
@@ -88,7 +90,8 @@ fun LoginScreen(
         },
         initLoginState = {
             viewModel.initLoginStateCode()
-        }
+        },
+        needSurvey = needSurvey
     )
 
     Column(
@@ -205,27 +208,27 @@ fun movePage(
     onMoveHomePage : () -> Unit,
     showDialog : (Boolean) -> Unit,
     isNextPage: Boolean,
-    initLoginState : () -> Unit
+    initLoginState : () -> Unit,
+    needSurvey : Boolean
 ) {
     when (loginState.code) {
         200 -> {
-            onMoveHomePage()
+            if (!needSurvey) {
+                onMoveHomePage()
+            } else {
+                showDialog(true)
 
-            if (isNextPage) {
-                showDialog(false)
+                if (isNextPage){
+                    onMoveSurveyPage()
+                    initLoginState()
+                    showDialog(false)
+                }
             }
         }
         400 -> {
             showDialog(true)
         }
-        403 -> {
-            showDialog(true)
-            if (isNextPage){
-                onMoveSurveyPage()
-                showDialog(false)
-                initLoginState()
-            }
-        }
+
         404 -> {
             showDialog(true)
             if (isNextPage) {
@@ -251,10 +254,11 @@ fun showMovePageDialog(
     loginState : LoginState,
     isNextPage : (Boolean) -> Unit,
     initLoginState: () -> Unit,
+    needSurvey: Boolean
 ) {
     if (showDialog){
         AlertDialogComponent(
-            dialogText = loginState.message,
+            dialogText = if (needSurvey) "설문조사가 필요합니다." else loginState.message,
             onDismissRequest = {
                 onCancel(false)
             },
