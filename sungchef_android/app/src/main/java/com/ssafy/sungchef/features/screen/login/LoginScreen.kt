@@ -63,6 +63,10 @@ fun LoginScreen(
 
     Log.d(TAG, "LoginScreen: $loginState")
 
+    if (loginState.isLoading) {
+
+    }
+
     movePage(
         loginState,
         onMoveSignupPage,
@@ -140,6 +144,11 @@ fun LoginScreen(
         )
     }
 }
+
+//@Composable
+//fun ShowLoadingDialog() {
+//    var showLoa
+//}
 
 fun kakaoLogin(
     context : Context,

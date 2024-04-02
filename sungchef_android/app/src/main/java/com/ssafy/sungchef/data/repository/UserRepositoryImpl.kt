@@ -26,6 +26,7 @@ import com.ssafy.sungchef.domain.repository.UserDataStoreRepository
 import com.ssafy.sungchef.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import okhttp3.MultipartBody
 import retrofit2.Response
 
@@ -148,13 +149,23 @@ class UserRepositoryImpl @Inject constructor(
         return flow {
             val loginResponse = userDataSource.login(userSnsIdRequestDTO)
 
-            if (loginResponse is DataState.Success) {
-                Log.d(TAG, "login: 로그인 성공 : ${loginResponse.data.code}}")
-                userDataStoreRepository.setToken(loginResponse.data.data.toJwtToken())
-                emit(DataState.Success(loginResponse.data.toLoginState(loginResponse.data.data.needSurvey)))
-            } else if (loginResponse is DataState.Error) {
-                emit(DataState.Error(loginResponse.apiError))
+            when (loginResponse) {
+                is DataState.Success -> {
+                    Log.d(TAG, "login: 로그인 성공 : ${loginResponse.data.code}}")
+                    userDataStoreRepository.setToken(loginResponse.data.data.toJwtToken())
+                    emit(DataState.Success(loginResponse.data.toLoginState(loginResponse.data.data.needSurvey)))
+                }
+
+                is DataState.Loading -> {
+                    emit(DataState.Loading())
+                }
+
+                is DataState.Error -> {
+                    emit(DataState.Error(loginResponse.apiError))
+                }
             }
+        }.onStart{
+            emit(DataState.Loading())
         }
 
     }

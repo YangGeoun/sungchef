@@ -43,14 +43,19 @@ class LoginViewModel @Inject constructor(
                     is DataState.Error -> {
                         _loginState.emit(
                             LoginState(
-                                it.apiError.code.toInt(),
-                                it.apiError.message
+                                code = it.apiError.code.toInt(),
+                                message = it.apiError.message,
+                                isLoading = false
                             )
                         )
                     }
 
                     is DataState.Loading -> {
-
+                        _loginState.emit(
+                            LoginState(
+                                isLoading = true
+                            )
+                        )
                     }
                 }
             }
