@@ -216,26 +216,19 @@ fun movePage(
             if (!needSurvey) {
                 onMoveHomePage()
             } else {
-                onMoveSurveyPage()
-                initLoginState()
                 showDialog(true)
-            }
 
-            if (isNextPage) {
-                showDialog(false)
+                if (isNextPage){
+                    onMoveSurveyPage()
+                    initLoginState()
+                    showDialog(false)
+                }
             }
         }
         400 -> {
             showDialog(true)
         }
-//        403 -> {
-//            showDialog(true)
-//            if (isNextPage){
-//                onMoveSurveyPage()
-//                showDialog(false)
-//                initLoginState()
-//            }
-//        }
+
         404 -> {
             showDialog(true)
             if (isNextPage) {

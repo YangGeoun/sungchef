@@ -46,7 +46,7 @@ import com.ssafy.sungchef.features.component.AlertDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.TextComponent
-import com.ssafy.sungchef.features.ui.theme.primaryContainer50
+import com.ssafy.sungchef.features.ui.theme.primaryContainer80
 
 private const val TAG = "SurveyScreen_성식당"
 @Composable
@@ -304,7 +304,7 @@ fun ShowSurveyDialog(
 // 아이템 클릭 시 덮어 씌우는 박스 background 설정
 @Composable
 fun setBackground(isSelected : Boolean) : Color {
-    return if (isSelected) primaryContainer50
+    return if (isSelected) primaryContainer80
     else Color.Transparent
 }
 
