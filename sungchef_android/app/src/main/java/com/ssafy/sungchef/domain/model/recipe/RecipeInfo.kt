@@ -1,7 +1,7 @@
 package com.ssafy.sungchef.domain.model.recipe
 
 data class RecipeInfo(
-    val bookmark: Boolean,
+    var bookmark: Boolean,
     val recipeCookingTime: String,
     val recipeId: Int,
     val recipeImage: String,
