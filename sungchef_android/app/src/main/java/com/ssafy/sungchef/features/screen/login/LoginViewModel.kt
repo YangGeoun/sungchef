@@ -57,7 +57,7 @@ class LoginViewModel @Inject constructor(
                                 isLoading = true
                             )
                         )
-                        delay(5000)
+                        delay(3000)
                     }
                 }
             }

@@ -175,7 +175,7 @@ fun ShowLoadingDialog(
 
             LottieAnimation(
                 modifier = Modifier
-                    .size(150.dp),
+                    .size(300.dp),
                 composition = composition,
                 iterations = 50 // 애니메이션을 50번 반복
             )
