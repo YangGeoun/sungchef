@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.sungchef.commons.DataState
+import com.ssafy.sungchef.commons.RETRY_SEARCH
+import com.ssafy.sungchef.commons.SERVER_INSTABILITY
+import com.ssafy.sungchef.domain.model.refrigerator.RegisterIngredientState
 import com.ssafy.sungchef.domain.model.refrigerator.SearchIngredient
 import com.ssafy.sungchef.domain.usecase.refrigerator.RegisterIngredientUseCase
 import com.ssafy.sungchef.domain.usecase.refrigerator.SearchIngredientUseCase
@@ -37,6 +40,9 @@ class RegisterIngredientViewModel @Inject constructor(
     // 추가된 재료의 id를 관리 하는 리스트
     private val _ingredientIdList = MutableStateFlow<List<Int>>(listOf())
     val ingredientIdList = _ingredientIdList.asStateFlow()
+
+    private val _uiState = MutableStateFlow(RegisterIngredientState())
+    val uiState = _uiState.asStateFlow()
 
     private var searchJob: Job? = null
 
@@ -139,6 +145,9 @@ class RegisterIngredientViewModel @Inject constructor(
                 when (it) {
                     is DataState.Success -> {
                         Log.d(TAG, "registerSuccess: ${it.data.code}")
+                        _uiState.emit(
+                            RegisterIngredientState(it.data.code.toInt())
+                        )
                     }
 
                     is DataState.Loading -> {
@@ -146,7 +155,23 @@ class RegisterIngredientViewModel @Inject constructor(
                     }
 
                     is DataState.Error -> {
-                        Log.d(TAG, "registerSuccess: ${it.apiError.code}")
+                        when (it.apiError.code) {
+                            400L -> {
+                                _uiState.emit(
+                                    RegisterIngredientState(400, RETRY_SEARCH)
+                                )
+                            }
+
+                            500L -> {
+                                _uiState.emit(
+                                    RegisterIngredientState(500, SERVER_INSTABILITY)
+                                )
+                            }
+
+                            else -> {
+
+                            }
+                        }
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.features.screen.refrigerator.receipt.register
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,10 +28,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,7 +42,9 @@ import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.ADD_INGREDIENT
 import com.ssafy.sungchef.commons.REGISTER_INGREDIENT_BUTTON
 import com.ssafy.sungchef.commons.SEARCH_INGREDIENT
+import com.ssafy.sungchef.domain.model.refrigerator.RegisterIngredientState
 import com.ssafy.sungchef.domain.model.refrigerator.SearchIngredient
+import com.ssafy.sungchef.features.component.AlertDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.ImageComponent
@@ -50,14 +55,20 @@ private const val TAG = "RegisterIngredientScree_성식당"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterIngredientScreen(
-    viewModel : RegisterIngredientViewModel
+    viewModel : RegisterIngredientViewModel,
+    onMovePage : () -> Unit
 ) {
+    val context = LocalContext.current
 
     val searchText by viewModel.searchText.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
     val searchResult by viewModel.searchIngredientList.collectAsState()
     val ingredientList by viewModel.ingredientList.collectAsState()
     val ingredientIdList by viewModel.ingredientIdList.collectAsState()
+
+    val uiState by viewModel.uiState.collectAsState()
+
+    CheckUiState(uiState, onMovePage)
 
     Log.d(TAG, "ingredientIdList: $ingredientIdList")
     Column(
@@ -178,8 +189,12 @@ fun RegisterIngredientScreen(
                 .fillMaxWidth(),
             text = REGISTER_INGREDIENT_BUTTON
         ) {
-            viewModel.registerIngredient()
-            // TODO 서버에 재료를 등록하고 냉장고 조회 화면으로 넘어가기
+            if (ingredientList.isEmpty()){
+                Toast.makeText(context, SEARCH_INGREDIENT, Toast.LENGTH_SHORT).show()
+            } else {
+                viewModel.registerIngredient()
+            }
+
         }
     }
 }
@@ -229,10 +244,50 @@ fun IngredientItem(
     }
 }
 
+@Composable
+fun CheckUiState(
+    uiState : RegisterIngredientState,
+    onMovePage: () -> Unit
+) {
+    var showDialog by remember { mutableStateOf(true) }
+
+    when (uiState.code) {
+        200 -> onMovePage()
+        400 -> ShowDialog(showDialog, uiState.dialogTitle){
+            showDialog = false
+        }
+
+        500 -> ShowDialog(showDialog, uiState.dialogTitle){
+            showDialog = false
+        }
+    }
+}
+
+@Composable
+fun ShowDialog(
+    showDialog : Boolean,
+    message : String,
+    onCancel : (Boolean) -> Unit
+) {
+    if (showDialog){
+        AlertDialogComponent(
+            dialogText = message,
+            onDismissRequest = {
+                onCancel(false)
+            },
+            showDialog = {
+                onCancel(false)
+            }
+        )
+    }
+}
+
+
 @Preview
 @Composable
 fun RegisterIngredientPreview() {
     RegisterIngredientScreen(
-        hiltViewModel()
+        hiltViewModel(),
+        {}
     )
 }

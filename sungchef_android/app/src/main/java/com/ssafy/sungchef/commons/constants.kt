@@ -69,3 +69,5 @@ const val DELETE_ALL = "선택 삭제"
 // 직접 등록 시작
 const val ADD_INGREDIENT = "추가하실 재료가 있으신가요?"
 const val SEARCH_INGREDIENT = "재료를 검색해주세요."
+const val RETRY_SEARCH = "재료 검색을 다시해주세요."
+

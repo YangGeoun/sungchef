@@ -60,7 +60,7 @@ import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
 
 private const val TAG = "NavGraph_성식당"
 
-@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun NavGraph(
     startDestination : String,
@@ -196,7 +196,10 @@ fun NavGraph(
                 navController.navigateMenuDetail(it)
                 navVisibility = false
             }
-            registerIngredientScreen(navController)
+            registerIngredientScreen(navController){
+                navVisibility = it
+            }
+
             registerCookScreen(navController = navController)
         }
     }

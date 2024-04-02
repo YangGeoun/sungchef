@@ -5,6 +5,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
+import com.ssafy.sungchef.features.screen.home.navigation.navigateHome
 import com.ssafy.sungchef.features.screen.refrigerator.receipt.register.RegisterIngredientScreen
 import com.ssafy.sungchef.features.screen.refrigerator.receipt.register.RegisterReceiptScreen
 
@@ -16,10 +18,21 @@ fun NavController.navigateRegisterIngredient(
     this.navigate(registerIngredientNavigationRoute, navOptions)
 }
 
-fun NavGraphBuilder.registerIngredientScreen(navController: NavController){
+fun NavGraphBuilder.registerIngredientScreen(
+    navController: NavController,
+    navVisibility : (Boolean) -> Unit
+){
     composable(registerIngredientNavigationRoute) {
         RegisterIngredientScreen(
-            viewModel = hiltViewModel()
+            viewModel = hiltViewModel(),
+            onMovePage = {
+                navController.navigateRefrigerator(
+                    navOptions {
+                        popUpTo(refrigeratorNavigationRoute)
+                    }
+                )
+                navVisibility(true)
+            }
         )
     }
 }
