@@ -16,7 +16,8 @@ fun AlertDialogComponent(
     onDismissRequest : () -> Unit,
     showDialog : (Boolean) -> Unit,
     isNextPage : (Boolean) -> Unit = {},
-    initUiState : () -> Unit = {}
+    initUiState : () -> Unit = {},
+    onCancel : () -> Unit = {}
 ) {
    AlertDialog(
        modifier = modifier,
@@ -38,6 +39,7 @@ fun AlertDialogComponent(
                 onClick = {
                     isNextPage(true)
                     showDialog(false)
+                    onCancel()
                 }
             ) {
                 TextComponent(text = "확인")
@@ -48,6 +50,7 @@ fun AlertDialogComponent(
                onClick = {
                    initUiState()
                    showDialog(false)
+                   onCancel()
                }
            ) {
                TextComponent(text = "취소")

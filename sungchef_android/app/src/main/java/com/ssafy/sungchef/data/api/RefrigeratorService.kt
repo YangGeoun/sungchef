@@ -5,6 +5,7 @@ import com.ssafy.sungchef.data.model.requestdto.IngredientRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.FridgeData
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
+import com.ssafy.sungchef.data.model.responsedto.ocr.OcrResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -37,4 +38,9 @@ interface RefrigeratorService {
     suspend fun registerReceipt(
         @Part convertImage : MultipartBody.Part?
     ) : Response<ResponseDto<String>>
+
+    @GET("ingredient/ocr/{convertOCRKey}")
+    suspend fun getOcrConvert(
+        @Path("convertOCRKey") convertOCRKey : String
+    ) : Response<ResponseDto<OcrResponse>>
 }

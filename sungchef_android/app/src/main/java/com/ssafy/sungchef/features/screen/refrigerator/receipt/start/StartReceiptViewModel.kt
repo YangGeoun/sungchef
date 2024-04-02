@@ -75,4 +75,8 @@ class StartReceiptViewModel @Inject constructor(
         val newState = currentState.reduce()
         _uiState.value = newState
     }
+
+    fun initUiState() {
+        _uiState.value = RegisterReceiptState()
+    }
 }

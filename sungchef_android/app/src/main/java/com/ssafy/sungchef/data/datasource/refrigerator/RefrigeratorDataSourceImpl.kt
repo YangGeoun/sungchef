@@ -9,6 +9,7 @@ import com.ssafy.sungchef.data.model.responsedto.FridgeData
 import com.ssafy.sungchef.data.model.requestdto.IngredientRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
+import com.ssafy.sungchef.data.model.responsedto.ocr.OcrResponse
 
 import okhttp3.MultipartBody
 
@@ -47,6 +48,12 @@ class RefrigeratorDataSourceImpl @Inject constructor(
     override suspend fun registerReceipt(convertImage: MultipartBody.Part?): DataState<ResponseDto<String>> {
         return getResult {
             refrigeratorService.registerReceipt(convertImage)
+        }
+    }
+
+    override suspend fun getOcrConvert(convertOCRKey: String): DataState<ResponseDto<OcrResponse>> {
+        return getResult {
+            refrigeratorService.getOcrConvert(convertOCRKey)
         }
     }
 }

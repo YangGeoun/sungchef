@@ -4,12 +4,14 @@ import android.util.Log
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.datasource.refrigerator.RefrigeratorDataSource
 import com.ssafy.sungchef.data.mapper.refrigerator.toIngredientRequestDTO
+import com.ssafy.sungchef.data.mapper.refrigerator.toMapIngredient
 import com.ssafy.sungchef.data.mapper.refrigerator.toRegisterReceiptState
 import com.ssafy.sungchef.data.mapper.refrigerator.toSearchIngredient
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.responsedto.FridgeData
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
+import com.ssafy.sungchef.data.model.responsedto.ocr.ConvertInfo
 import com.ssafy.sungchef.domain.model.refrigerator.RegisterReceiptState
 import com.ssafy.sungchef.domain.model.refrigerator.SearchIngredient
 import com.ssafy.sungchef.domain.repository.RefrigeratorRepository
@@ -91,5 +93,25 @@ class RefrigeratorRepositoryImpl @Inject constructor(
             refrigeratorDataSource.deleteFridgeIngredientList()
         }
 
+    }
+
+    override suspend fun getOcrConvert(convertOCRKey: String): Flow<DataState<Map<String, List<ConvertInfo>>>> {
+        return flow {
+            val ocrResponse = refrigeratorDataSource.getOcrConvert(convertOCRKey)
+
+            when (ocrResponse) {
+                is DataState.Success -> {
+                    emit(DataState.Success(ocrResponse.data.data.toMapIngredient()))
+                }
+
+                is DataState.Loading -> {
+
+                }
+
+                is DataState.Error -> {
+                    emit(DataState.Error(ocrResponse.apiError))
+                }
+            }
+        }
     }
 }

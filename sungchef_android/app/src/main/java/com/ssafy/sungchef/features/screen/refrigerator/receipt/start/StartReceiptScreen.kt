@@ -60,18 +60,25 @@ fun StartReceiptScreen(
     val uiState by viewModel.uiState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
+    val toggleDialog = { show : Boolean ->
+        showDialog = show
+    }
     ShowLoadingDialog(isLoading = uiState.isLoading)
 
     when (uiState.code) {
         200 -> {
             onMoveRegisterReceiptPage(uiState.imageUrl)
+            viewModel.initUiState()
         }
-        else -> {
+        500 -> {
+            toggleDialog(true)
+
             ShowErrorDialog(
                 showDialog = showDialog,
                 dialogText = uiState.dialogTitle,
                 onCancel = {
-                    showDialog = false
+                    toggleDialog(false)
+                    viewModel.initUiState()
                 }
             )
         }
@@ -313,10 +320,10 @@ fun ShowErrorDialog(
             },
             showDialog = {
                 onCancel()
-            }
+            },
+            onCancel = onCancel
         )
     }
-
 }
 
 fun Context.findActivity(): Activity? = when (this) {

@@ -6,6 +6,7 @@ import com.ssafy.sungchef.data.model.requestdto.IngredientRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.FridgeData
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
+import com.ssafy.sungchef.data.model.responsedto.ocr.ConvertInfo
 import com.ssafy.sungchef.domain.model.refrigerator.RegisterReceiptState
 import com.ssafy.sungchef.domain.model.refrigerator.SearchIngredient
 import kotlinx.coroutines.flow.Flow
@@ -21,4 +22,6 @@ interface RefrigeratorRepository {
 
     suspend fun getFridgeIngredientList() : Flow<DataState<ResponseDto<FridgeData>>>
     suspend fun deleteFridgeIngredientList() : Flow<DataState<APIError>>
+
+    suspend fun getOcrConvert(convertOCRKey : String) : Flow<DataState<Map<String, List<ConvertInfo>>>>
 }
