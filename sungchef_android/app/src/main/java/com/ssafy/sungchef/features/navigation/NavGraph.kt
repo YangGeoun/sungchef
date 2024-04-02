@@ -55,6 +55,7 @@ import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerIngred
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerReceiptScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.startReceiptScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
+import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
 import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
 
 

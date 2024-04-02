@@ -1,13 +1,13 @@
 package com.ssafy.sungchef.data.repository
 
+import android.util.Log
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.datasource.refrigerator.RefrigeratorDataSource
 import com.ssafy.sungchef.data.mapper.refrigerator.toIngredientRequestDTO
 import com.ssafy.sungchef.data.mapper.refrigerator.toRegisterReceiptState
 import com.ssafy.sungchef.data.mapper.refrigerator.toSearchIngredient
 import com.ssafy.sungchef.data.model.APIError
-import com.ssafy.sungchef.data.model.requestdto.IngredientId
-import com.ssafy.sungchef.data.model.requestdto.IngredientRequestDTO
+import com.ssafy.sungchef.data.model.responsedto.FridgeData
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
 import com.ssafy.sungchef.domain.model.refrigerator.RegisterReceiptState
@@ -74,6 +74,21 @@ class RefrigeratorRepositoryImpl @Inject constructor(
 
         }.onStart {
             emit(DataState.Loading())
+        }
+
+    }
+
+    override suspend fun getFridgeIngredientList(): Flow<DataState<ResponseDto<FridgeData>>> {
+        Log.d("TAG", "Repo flow전 getFridgeIngredientList: ")
+
+        return flow{
+            Log.d("TAG", "Repo getFridgeIngredientList: ")
+            emit(refrigeratorDataSource.getFridgeIngredientList())
+        }
+    }
+    override suspend fun deleteFridgeIngredientList(): Flow<DataState<APIError>> {
+        return flow {
+            refrigeratorDataSource.deleteFridgeIngredientList()
         }
 
     }

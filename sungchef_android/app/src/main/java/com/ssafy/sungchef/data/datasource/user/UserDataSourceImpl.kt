@@ -28,6 +28,8 @@ import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
 import com.ssafy.sungchef.data.model.responsedto.user.LoginResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import javax.inject.Inject
@@ -110,10 +112,25 @@ class UserDataSourceImpl @Inject constructor(
     override suspend fun inquire(contactRequestDTO: ContactRequestDTO) : Response<APIError> {
         return userService.userContact(contactRequestDTO)
     }
-    override suspend fun updateUserInfo(userImage : MultipartBody.Part?, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError> {
+    override suspend fun updateUserInfo(userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError> {
         val gson = Gson()
         val productJson = gson.toJson(userUpdateRequestDTO)
-        return userService.updateUserInfo(userImage, productJson.toRequestBody("application/json".toMediaTypeOrNull()))
+
+//        return userService.updateUserInfo(userUpdateRequestDTO.userNickName,
+//            userUpdateRequestDTO.userGender,
+//            userUpdateRequestDTO.userImage,
+//            userUpdateRequestDTO.userBirthDate)
+
+        val map = HashMap<String, RequestBody>()
+        val nickname = RequestBody.create("application/json".toMediaTypeOrNull(), userUpdateRequestDTO.userNickName)
+        val gender = RequestBody.create("application/json".toMediaTypeOrNull(), userUpdateRequestDTO.userGender.toString())
+        val birthDate = RequestBody.create("application/json".toMediaTypeOrNull(), userUpdateRequestDTO.userBirthDate)
+        Log.d(TAG, "updateUserInfo: ${userUpdateRequestDTO.userImage}")
+        map["userNickName"] = nickname
+        map["userGender"] = gender
+        map["userBirthdate"] = birthDate
+
+        return userService.updateUserInfo(userUpdateRequestDTO.userImage, map)
 //        return userService.updateUserInfo(userImage, userUpdateRequestDTO)
     }
 
