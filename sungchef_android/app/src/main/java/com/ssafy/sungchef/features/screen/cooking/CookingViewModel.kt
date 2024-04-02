@@ -41,7 +41,6 @@ class CookingViewModel @Inject constructor(
     private val deleteIngredientUseCase: DeleteIngredientUseCase
 ) : BaseViewModel<CookingViewState, CookingEvent>() {
     var textToSpeech: TextToSpeech? = null
-    val selectedList = mutableStateOf(IngredientList())
 
     private val file = mutableStateOf<File?>(null)
     override fun createInitialState(): CookingViewState = CookingViewState()
@@ -109,7 +108,7 @@ class CookingViewModel @Inject constructor(
                                 result.add(ingredient)
                             }
                         }
-                        setState { currentState.copy(isLoading=false, usingIngredient = result) }
+                        setState { currentState.copy(isLoading = false, usingIngredient = result) }
                         setState {
                             currentState.copy(isLoading = false, usedIngredient = it.data)
                         }
@@ -127,32 +126,22 @@ class CookingViewModel @Inject constructor(
         }
     }
 
-    fun selectIngredient(id: Int) {
-        if (selectedList.value.ingredientList.any { it.ingredientId == id }
-        ) {
-            selectedList.value.ingredientList.removeIf { it.ingredientId == id }
-        } else {
-            selectedList.value.ingredientList.add(IngredientId(id))
-        }
-        Log.d("TAG", "selectIngredient: ${selectedList.value}")
-    }
-
-    fun deleteIngredient() {
+    fun deleteIngredient(ingredient: Ingredient) {
         viewModelScope.launch {
-            deleteIngredientUseCase(selectedList.value).collect { dataState ->
+            deleteIngredientUseCase(IngredientList(mutableListOf(IngredientId(ingredient.recipeIngredientId)))).collect { dataState ->
                 when (dataState) {
                     is DataState.Success -> {
-                        selectedList.value = IngredientList()
-                        setState { currentState.copy(isLoading = false) }
+                        val result = uiState.value.usingIngredient.toMutableList().apply {
+                            remove(ingredient)
+                        }.toList()
+                        setState { currentState.copy(isLoading = false, usingIngredient = result) }
                     }
 
                     is DataState.Loading -> {
-                        selectedList.value = IngredientList()
                         setState { currentState.copy(isLoading = true) }
                     }
 
                     is DataState.Error -> {
-                        selectedList.value = IngredientList()
                         setState { currentState.copy(isLoading = false) }
                     }
                 }
@@ -170,7 +159,7 @@ class CookingViewModel @Inject constructor(
                 registerCookingUseCase(file.value!!, id, description).collect {
                     when (it) {
                         is DataState.Success -> {
-                            Log.d("TAG", "registerCooking: ${it.data.message}")
+                            setState { currentState.copy(isLoading = false) }
                         }
 
                         is DataState.Error -> {

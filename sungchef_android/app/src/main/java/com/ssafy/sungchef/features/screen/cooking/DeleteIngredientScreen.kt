@@ -47,7 +47,6 @@ fun DeleteIngredientScreen(
     changeNavVisibility: () -> (Unit)
 ) {
     val uiState = viewModel.uiState.collectAsState().value
-    val selectedList = viewModel.selectedList
 
     LaunchedEffect(true) {
         viewModel.getUsedIngredient(id)
@@ -68,13 +67,10 @@ fun DeleteIngredientScreen(
             Content(
                 paddingValues = paddingValues,
                 modifier = Modifier,
-                usedIngredient = uiState.usedIngredient,
-                selectedList = selectedList.value,
-                onDeleteIngredient = { viewModel.deleteIngredient() },
+                usingIngredient = uiState.usingIngredient,
+                onDeleteIngredient = { viewModel.deleteIngredient(it) },
                 onNavigateRegisterCook = { onNavigateRegisterCook(id) }
-            ) {
-                viewModel.selectIngredient(it)
-            }
+            )
         }
     }
 }
@@ -83,11 +79,9 @@ fun DeleteIngredientScreen(
 private fun Content(
     paddingValues: PaddingValues,
     modifier: Modifier,
-    usedIngredient: LackIngredient,
-    selectedList: IngredientList,
-    onDeleteIngredient: () -> (Unit),
-    onNavigateRegisterCook: () -> (Unit),
-    onClick: (Int) -> (Unit)
+    usingIngredient: List<Ingredient>,
+    onDeleteIngredient: (Ingredient) -> (Unit),
+    onNavigateRegisterCook: () -> (Unit)
 ) {
     Column(
         modifier = modifier
@@ -103,17 +97,15 @@ private fun Content(
         )
         Spacer(modifier = modifier.padding(10.dp))
         LazyColumn(
-            modifier = modifier.weight(1f)
+            modifier = modifier
+                .weight(1f)
+                .padding(horizontal = 20.dp)
         ) {
-            usedIngredient.ingredientInfo.map { ingredientInfo ->
-                items(ingredientInfo.recipeIngredientList) {ingredient->
-                    IngredientSelectComponent(
-                        selected = selectedList.ingredientList.any { it.ingredientId == ingredient.recipeIngredientId },
-                        name = ingredient.recipeIngredientName
-                    ) {
-                        onClick(ingredient.recipeIngredientId)
-                    }
-                }
+            itemsIndexed(usingIngredient) { index, item ->
+                IngredientSelectComponent(
+                    name = item.recipeIngredientName,
+                    onDelete = { onDeleteIngredient(item) }
+                )
             }
         }
         FilledButtonComponent(text = "다음") {

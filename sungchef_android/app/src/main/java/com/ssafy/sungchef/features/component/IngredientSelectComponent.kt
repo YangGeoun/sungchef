@@ -24,29 +24,23 @@ import com.ssafy.sungchef.commons.DELETE_ALL
 @Composable
 fun IngredientSelectComponent(
     modifier: Modifier = Modifier,
-    selected: Boolean = false,
     name: String = "",
-    onSelect: () -> (Unit)
+    onDelete: () -> (Unit)
 ) {
-    var select:Boolean by remember{ mutableStateOf(selected) }
     Row(
         modifier = modifier
             .fillMaxWidth()
             .background(color = Color.White),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        RadioButton(
-            modifier = modifier.padding(start = 10.dp),
-            selected = select,
-            onClick = {
-                onSelect()
-                select = !select
-            }
-        )
         TextComponent(
             modifier = modifier
                 .weight(1f),
             text = name
+        )
+        IconButtonComponent(
+            onClick = { onDelete() },
+            painter = painterResource(id = R.drawable.icon_delete)
         )
     }
 }
