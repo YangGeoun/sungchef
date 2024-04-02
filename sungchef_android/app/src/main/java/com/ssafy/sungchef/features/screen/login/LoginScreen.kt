@@ -3,7 +3,9 @@ package com.ssafy.sungchef.features.screen.login
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -43,6 +51,8 @@ import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.LoginImageComponent
 import com.ssafy.sungchef.features.screen.survey.SurveyScreen
+import com.ssafy.sungchef.features.ui.theme.primaryContainer80
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toCollection
 
 
@@ -63,9 +73,8 @@ fun LoginScreen(
 
     Log.d(TAG, "LoginScreen: $loginState")
 
-    if (loginState.isLoading) {
 
-    }
+    ShowLoadingDialog(isLoading = loginState.isLoading)
 
     movePage(
         loginState,
@@ -145,10 +154,34 @@ fun LoginScreen(
     }
 }
 
-//@Composable
-//fun ShowLoadingDialog() {
-//    var showLoa
-//}
+@Composable
+fun ShowLoadingDialog(
+    isLoading : Boolean
+) {
+    if (isLoading) {
+        Dialog(
+            onDismissRequest = {
+                
+            },
+            // 다이얼로그 시 뒤로 가기와 바깥 클릭 시 종료 안되게
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            )
+        ) {
+            val composition by rememberLottieComposition(
+                LottieCompositionSpec.RawRes(R.raw.loading_animation)
+            )
+
+            LottieAnimation(
+                modifier = Modifier
+                    .size(150.dp),
+                composition = composition,
+                iterations = 50 // 애니메이션을 50번 반복
+            )
+        }
+    }
+}
 
 fun kakaoLogin(
     context : Context,

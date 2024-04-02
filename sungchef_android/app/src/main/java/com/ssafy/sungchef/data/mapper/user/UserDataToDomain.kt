@@ -42,9 +42,9 @@ fun LoginResponse.toJwtToken() : JwtToken {
 
 fun<T> ResponseDto<T>.toLoginState(needSurvey : Boolean) : LoginState {
     return LoginState(
-        this.code,
-        this.message,
-        needSurvey
+        code = this.code,
+        message = this.message,
+        needSurvey = needSurvey
     )
 }
 
