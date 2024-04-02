@@ -42,10 +42,32 @@ fun OutlinedButtonComponent(
     }
 }
 
+@Composable
+fun OutlinedButtonComponentNotMax(
+    modifier: Modifier = Modifier,
+    text: String,
+    shape: RoundedCornerShape = RoundedCornerShape(15),
+    borderColor : Color,
+    onClick: () -> Unit
+) {
+    OutlinedButton(
+        modifier = modifier,
+        onClick = { onClick() },
+        // OutlinedButton의 border 매개변수를 사용하여 테두리 색상을 설정
+        border = ButtonDefaults.outlinedButtonBorder.copy(brush = SolidColor(borderColor)),
+        shape = shape,
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = borderColor // 텍스트와 아이콘 색상을 테두리 색상과 동일하게 설정
+        )
+    ) {
+        Text(text = text)
+    }
+}
+
 @Preview
 @Composable
 fun OutlinedButtonComponentPreview(){
-    OutlinedButtonComponent(
+    OutlinedButtonComponentNotMax(
         text = "outlined 버튼입니다.",
         shape = RoundedCornerShape(15),
         borderColor = MaterialTheme.colorScheme.primary,

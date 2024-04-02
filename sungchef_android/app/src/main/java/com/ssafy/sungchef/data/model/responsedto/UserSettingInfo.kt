@@ -10,6 +10,6 @@ data class UserSettingInfo (
 data class UserSettingInfoData (
     val userNickName : String,
     val userGender : String,
-    val userImage : String,
+    val userImage : String?,
     val userBirthdate : String
 )

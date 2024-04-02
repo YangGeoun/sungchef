@@ -8,7 +8,7 @@ data class UserSimple (
 
 data class UserProfile(
     val userNickname : String,
-    val userImage : String,
+    val userImage : String?,
     val makeRecipeCount : Int,
     val bookmarkRecipeCount : Int
 )
