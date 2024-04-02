@@ -1,7 +1,7 @@
 package com.ssafy.sungchef.data.model.requestdto
 
 data class IngredientRequestDTO(
-    val ingredientList : MutableList<IngredientId>
+    val ingredientIdList : MutableList<IngredientId>
 )
 
 data class IngredientId(
