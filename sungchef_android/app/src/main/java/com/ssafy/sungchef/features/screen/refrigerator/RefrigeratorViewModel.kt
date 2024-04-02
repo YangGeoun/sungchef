@@ -18,6 +18,7 @@ import com.ssafy.sungchef.data.model.requestdto.UserUpdateRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeListData
 import com.ssafy.sungchef.data.model.responsedto.IngredientItem
+import com.ssafy.sungchef.data.model.responsedto.IngredientListData
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeListData
 import com.ssafy.sungchef.data.model.responsedto.UserProfile
@@ -46,6 +47,8 @@ class RefrigeratorViewModel @Inject constructor(
 
 
     var items = MutableStateFlow(mutableListOf<IngredientItem>())
+    var items_detail = MutableStateFlow(mutableListOf(mutableListOf<IngredientListData>()))
+    var isRefrigeratorEmpty : MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 
     init {
@@ -54,18 +57,31 @@ class RefrigeratorViewModel @Inject constructor(
     }
 
     fun getFridgeInfo() {
+        items.value.clear()
+        items_detail.value.clear()
         var itms = listOf(
-            IngredientItem((R.drawable.fruit), -1, "과일"),
-            IngredientItem((R.drawable.vegetable), -1, "채소"),
-            IngredientItem((R.drawable.rice_grain), -1, "쌀/잡곡"),
-            IngredientItem((R.drawable.meat_egg), -1, "육류"),
-            IngredientItem((R.drawable.fish), -1, "수산"),
-            IngredientItem((R.drawable.milk), -1, "유제품"),
-            IngredientItem((R.drawable.sauce), -1, "조미료"),
-            IngredientItem((R.drawable.etc), -1, "기타"),
+            IngredientItem((R.drawable.fruit), 0, "과일"),
+            IngredientItem((R.drawable.vegetable), 0, "채소"),
+            IngredientItem((R.drawable.rice_grain), 0, "쌀/잡곡"),
+            IngredientItem((R.drawable.meat_egg), 0, "육류"),
+            IngredientItem((R.drawable.fish), 0, "수산"),
+            IngredientItem((R.drawable.milk), 0, "유제품"),
+            IngredientItem((R.drawable.sauce), 0, "조미료"),
+            IngredientItem((R.drawable.etc), 0, "기타"),
 
             )
         items.value.addAll(itms)
+        var detailitms = mutableListOf(
+            mutableListOf<IngredientListData>(),
+            mutableListOf<IngredientListData>(),
+            mutableListOf<IngredientListData>(),
+            mutableListOf<IngredientListData>(),
+            mutableListOf<IngredientListData>(),
+            mutableListOf<IngredientListData>(),
+            mutableListOf<IngredientListData>(),
+            mutableListOf<IngredientListData>(),
+            )
+        items_detail.value.addAll(detailitms)
 
         //API통신으로 데이터 가져오기
         viewModelScope.launch {
@@ -74,12 +90,19 @@ class RefrigeratorViewModel @Inject constructor(
 
                 when(it){
                     is DataState.Success -> {
-                        Log.d(TAG, "getFridgeInfo: Success")
-                        var datalst = it.data.data.ingredientInfoList
-                        for (idx in 0 until 8){
-                            items.value[idx].num = datalst[idx].ingredientResList.size
+                        if(it.data.code == 200){
+                            Log.d(TAG, "getFridgeInfo: Success")
+                            var datalst = it.data.data.ingredientInfoList
+                            for (idx in 0 until 8){
+                                items.value[idx].num = datalst[idx].ingredientResList.size
+                                datalst[idx].ingredientResList.forEach {detail ->
+                                    items_detail.value[idx].add(IngredientListData( detail.ingredientName, detail.ingredientId,))
+                                }
+                            }
+    //                        Log.d(TAG, "getFridgeInfo: ${ datalst}")
+                        } else if(it.data.code == 204){
+                            isRefrigeratorEmpty.value = true
                         }
-//                        Log.d(TAG, "getFridgeInfo: ${ datalst}")
                     }
 
                     is DataState.Error -> {
@@ -94,6 +117,10 @@ class RefrigeratorViewModel @Inject constructor(
             }
 
         }
+    }
+
+    fun setIsRefrigeratorEmptyFalse(){
+        isRefrigeratorEmpty.value = false
     }
 
 

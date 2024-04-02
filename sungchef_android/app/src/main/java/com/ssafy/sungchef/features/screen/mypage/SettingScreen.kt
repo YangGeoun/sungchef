@@ -100,11 +100,13 @@ fun SettingScreen(
     val userGender by viewModel.userGender.collectAsState()
     val uiState: BaseModel by viewModel.isDuplicateName.collectAsState()
     val isDuplicateCheckNeeded by viewModel.isDuplicateCheckNeeded.collectAsState()
+    val isSaveCompleted by viewModel.isSaveCompleted.collectAsState()
     val context = LocalContext.current
 
 //    val userNickname = "헤헿"
     LaunchedEffect(key1 = true){
         viewModel.getUserSettingInfo()
+        viewModel.isSaveCompleted.value = false
     }
 
     LaunchedEffect(uiState){
@@ -115,6 +117,11 @@ fun SettingScreen(
             else viewModel.setIsDuplicateCheckNeeded(true)
             Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    if(isSaveCompleted) {
+        viewModel.setIsSaveCompletedFalse()
+        navController.popBackStack()
     }
 
     Scaffold(
@@ -131,7 +138,7 @@ fun SettingScreen(
 
                         //API 저장 필요//
                         viewModel.updateUserSettingInfo(context)
-                        navController.popBackStack()
+//                        navController.popBackStack()
                     }else{
                         Toast.makeText(context, "닉네임 중복체크를 먼저 진행해주세요.", Toast.LENGTH_SHORT).show()
                     }
@@ -204,7 +211,7 @@ fun SetProfileImage(userProfileImage: String?, viewModel: SettingViewModel) {
             // 기본 이미지 또는 초기 이미지를 표시
             ImageComponent(modifier = Modifier
                 .size(120.dp)
-                .clip(CircleShape), imageResource = R.drawable.icon_image_fail)
+                .clip(CircleShape), imageResource = R.drawable.account_circle)
         }
 
         TextComponent(
@@ -452,9 +459,9 @@ fun Logout(){
         .padding(end = 20.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.End) {
-        SmallTextButtonComponent(text = "로그아웃", color = Color.Blue,
+        SmallTextButtonComponent(text = "로그아웃", color = Color.Gray,
             modifier = Modifier.padding(bottom = 10.dp))
-        SmallTextButtonComponent(text = "회원탈퇴", color = Color.Red)
+//        SmallTextButtonComponent(text = "회원탈퇴", color = Color.Red)
 
     }
 }

@@ -13,22 +13,22 @@ enum class BottomNavigationItem(
     val route: String = ""
 ) {
     Home(
-        label = "Home",
+        label = "홈",
         icon = R.drawable.home,
         route = homeNavigationRoute
     ),
     Menu(
-        label = "Menu",
+        label = "메뉴",
         icon = R.drawable.skillet,
         route = menuNavigationRoute
     ),
     Refrigerator(
-        label = "Refrigerator",
+        label = "냉장고",
         icon = R.drawable.kitchen,
         route = refrigeratorNavigationRoute
     ),
     Profile(
-        label = "Profile",
+        label = "마이페이지",
         icon = R.drawable.account_circle,
         route = myPageRoute
     )

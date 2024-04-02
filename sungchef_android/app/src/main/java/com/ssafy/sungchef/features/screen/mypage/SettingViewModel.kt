@@ -52,6 +52,7 @@ class SettingViewModel @Inject constructor(
     private val _isDuplicateCheckNeeded = MutableStateFlow<Boolean>(false)
     val isDuplicateCheckNeeded : StateFlow<Boolean> = _isDuplicateCheckNeeded
     var isPictureChanged : MutableStateFlow<Boolean> = MutableStateFlow(false);
+    var isSaveCompleted : MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 
 //    init {
@@ -75,7 +76,9 @@ class SettingViewModel @Inject constructor(
 
         val updateRequestDTO = UserUpdateRequestDTO(multipart, userNickname.value, if(userGender.value==true) 'M' else 'F', userBirthDate.value)
         viewModelScope.launch {
-            settingUseCase.updateUserInfo(updateRequestDTO)
+            if(settingUseCase.updateUserInfo(updateRequestDTO).isSuccessful){
+                isSaveCompleted.value = true
+            }
         }
     }
 
@@ -126,6 +129,9 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch {
             settingUseCase.setEmail(email)
         }
+    }
+    fun setIsSaveCompletedFalse(){
+        isSaveCompleted.value = false
     }
 
     fun inquire(email : String, detail : String){

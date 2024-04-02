@@ -306,7 +306,7 @@ fun ProfileImage(userSimple: UserSimple){
     ImageComponent(modifier = Modifier
         .size(70.dp)
         .clickable { showDialog = true }
-        .clip(CircleShape), imageResource = userSimple.data.userImage)
+        .clip(CircleShape), imageResource = userSimple.data.userImage ?: R.drawable.account_circle)
 
     // Dialog를 통해 이미지 확대 보기
     if (showDialog) {
@@ -318,7 +318,7 @@ fun ProfileImage(userSimple: UserSimple){
             ImageComponent(modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp),
-                imageResource = userSimple.data.userImage,
+                imageResource = userSimple.data.userImage ?: R.drawable.account_circle,
                 )
 //            Image(
 //                painter = imagePainter,

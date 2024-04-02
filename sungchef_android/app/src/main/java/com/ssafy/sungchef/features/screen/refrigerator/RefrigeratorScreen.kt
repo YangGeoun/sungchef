@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.features.screen.refrigerator
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -55,9 +57,19 @@ fun RefrigeratorScreen(
     onMoveReceiptScreen : () -> Unit,
     viewModel: RefrigeratorViewModel
 ) {
+    val isRefrigeratorEmpty by viewModel.isRefrigeratorEmpty.collectAsState()
+    val context = LocalContext.current
+
+
     Column(modifier = Modifier.fillMaxSize(1f)) {
         RefridgeArray(viewModel, onMoveReceiptScreen)
 //        FridgeComponent(image = painterResource(id = R.drawable.fruit), number = 2, labelText = "과일")
+    }
+
+    if(isRefrigeratorEmpty){
+        Log.d(TAG, "RefrigeratorScreen: isRefrigeratorEmpty")
+        viewModel.setIsRefrigeratorEmptyFalse()
+        Toast.makeText(context, "냉장고에 음식이 없습니다. 추가해보세요!", Toast.LENGTH_SHORT).show()
     }
 }
 
@@ -188,12 +200,12 @@ fun RefridgeArray(
 
     var foodItems = mutableListOf<IngredientListData>(IngredientListData("기본재료1", 1),IngredientListData("기본재료2", 2))
     var selectedItems by remember { mutableStateOf(mutableSetOf<IngredientListData>()) }
+    val items_detail by viewModel.items_detail.collectAsState()
 
     // 첫 번째 다이얼로그
     if (showDialog) {
-        //API 통신하여 foodItems 업데이트
-        selectedFoodCategory
-
+        Log.d(TAG, "RefridgeArray: ${items_detail[selectedFoodCategory]}")
+        foodItems = items_detail[selectedFoodCategory]
         Dialog(onDismissRequest = {
             showDialog = false
             selectedItems.clear()

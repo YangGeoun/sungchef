@@ -55,12 +55,13 @@ import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerIngred
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerReceiptScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.startReceiptScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
+import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
 import com.ssafy.sungchef.features.screen.survey.navigation.surveyScreen
 
 
 private const val TAG = "NavGraph_성식당"
 
-@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun NavGraph(
     startDestination : String,
@@ -112,8 +113,8 @@ fun NavGraph(
         NavHost(
             navController = navController,
 //            startDestination = signupRoute,
-//            startDestination = login_route,
-            startDestination = startDestination,
+            startDestination = login_route,
+//            startDestination = startDestination,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen(
