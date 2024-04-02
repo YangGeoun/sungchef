@@ -1,7 +1,10 @@
 package com.ssafy.sungchef.data.mapper.refrigerator
 
+import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
+import com.ssafy.sungchef.domain.model.refrigerator.RegisterReceiptState
 import com.ssafy.sungchef.domain.model.refrigerator.SearchIngredient
+import com.ssafy.sungchef.domain.model.user.LoginState
 
 fun List<SearchIngredientResponse>.toSearchIngredient() : List<SearchIngredient> {
     return this.map{ response ->
@@ -26,6 +29,14 @@ fun transformIngredientType(type : String) : String {
         "ETC" -> "기타"
         else -> ""
     }
+}
+
+fun<T> ResponseDto<T>.toRegisterReceiptState() : RegisterReceiptState {
+    return RegisterReceiptState(
+        code = this.code,
+        dialogTitle = this.message,
+        imageUrl = this.data as String
+    )
 }
 
 //"FRUIT" to "과일",

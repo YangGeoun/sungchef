@@ -151,7 +151,7 @@ fun SignupGender(
             genderResource = R.drawable.gender_man,
             isSelected = isManSelected,
             onClick = {
-                isManSelected = !isManSelected
+                if(!isManSelected) isManSelected = true
 
                 if (isManSelected) {
                     viewModel.gender.value = SEND_MALE
@@ -172,7 +172,7 @@ fun SignupGender(
             genderResource = R.drawable.gender_woman,
             isSelected = isWomanSelected,
             onClick = {
-                isWomanSelected = !isWomanSelected
+                if(!isWomanSelected) isWomanSelected = true
 
                 if (isWomanSelected) {
                     viewModel.gender.value = SEND_FEMALE

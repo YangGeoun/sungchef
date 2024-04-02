@@ -5,10 +5,13 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.IngredientRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
+import okhttp3.MultipartBody
 
 interface RefrigeratorDataSource {
 
     suspend fun searchIngredient(ingredientName : String) : DataState<ResponseDto<List<SearchIngredientResponse>>>
 
     suspend fun registerIngredient(ingredientRequestDTO: IngredientRequestDTO) : DataState<APIError>
+
+    suspend fun registerReceipt(convertImage : MultipartBody.Part?) : DataState<ResponseDto<String>>
 }

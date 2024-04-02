@@ -7,6 +7,7 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.IngredientRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class RefrigeratorDataSourceImpl @Inject constructor(
@@ -21,6 +22,12 @@ class RefrigeratorDataSourceImpl @Inject constructor(
     override suspend fun registerIngredient(ingredientRequestDTO: IngredientRequestDTO): DataState<APIError> {
         return getResult {
             refrigeratorService.registerIngredient(ingredientRequestDTO)
+        }
+    }
+
+    override suspend fun registerReceipt(convertImage: MultipartBody.Part?): DataState<ResponseDto<String>> {
+        return getResult {
+            refrigeratorService.registerReceipt(convertImage)
         }
     }
 }

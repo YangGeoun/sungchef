@@ -41,8 +41,7 @@ class MultipartHandler {
      * 1. filePath는 위 getFilePathUri에서 Uri를 filePath로 변환할 수 있습니다.
      * 2. imageKey는 서버와 맞춰야 합니다.
      */
-    fun convertMultiPart(filePath : String, imageKey : String) : MultipartBody.Part {
-        val file = File(filePath)
+    fun convertMultiPart(file : File, imageKey : String) : MultipartBody.Part {
         val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
 
         return MultipartBody.Part.createFormData(imageKey, file.name, requestFile)
