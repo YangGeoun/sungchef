@@ -24,6 +24,7 @@ import com.ssafy.sungchef.domain.model.recommendation.RecommendedFood
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedFoodList
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedRecipe
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedRecipeList
+import com.ssafy.sungchef.domain.model.recommendation.UserInfo
 import com.ssafy.sungchef.features.component.ImageTextColumnComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
@@ -38,6 +39,7 @@ fun HomeScreen(
 ) {
     LaunchedEffect(true) {
         viewModel.getRecommendation()
+        viewModel.getUserData()
         navVisibility()
     }
     val viewState = viewModel.uiState.collectAsState().value
@@ -45,13 +47,18 @@ fun HomeScreen(
     Scaffold(
         topBar = { TopAppBarComponent() }
     ) { paddingValues ->
-        Content(
-            paddingValues = paddingValues,
-            onNavigateDetail = { onNavigateDetail(it) },
-            onNavigateMenu = onNavigateMenu,
-            recommendedFoodList = viewState.recommendFood,
-            recommendedRecipeList = viewState.recommendRecipe
-        )
+        if (viewState.user == null) {
+            TextComponent(text = "정보를 가져오는중~~")
+        } else {
+            Content(
+                paddingValues = paddingValues,
+                onNavigateDetail = { onNavigateDetail(it) },
+                onNavigateMenu = onNavigateMenu,
+                userInfo = viewState.user,
+                recommendedFoodList = viewState.recommendFood,
+                recommendedRecipeList = viewState.recommendRecipe
+            )
+        }
     }
 }
 
@@ -61,16 +68,17 @@ private fun Content(
     paddingValues: PaddingValues,
     onNavigateDetail: (Int) -> (Unit),
     onNavigateMenu: (String) -> (Unit),
+    userInfo: UserInfo,
     recommendedFoodList: List<RecommendedFoodList>?,
     recommendedRecipeList: List<RecommendedRecipeList>?
 ) {
-    if (recommendedFoodList != null && recommendedRecipeList != null) {
-        LazyColumn(
-            modifier = modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-        ) {
-            item {
+    LazyColumn(
+        modifier = modifier
+            .padding(paddingValues)
+            .fillMaxSize()
+    ) {
+        item {
+            if (recommendedFoodList != null)
                 RecommendFoodBody(
                     modifier = modifier,
                     text = "오늘은 무엇을 먹을까?",
@@ -79,47 +87,51 @@ private fun Content(
                 ) {
                     onNavigateMenu(it)
                 }
+        }
+        item {
+            RecommendRecipeBody(
+                modifier = modifier,
+                text = "냉장고를 털어보자",
+                dataList = if (recommendedRecipeList != null) recommendedRecipeList[0].recommendedRecipeList else listOf(),
+            ) {
+                onNavigateDetail(it)
             }
-            item {
-                RecommendRecipeBody(
-                    modifier = modifier,
-                    text = "냉장고를 털어보자",
-                    dataList = recommendedRecipeList[0].recommendedRecipeList,
-                ) {
-                    onNavigateDetail(it)
-                }
-            }
-            item {
+        }
+        item {
+            if (recommendedFoodList != null)
                 RecommendFoodBody(
                     modifier = modifier,
-                    text = "좋아할 만한 음식",
+                    text = "${userInfo.nickName}님이 좋아할 만한 음식",
                     dataList = recommendedFoodList[1].recommendedFoodList,
                     size = 120
                 ) {
                     onNavigateMenu(it)
                 }
-            }
-            item {
+        }
+        item {
+            if (recommendedFoodList != null)
                 RecommendFoodBody(
                     modifier = modifier,
-                    text = "남자가 좋아하는 음식",
+                    text = "${userInfo.gender}이 좋아하는 음식",
                     dataList = recommendedFoodList[2].recommendedFoodList,
                     size = 120
                 ) {
                     onNavigateMenu(it)
                 }
-            }
-            item {
+        }
+        item {
+            if (recommendedFoodList != null)
                 RecommendFoodBody(
                     modifier = modifier,
-                    text = "20대가 좋아하는 음식",
+                    text = "${userInfo.birthdate}가 좋아하는 음식",
                     dataList = recommendedFoodList[3].recommendedFoodList,
                     size = 120
                 ) {
                     onNavigateMenu(it)
                 }
-            }
-            item {
+        }
+        item {
+            if (recommendedFoodList != null)
                 RecommendFoodBody(
                     modifier = modifier,
                     text = "오늘같은 날씨에 먹어봐요",
@@ -128,7 +140,6 @@ private fun Content(
                 ) {
                     onNavigateMenu(it)
                 }
-            }
         }
     }
 }
@@ -174,7 +185,7 @@ private fun RecommendFoodBody(
 private fun RecommendRecipeBody(
     modifier: Modifier = Modifier,
     text: String = "",
-    dataList: List<RecommendedRecipe>?,
+    dataList: List<RecommendedRecipe>,
     onClick: (Int) -> (Unit)
 ) {
     Column {
@@ -188,7 +199,7 @@ private fun RecommendRecipeBody(
                 .fillMaxWidth()
                 .background(Color.White)
         ) {
-            if (dataList != null) {
+            if (dataList.isNotEmpty()) {
                 items(dataList) { item ->
                     ImageTextColumnComponent(
                         modifier = modifier

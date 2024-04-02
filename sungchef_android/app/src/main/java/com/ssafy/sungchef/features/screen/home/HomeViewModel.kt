@@ -4,17 +4,20 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.sungchef.commons.DataState
+import com.ssafy.sungchef.domain.usecase.GetUserUseCase
 import com.ssafy.sungchef.domain.usecase.RecommendationUseCase
 import com.ssafy.sungchef.domain.viewstate.recommendation.RecommendationViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val recommendationUseCase: RecommendationUseCase
+    private val recommendationUseCase: RecommendationUseCase,
+    private val getUserUseCase: GetUserUseCase
 ) : ViewModel() {
 
     private val initialState: RecommendationViewState by lazy { createInitialState() }
@@ -25,6 +28,31 @@ class HomeViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<RecommendationViewState> = MutableStateFlow(initialState)
     val uiState: StateFlow<RecommendationViewState> = _uiState
 
+    fun getUserData(){
+        viewModelScope.launch {
+            getUserUseCase().collect{
+                when (it) {
+                    is DataState.Success -> {
+                        setState {
+                            currentState.copy(
+                                isLoading = false,
+                                user = it.data
+                            )
+                        }
+                    }
+
+                    is DataState.Loading -> {
+                        setState { currentState.copy(isLoading = true) }
+                    }
+
+                    is DataState.Error -> {
+                        setState { currentState.copy(isLoading = false) }
+                        //Todo 새로 고침 하기
+                    }
+                }
+            }
+        }
+    }
     fun getRecommendation() {
         viewModelScope.launch {
             recommendationUseCase().collect {
