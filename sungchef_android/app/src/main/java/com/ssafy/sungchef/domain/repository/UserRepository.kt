@@ -39,7 +39,7 @@ interface UserRepository {
 
     suspend fun signupUser(userRequestDTO: UserRequestDTO) : Flow<DataState<Int>>
     suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO) : Flow<DataState<LoginState>>
-    suspend fun updateUserInfo(userImage : MultipartBody.Part?, userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError>
+    suspend fun updateUserInfo(userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError>
 
     suspend fun autoLogin() : Flow<DataState<Boolean>>
 }

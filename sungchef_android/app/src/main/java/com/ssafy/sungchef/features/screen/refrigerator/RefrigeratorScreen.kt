@@ -49,7 +49,7 @@ import com.ssafy.sungchef.features.component.OutlinedButtonComponentNotMax
 import com.ssafy.sungchef.features.component.TextComponent
 import java.lang.StringBuilder
 
-val TAG = "태그";
+val TAG = "RefrigeratorScreen_태그";
 @Composable
 fun RefrigeratorScreen(
     onMoveReceiptScreen : () -> Unit,

@@ -23,6 +23,7 @@ import com.ssafy.sungchef.data.model.responsedto.MakeRecipeListData
 import com.ssafy.sungchef.data.model.responsedto.UserProfile
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.domain.model.base.BaseModel
+import com.ssafy.sungchef.domain.usecase.refrigerator.RefrigeratorUseCase
 import com.ssafy.sungchef.domain.usecase.signup.DuplicateNicknameUseCase
 import com.ssafy.sungchef.domain.usecase.user.SettingUseCase
 import com.ssafy.sungchef.domain.usecase.user.UserSimpleUseCase
@@ -30,6 +31,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -39,7 +41,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RefrigeratorViewModel @Inject constructor(
-
+    private val refrigeratorUseCase: RefrigeratorUseCase
 ) : ViewModel() {
 
 
@@ -47,11 +49,12 @@ class RefrigeratorViewModel @Inject constructor(
 
 
     init {
+        Log.d(TAG, "init 시작 ")
         getFridgeInfo()
     }
 
     fun getFridgeInfo() {
-        val itms = listOf(
+        var itms = listOf(
             IngredientItem((R.drawable.fruit), -1, "과일"),
             IngredientItem((R.drawable.vegetable), -1, "채소"),
             IngredientItem((R.drawable.rice_grain), -1, "쌀/잡곡"),
@@ -65,6 +68,32 @@ class RefrigeratorViewModel @Inject constructor(
         items.value.addAll(itms)
 
         //API통신으로 데이터 가져오기
+        viewModelScope.launch {
+            refrigeratorUseCase.getFridgeIngredientList().collect(){
+                Log.d(TAG, "viewModelScope.launch 시작 ")
+
+                when(it){
+                    is DataState.Success -> {
+                        Log.d(TAG, "getFridgeInfo: Success")
+                        var datalst = it.data.data.ingredientInfoList
+                        for (idx in 0 until 8){
+                            items.value[idx].num = datalst[idx].ingredientResList.size
+                        }
+//                        Log.d(TAG, "getFridgeInfo: ${ datalst}")
+                    }
+
+                    is DataState.Error -> {
+                        Log.d(TAG, "getFridgeInfo: Error")
+                    }
+
+                    is DataState.Loading -> {
+                        Log.d(TAG, "getFridgeInfo: Loading")
+
+                    }
+                }
+            }
+
+        }
     }
 
 

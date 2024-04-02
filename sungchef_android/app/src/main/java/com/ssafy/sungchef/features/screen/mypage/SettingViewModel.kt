@@ -11,16 +11,9 @@ import com.ssafy.sungchef.commons.SERVER_INSTABILITY
 import com.ssafy.sungchef.commons.WRONG_NICKNAME_FORMAT
 import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserUpdateRequestDTO
-import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
-import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeListData
-import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
-import com.ssafy.sungchef.data.model.responsedto.MakeRecipeListData
-import com.ssafy.sungchef.data.model.responsedto.UserProfile
-import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.usecase.signup.DuplicateNicknameUseCase
 import com.ssafy.sungchef.domain.usecase.user.SettingUseCase
-import com.ssafy.sungchef.domain.usecase.user.UserSimpleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -58,7 +51,7 @@ class SettingViewModel @Inject constructor(
 
     private val _isDuplicateCheckNeeded = MutableStateFlow<Boolean>(false)
     val isDuplicateCheckNeeded : StateFlow<Boolean> = _isDuplicateCheckNeeded
-    var isPictureChanged : StateFlow<Boolean> = MutableStateFlow(false);
+    var isPictureChanged : MutableStateFlow<Boolean> = MutableStateFlow(false);
 
 
 //    init {
@@ -76,12 +69,13 @@ class SettingViewModel @Inject constructor(
                 }
             }
             val requestFile = tempFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-            multipart = MultipartBody.Part.createFormData("picture", tempFile.name, requestFile)
+            multipart = MultipartBody.Part.createFormData("userImage", tempFile.name, requestFile)
+            Log.d(TAG, "updateUserSettingInfo: $multipart")
         }
 
-        val updateRequestDTO = UserUpdateRequestDTO(userNickname.value, if(userGender.value==true) "M" else "F", userBirthDate.value)
+        val updateRequestDTO = UserUpdateRequestDTO(multipart, userNickname.value, if(userGender.value==true) 'M' else 'F', userBirthDate.value)
         viewModelScope.launch {
-            settingUseCase.updateUserInfo(multipart, updateRequestDTO)
+            settingUseCase.updateUserInfo(updateRequestDTO)
         }
     }
 
@@ -114,6 +108,7 @@ class SettingViewModel @Inject constructor(
     fun setProfileImage(newProfileImage : String){
 //        Log.d(TAG, "setProfileImage: $newNickname")
         _userProfileImage.value = newProfileImage
+        isPictureChanged.value = true
     }
 
     fun setGender(newGender : Boolean){

@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.painter.Painter
 
 data class IngredientItem (
     val painter: Int,
-    val num : Int,
+    var num : Int,
     val label : String
 ){
 }

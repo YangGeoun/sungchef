@@ -49,6 +49,8 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch {
             val makeRecipeListResponse = userSimpleUseCase.makeRecipeList(page)
             Log.d(TAG, "getMakeRecipeList: $makeRecipeListResponse")
+
+            Log.d(TAG, "getMakeRecipeList: ")
             val updatedMakeRecipeList = _makeRecipeListData.value.data.makeRecipeList.toMutableList().apply {
                 makeRecipeListResponse.data.makeRecipeList.forEach {
                     Log.d(TAG, "getMakeRecipeList: viewmodel : ${cnt++}")
@@ -79,6 +81,10 @@ class MyPageViewModel @Inject constructor(
                     updatedBookmarkRecipeList)
             )
         }
+    }
+    fun clearList(){
+        _makeRecipeListData.value = MakeRecipeList(0, "", MakeRecipeListData(0, listOf()))
+        _bookmarkRecipeListData.value = BookmarkRecipeList(0, "", BookmarkRecipeListData(0, listOf()))
     }
 
 }

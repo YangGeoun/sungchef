@@ -11,7 +11,7 @@ import com.ssafy.sungchef.data.model.requestdto.UserUpdateRequestDTO
 import com.ssafy.sungchef.data.model.responsedto.BookmarkRecipeList
 
 import com.ssafy.sungchef.data.model.responsedto.FridgeData
-import com.ssafy.sungchef.data.model.responsedto.FridgeDto
+
 import com.ssafy.sungchef.data.model.responsedto.MakeRecipeList
 
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
@@ -30,6 +30,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
+import retrofit2.http.PartMap
 import retrofit2.http.Path
 
 interface UserService {
@@ -66,12 +67,21 @@ interface UserService {
     suspend fun login(@Body userSnsIdRequestDTO: UserSnsIdRequestDTO) : Response<ResponseDto<TokenResponse>>
     @POST("user/contact")
     suspend fun userContact(@Body contactRequestDTO: ContactRequestDTO) : Response<APIError>
+//    @Multipart
+//    @PUT("/user")
+//    suspend fun updateUserInfo(
+//        @Part("userNickName") userNickName : String,
+//        @Part("userGender") userGender : Char,
+//        @Part userImage : MultipartBody.Part?,
+//        @Part("userBirthdate") userBirthdate : String,
+//    ) : Response<APIError>
+
     @Multipart
     @PUT("/user")
     suspend fun updateUserInfo(
-        @Part userImage : MultipartBody.Part?,
-        @Part("userUpdateRequestDTO") userUpdateRequestDTO: RequestBody,
-    ) : Response<APIError>
+        @Part userImage: MultipartBody.Part?,
+        @PartMap data: HashMap<String, RequestBody>
+    ): Response<APIError>
 
     @POST("user/autologin")
     suspend fun autoLogin() : Response<APIError>

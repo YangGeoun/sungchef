@@ -83,7 +83,9 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
     LaunchedEffect(true) {
         Log.d(TAG, "MyPageScreen: LaunchedEffect")
         isUserSimpleFinished = false
+
         viewModel.getUserSimple()
+        viewModel.clearList()
 
     }
 
@@ -114,7 +116,7 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
                         isUserSimpleFinished = true
                         val makeRecipeCount = userSimple!!.data.makeRecipeCount
                         val makeRecipePageCount = if(makeRecipeCount%9==0) makeRecipeCount/9 else {makeRecipeCount/9+1}
-                        for (page in 1..makeRecipePageCount){
+                        for (page in 0..makeRecipePageCount-1){
                             //여기 await를 안 하면.. 1,2페이지 순서로 호출한다고 해서 그 순서대로 list에 add된다는 보장 X
                             Log.d(TAG, "MyPageScreen: cnt : ${tstcnt++}")
                             viewModel.getMakeRecipeList(page)
@@ -122,7 +124,7 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
                         Log.d(TAG, "MyPageScreen: 업로드 리스트 ${makeRecipeList}")
                         val bookmarkRecipeCount = userSimple!!.data.bookmarkRecipeCount
                         val bookmarkRecipePageCount = if(bookmarkRecipeCount%9==0) bookmarkRecipeCount/9 else {bookmarkRecipeCount/9+1}
-                        for (page in 1..bookmarkRecipePageCount){
+                        for (page in 0..bookmarkRecipePageCount-1){
                             //여기 await를 안 하면.. 1,2페이지 순서로 호출한다고 해서 그 순서대로 list에 add된다는 보장 X
                             Log.d(TAG, "MyPageScreen: cnt : ${tstcnt++}")
                             viewModel.getBookmarkRecipeList(page)
@@ -180,8 +182,8 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
                             bookmarkPhotoDatalist = bookmarkRecipeList.data.bookmarkRecipeList,
                             onClick = {
                                     Log.d(       TAG,      "MyPage2: $it")
-                                navController.navigateMenuDetail(it.recipeId)
-//                                    navController.navigate(menuDetailNavigationRoute.plus("/${it.recipeId}"))
+//                                navController.navigateMenuDetail(it.recipeId)
+                                    navController.navigate(menuDetailNavigationRoute.plus("/${it.recipeId}"))
 
                                       }, )
                     }
