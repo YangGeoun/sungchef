@@ -20,7 +20,7 @@ class AuthInterceptor @Inject constructor(
             getToken.getToken()?.accessToken ?: ""
         }
         Log.d(TAG, "intercept: $accessToken")
-        accessToken = "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MDc5NDc5NiIsImF1dGgiOiJST0xFX1VTRVIiLCJleHAiOjE3MTIxOTA1MTF9.D0dpn_ekPU2dB5cZs0qhjh86gtY2zdy_j_cCcBPpFqg"
+        
         if (accessToken.isNotEmpty()) {
             request = chain.request()
                 .newBuilder()
