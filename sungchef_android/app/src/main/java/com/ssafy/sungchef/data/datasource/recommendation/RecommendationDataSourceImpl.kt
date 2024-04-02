@@ -5,6 +5,7 @@ import com.ssafy.sungchef.data.datasource.BaseRemoteDataSource
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.model.responsedto.recommendation.RecommendationResponse
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
+import com.ssafy.sungchef.data.model.responsedto.UserSettingInfoData
 import javax.inject.Inject
 
 class RecommendationDataSourceImpl @Inject constructor(
@@ -12,4 +13,7 @@ class RecommendationDataSourceImpl @Inject constructor(
 ) : RecommendationDataSource, BaseRemoteDataSource() {
     override suspend fun getRecommendation(): DataState<ResponseDto<RecommendationResponse>> =
         getResult { recommendationService.getRecommendation() }
+
+    override suspend fun getUser(): DataState<ResponseDto<UserSettingInfoData>> =
+        getResult { recommendationService.getUser() }
 }
