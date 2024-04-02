@@ -18,6 +18,7 @@ import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
+import com.ssafy.sungchef.data.model.responsedto.user.LoginResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 
@@ -32,7 +33,7 @@ interface UserDataSource {
 
     suspend fun changeBookmarkRecipe(bookMarkRequest: BookMarkRequest): DataState<APIError>
 
-    suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO) : DataState<ResponseDto<TokenResponse>>
+    suspend fun surveySubmit(surveyRequestDTO: SurveyRequestDTO) : DataState<APIError>
 
     suspend fun getSurvey() : DataState<ResponseDto<SurveyResponse>>
 
@@ -41,7 +42,7 @@ interface UserDataSource {
     // 회원가입 api
     suspend fun signupUser(userRequestDTO: UserRequestDTO) : DataState<ResponseDto<TokenResponse>>
 
-    suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO) : DataState<ResponseDto<TokenResponse>>
+    suspend fun login(userSnsIdRequestDTO: UserSnsIdRequestDTO) : DataState<ResponseDto<LoginResponse>>
 
     suspend fun inquire(contactRequestDTO: ContactRequestDTO): Response<APIError>
     suspend fun updateUserInfo(userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError>

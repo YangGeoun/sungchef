@@ -48,8 +48,5 @@ fun IngredientSelectComponent(
                 .weight(1f),
             text = name
         )
-        IconButton(onClick = { /*TODO*/ }) {
-            IconComponent(painter = painterResource(id = R.drawable.icon_delete))
-        }
     }
 }

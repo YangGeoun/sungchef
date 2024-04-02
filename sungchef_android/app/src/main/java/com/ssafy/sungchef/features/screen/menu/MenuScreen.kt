@@ -63,11 +63,6 @@ fun MenuScreen(
     val searchText by viewModel.searchText.collectAsState()
     var standard by remember { mutableStateOf("조회순") }
 
-    LaunchedEffect(true) {
-        viewModel.onSearchTextChange(menu)
-        viewModel.getSearchedVisitRecipeInfo(0, menu)
-    }
-
     Scaffold(
         topBar = {
             SearchBar(
@@ -75,7 +70,8 @@ fun MenuScreen(
                 onQueryChange = viewModel::onSearchTextChange,
                 onSearch = {
                     viewModel.onToggleSearch()
-                    onNavigateToMenu(it)
+                    viewModel.onSearchTextChange(it)
+                    viewModel.getSearchedVisitRecipeInfo(0, it)
                     standard = "조회순"
                 },
                 active = isSearching,
@@ -106,7 +102,8 @@ fun MenuScreen(
                                 .fillMaxWidth()
                                 .clickable {
                                     viewModel.onToggleSearch()
-                                    onNavigateToMenu(item.name)
+                                    viewModel.onSearchTextChange(item.name)
+                                    viewModel.getSearchedVisitRecipeInfo(0, item.name)
                                     standard = "조회순"
                                 }
                                 .padding(start = 20.dp, top = 10.dp)
@@ -179,7 +176,7 @@ private fun Content(
                             bookmark = it1.bookmark,
                             onClick = { onClick(it1.recipeId) }
                         ) { bookmark ->
-                            changeBookMarkState(it, bookmark)
+                            changeBookMarkState(it1.recipeId, bookmark)
                         }
                     }
                 }

@@ -21,6 +21,7 @@ import com.ssafy.sungchef.data.model.responsedto.UserSettingInfo
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.data.model.responsedto.survey.SurveyResponse
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
+import com.ssafy.sungchef.data.model.responsedto.user.LoginResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -55,7 +56,7 @@ interface UserService {
     suspend fun signupUser(@Body userRequestDTO: UserRequestDTO) : Response<ResponseDto<TokenResponse>>
 
     @POST("user/survey/submit")
-    suspend fun submitSurvey(@Body surveyRequestDTO: SurveyRequestDTO) : Response<ResponseDto<TokenResponse>>
+    suspend fun submitSurvey(@Body surveyRequestDTO: SurveyRequestDTO) : Response<APIError>
 
     @GET("user/survey")
     suspend fun getSurvey() : Response<ResponseDto<SurveyResponse>>
@@ -64,7 +65,7 @@ interface UserService {
     suspend fun userSettingInfo() : UserSettingInfo
 
     @POST("user/login")
-    suspend fun login(@Body userSnsIdRequestDTO: UserSnsIdRequestDTO) : Response<ResponseDto<TokenResponse>>
+    suspend fun login(@Body userSnsIdRequestDTO: UserSnsIdRequestDTO) : Response<ResponseDto<LoginResponse>>
     @POST("user/contact")
     suspend fun userContact(@Body contactRequestDTO: ContactRequestDTO) : Response<APIError>
 //    @Multipart

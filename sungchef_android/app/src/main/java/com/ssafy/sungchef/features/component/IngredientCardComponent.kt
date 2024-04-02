@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,7 @@ import com.ssafy.sungchef.domain.model.ingredient.Ingredient
 fun IngredientCardComponent(
     modifier: Modifier = Modifier,
     classification: String = "",
+    @DrawableRes id:Int,
     recipeIngredients: List<Ingredient>,
 ) {
     Row(
@@ -39,7 +41,7 @@ fun IngredientCardComponent(
                 .size(36.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.FillBounds,
-            painter = painterResource(id = R.drawable.test_image),
+            painter = painterResource(id = id),
             contentDescription = "사진"
         )
         Spacer(modifier = modifier.size(2.dp))

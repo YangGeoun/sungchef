@@ -15,12 +15,28 @@ import javax.inject.Inject
 class RefrigeratorRepositoryImpl @Inject constructor(
     private val refrigeratorDataSource: RefrigeratorDataSource
 ) : RefrigeratorRepository {
-    override suspend fun searchIngredient(ingredientName: String): Flow<DataState<ResponseDto<SearchIngredientResponse>>> {
+    override suspend fun searchIngredient(ingredientName: String): Flow<DataState<List<SearchIngredient>>> {
         return flow {
             val ingredientResponse = refrigeratorDataSource.searchIngredient(ingredientName)
 
             if (ingredientResponse is DataState.Success) {
+                emit(DataState.Success(ingredientResponse.data.data.toSearchIngredient()))
+            } else if (ingredientResponse is DataState.Error) {
+                emit(DataState.Error(ingredientResponse.apiError))
+            }
+        }
+    }
 
+    override suspend fun registerIngredient(ingredientIdList: List<Int>): Flow<DataState<APIError>> {
+        return flow {
+            val ingredientRequestDTO = ingredientIdList.toIngredientRequestDTO()
+
+            val registerResponse = refrigeratorDataSource.registerIngredient(ingredientRequestDTO)
+
+            if (registerResponse is DataState.Success) {
+                emit(DataState.Success(registerResponse.data))
+            } else if (registerResponse is DataState.Error) {
+                emit(DataState.Error(registerResponse.apiError))
             }
         }
     }

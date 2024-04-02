@@ -1,4 +1,7 @@
 package com.ssafy.sungchef.domain.model.refrigerator
 
-class SearchIngredient {
-}
+data class SearchIngredient (
+    val ingredientId : Int,
+    val ingredientType : String,
+    val ingredientName : String
+)

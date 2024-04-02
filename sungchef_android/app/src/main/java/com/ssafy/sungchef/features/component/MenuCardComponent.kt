@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +42,7 @@ fun MenuCardComponent(
     onClick: () -> (Unit),
     onBookMarkClick: (Boolean) -> (Unit),
 ) {
-    var bookMarkState by remember{ mutableStateOf(bookmark) }
+    var bookMarkState by rememberSaveable{ mutableStateOf(bookmark) }
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -79,7 +80,7 @@ fun MenuCardComponent(
                             modifier = modifier
                                 .padding(end = 10.dp)
                                 .clickable {
-                                    bookMarkState=!bookMarkState
+                                    bookMarkState = !bookMarkState
                                     onBookMarkClick(bookMarkState)
                                 },
                             tint = Color.Green
@@ -91,7 +92,7 @@ fun MenuCardComponent(
                             modifier = modifier
                                 .padding(end = 10.dp)
                                 .clickable {
-                                    bookMarkState=!bookMarkState
+                                    bookMarkState = !bookMarkState
                                     onBookMarkClick(bookMarkState)
                                 },
                             tint = color

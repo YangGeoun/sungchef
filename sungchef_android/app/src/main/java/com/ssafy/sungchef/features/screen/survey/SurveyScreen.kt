@@ -46,7 +46,7 @@ import com.ssafy.sungchef.features.component.AlertDialogComponent
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.ImageComponent
 import com.ssafy.sungchef.features.component.TextComponent
-import com.ssafy.sungchef.features.ui.theme.primaryContainer50
+import com.ssafy.sungchef.features.ui.theme.primaryContainer80
 
 private const val TAG = "SurveyScreen_성식당"
 @Composable
@@ -59,12 +59,18 @@ fun SurveyScreen(
     Log.d(TAG, "isRestart: $isRestart")
     var selectSurveyCount by remember { mutableIntStateOf(0) }
 
+    var selectedItem by remember { mutableStateOf(listOf<Int>())}
+
     // 사용자가 선택된 설문조사를 담는 변수
     var selectedIndices by remember { mutableStateOf(listOf<Int>()) }
     Log.d(TAG, "SurveyLazyGrid: $selectedIndices")
     // 선택된 설문조사를 업데이트 하는 함수
     val updateSelectedSurvey : (List<Int>) -> Unit = { newSurvey ->
         selectedIndices = newSurvey
+    }
+
+    val updateSelectedItem : (List<Int>) -> Unit = { newItem ->
+        selectedItem = newItem
     }
     // 다이얼로그의 상태를 관리하는 변수
     var showDialog by remember { mutableStateOf(false) }
@@ -158,7 +164,9 @@ fun SurveyScreen(
                 },
                 surveyList = surveyListState,
                 selectedIndices = selectedIndices,
-                updateSelectedIndices = updateSelectedSurvey
+                updateSelectedIndices = updateSelectedSurvey,
+                selectedItem = selectedItem,
+                updateSelectedItem = updateSelectedItem
             )
 
         }
@@ -190,7 +198,9 @@ fun SurveyLazyGrid(
     onSelectionChange: (Int) -> Unit,
     surveyList : MutableList<SurveyInfo>,
     selectedIndices : List<Int>,
-    updateSelectedIndices: (List<Int>) -> Unit
+    updateSelectedIndices: (List<Int>) -> Unit,
+    selectedItem : List<Int>,
+    updateSelectedItem : (List<Int>) -> Unit
 ){
 
     LazyVerticalGrid(
@@ -199,7 +209,7 @@ fun SurveyLazyGrid(
     ) {
         itemsIndexed(surveyList){ index, surveyInfo ->
             
-            val isSelected = index in selectedIndices
+            val isSelected = index in selectedItem
 
             Row(
                 modifier = Modifier
@@ -221,6 +231,7 @@ fun SurveyLazyGrid(
                         ImageComponent(
                             modifier = Modifier
                                 .clickable {
+                                    // TODO 아이템 선택을 index로 바꾸고 서버에 전송할 때는 Id로 보내기
                                     val newSelectedIndices =
                                         if (selectedIndices.contains(surveyInfo.foodId)) {
                                             selectedIndices - surveyInfo.foodId
@@ -228,6 +239,14 @@ fun SurveyLazyGrid(
                                             selectedIndices + surveyInfo.foodId
                                         }
 
+                                    val newSelectedIndex =
+                                        if (selectedItem.contains(index)) {
+                                            selectedItem - index
+                                        } else {
+                                            selectedItem + index
+                                        }
+
+                                    updateSelectedItem(newSelectedIndex)
                                     // 바깥 selectedIndices 갱신
                                     updateSelectedIndices(newSelectedIndices)
                                     // 몇 개를 클릭했는지 콜백함수로 바깥에 전달
@@ -256,7 +275,7 @@ fun SurveyLazyGrid(
                         }
                     }
                     TextComponent(
-                        text = "김치찌개"
+                        text = surveyInfo.foodName
                     )
                 }
             }
@@ -285,7 +304,7 @@ fun ShowSurveyDialog(
 // 아이템 클릭 시 덮어 씌우는 박스 background 설정
 @Composable
 fun setBackground(isSelected : Boolean) : Color {
-    return if (isSelected) primaryContainer50
+    return if (isSelected) primaryContainer80
     else Color.Transparent
 }
 

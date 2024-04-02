@@ -3,6 +3,7 @@ package com.ssafy.sungchef.data.mapper.user
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.token.TokenResponse
+import com.ssafy.sungchef.data.model.responsedto.user.LoginResponse
 import com.ssafy.sungchef.domain.model.token.JwtToken
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.user.LoginState
@@ -31,10 +32,19 @@ fun TokenResponse.toJwtToken() : JwtToken {
     )
 }
 
-fun<T> ResponseDto<T>.toLoginState() : LoginState {
+
+fun LoginResponse.toJwtToken() : JwtToken {
+    return JwtToken(
+        this.jwtToken.accessToken,
+        this.jwtToken.refreshToken
+    )
+}
+
+fun<T> ResponseDto<T>.toLoginState(needSurvey : Boolean) : LoginState {
     return LoginState(
         this.code,
-        this.message
+        this.message,
+        needSurvey
     )
 }
 

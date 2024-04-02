@@ -131,10 +131,11 @@ private fun Content(
                 time = recipeDetail.recipeCookingTime
             )
             CardComponent(text = "재료") {
-                for (recipeIngredientInfo in recipeDetail.recipeIngredientInfoList) {
+                for (recipeIngredientInfo in recipeDetail.recipeIngredientInfoList.ingredientInfo) {
                     if (recipeIngredientInfo.recipeIngredientList.isNotEmpty()) {
                         IngredientCardComponent(
                             classification = recipeIngredientInfo.recipeIngredientType,
+                            id = recipeIngredientInfo.image,
                             recipeIngredients = recipeIngredientInfo.recipeIngredientList
                         )
                     }
@@ -175,6 +176,7 @@ fun DialogComponent(
                     itemsIndexed(ingredientList) { _, item ->
                         IngredientCardComponent(
                             classification = item.recipeIngredientType,
+                            id = item.image,
                             recipeIngredients = item.recipeIngredientList
                         )
                     }
