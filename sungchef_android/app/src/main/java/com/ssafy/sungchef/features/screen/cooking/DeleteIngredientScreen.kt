@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.features.screen.cooking
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ssafy.sungchef.domain.model.ingredient.Ingredient
 import com.ssafy.sungchef.domain.model.ingredient.IngredientList
 import com.ssafy.sungchef.domain.model.ingredient.LackIngredient
 import com.ssafy.sungchef.features.component.FilledButtonComponent
@@ -44,7 +47,8 @@ fun DeleteIngredientScreen(
     changeNavVisibility: () -> (Unit)
 ) {
     val uiState = viewModel.uiState.collectAsState().value
-    val selectedList = viewModel.selectedList.collectAsState()
+    val selectedList = viewModel.selectedList
+
     LaunchedEffect(true) {
         viewModel.getUsedIngredient(id)
         changeNavVisibility()
@@ -66,8 +70,9 @@ fun DeleteIngredientScreen(
                 modifier = Modifier,
                 usedIngredient = uiState.usedIngredient,
                 selectedList = selectedList.value,
+                onDeleteIngredient = { viewModel.deleteIngredient() },
                 onNavigateRegisterCook = { onNavigateRegisterCook(id) }
-            ){
+            ) {
                 viewModel.selectIngredient(it)
             }
         }
@@ -80,6 +85,7 @@ private fun Content(
     modifier: Modifier,
     usedIngredient: LackIngredient,
     selectedList: IngredientList,
+    onDeleteIngredient: () -> (Unit),
     onNavigateRegisterCook: () -> (Unit),
     onClick: (Int) -> (Unit)
 ) {
@@ -96,20 +102,11 @@ private fun Content(
             fontSize = 18.sp
         )
         Spacer(modifier = modifier.padding(10.dp))
-        Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd){
-            TextComponent(
-                modifier = modifier
-                    .padding(end = 20.dp)
-                    .clickable { },
-                text = "선택 삭제",
-                fontSize = 14.sp,
-            )
-        }
-        Column(
+        LazyColumn(
             modifier = modifier.weight(1f)
         ) {
             usedIngredient.ingredientInfo.map { ingredientInfo ->
-                ingredientInfo.recipeIngredientList.map { ingredient ->
+                items(ingredientInfo.recipeIngredientList) {ingredient->
                     IngredientSelectComponent(
                         selected = selectedList.ingredientList.any { it.ingredientId == ingredient.recipeIngredientId },
                         name = ingredient.recipeIngredientName

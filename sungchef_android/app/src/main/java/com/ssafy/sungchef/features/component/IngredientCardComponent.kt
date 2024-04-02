@@ -63,8 +63,10 @@ fun IngredientCardComponent(
                 ) {
                     Spacer(modifier = modifier.size(2.dp))
                     TextComponent(
+                        modifier = modifier.weight(1f),
                         text = it.recipeIngredientName,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        maxLines = 1
                     )
                     Spacer(modifier = modifier.size(5.dp))
                     TextComponent(

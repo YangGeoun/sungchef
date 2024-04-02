@@ -18,6 +18,7 @@ import com.ssafy.sungchef.domain.model.ingredient.LackIngredient
 import com.ssafy.sungchef.domain.usecase.cooking.GetRecipeStepUseCase
 import com.ssafy.sungchef.domain.usecase.cooking.GetUsedIngredientUseCase
 import com.ssafy.sungchef.domain.usecase.cooking.RegisterCookingUseCase
+import com.ssafy.sungchef.domain.usecase.refrigerator.DeleteIngredientUseCase
 import com.ssafy.sungchef.domain.viewstate.cooking.CookingViewState
 import com.ssafy.sungchef.features.screen.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,11 +37,11 @@ import javax.inject.Inject
 class CookingViewModel @Inject constructor(
     private val getUsedIngredientUseCase: GetUsedIngredientUseCase,
     private val getRecipeStepUseCase: GetRecipeStepUseCase,
-    private val registerCookingUseCase: RegisterCookingUseCase
+    private val registerCookingUseCase: RegisterCookingUseCase,
+    private val deleteIngredientUseCase: DeleteIngredientUseCase
 ) : BaseViewModel<CookingViewState, CookingEvent>() {
     var textToSpeech: TextToSpeech? = null
-    private var _selectedList: MutableStateFlow<IngredientList> = MutableStateFlow(IngredientList())
-    val selectedList: StateFlow<IngredientList> = _selectedList
+    val selectedList = mutableStateOf(IngredientList())
 
     private val file = mutableStateOf<File?>(null)
     override fun createInitialState(): CookingViewState = CookingViewState()
@@ -102,6 +103,13 @@ class CookingViewModel @Inject constructor(
             getUsedIngredientUseCase(id).collect {
                 when (it) {
                     is DataState.Success -> {
+                        val result: MutableList<Ingredient> = mutableListOf()
+                        it.data.ingredientInfo.map { ingredientInfo ->
+                            ingredientInfo.recipeIngredientList.map { ingredient ->
+                                result.add(ingredient)
+                            }
+                        }
+                        setState { currentState.copy(isLoading=false, usingIngredient = result) }
                         setState {
                             currentState.copy(isLoading = false, usedIngredient = it.data)
                         }
@@ -120,13 +128,36 @@ class CookingViewModel @Inject constructor(
     }
 
     fun selectIngredient(id: Int) {
-        if (_selectedList.value.ingredientList.any { it.ingredientId == id }
+        if (selectedList.value.ingredientList.any { it.ingredientId == id }
         ) {
-            _selectedList.value.ingredientList.removeIf { it.ingredientId == id }
+            selectedList.value.ingredientList.removeIf { it.ingredientId == id }
         } else {
-            _selectedList.value.ingredientList.add(IngredientId(id))
+            selectedList.value.ingredientList.add(IngredientId(id))
         }
-        Log.d("TAG", "selectIngredient: ${_selectedList.value}")
+        Log.d("TAG", "selectIngredient: ${selectedList.value}")
+    }
+
+    fun deleteIngredient() {
+        viewModelScope.launch {
+            deleteIngredientUseCase(selectedList.value).collect { dataState ->
+                when (dataState) {
+                    is DataState.Success -> {
+                        selectedList.value = IngredientList()
+                        setState { currentState.copy(isLoading = false) }
+                    }
+
+                    is DataState.Loading -> {
+                        selectedList.value = IngredientList()
+                        setState { currentState.copy(isLoading = true) }
+                    }
+
+                    is DataState.Error -> {
+                        selectedList.value = IngredientList()
+                        setState { currentState.copy(isLoading = false) }
+                    }
+                }
+            }
+        }
     }
 
     fun setFile(file: File) {
