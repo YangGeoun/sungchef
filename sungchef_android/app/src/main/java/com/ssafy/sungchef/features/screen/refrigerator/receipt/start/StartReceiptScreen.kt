@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,8 +56,13 @@ fun StartReceiptScreen(
     viewModel : StartReceiptViewModel,
     onMoveRegisterReceiptPage : (String) -> Unit,
     onMoveRegisterIngredientPage : () -> Unit,
-    onBackNavigate : () -> Unit
+    onBackNavigate : () -> Unit,
+    onChangeNav : () -> Unit
 ) {
+    // 바텀 네비게이션을 지운다.
+    LaunchedEffect(key1 = true){
+        onChangeNav()
+    }
     val uiState by viewModel.uiState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
@@ -70,7 +76,7 @@ fun StartReceiptScreen(
             onMoveRegisterReceiptPage(uiState.imageUrl)
             viewModel.initUiState()
         }
-        500 -> {
+        in 400..599 -> {
             toggleDialog(true)
 
             ShowErrorDialog(

@@ -17,11 +17,14 @@ fun NavController.navigateRefrigerator(
 }
 
 fun NavGraphBuilder.refrigeratorScreen(
-    onMoveReceiptPage : () -> Unit
+    onMoveReceiptPage : () -> Unit,
+    onChange : () -> Unit
 ){
     composable(refrigeratorNavigationRoute) {
         RefrigeratorScreen(
-            onMoveReceiptPage, hiltViewModel()
+            onMoveReceiptPage,
+            hiltViewModel(),
+            onChange = onChange
         )
     }
 }

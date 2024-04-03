@@ -139,9 +139,12 @@ fun NavGraph(
                 navController.navigateMenuDetail(it)
                 navVisibility = false
             }
-            refrigeratorScreen() {
-                navController.navigateStartReceipt()
-                navVisibility = false
+            refrigeratorScreen(
+                onMoveReceiptPage = {
+                    navController.navigateStartReceipt()
+                }
+            ) {
+                navVisibility = true
             }
             signupGraph(navController) {
                 navVisibility = false
@@ -182,9 +185,13 @@ fun NavGraph(
                 navVisibility = false
             }
 
-            startReceiptScreen(navController) {
-                navController.popBackStack()
-                navVisibility = true
+            startReceiptScreen(
+                navController,
+                onBackNavigate = {
+                    navController.popBackStack()
+                }
+            ) {
+                navVisibility = false
             }
 
             registerReceiptScreen(navController){

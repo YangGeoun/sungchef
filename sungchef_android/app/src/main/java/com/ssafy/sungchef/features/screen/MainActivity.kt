@@ -39,7 +39,7 @@ private const val TAG = "MainActivity_성식당"
 class MainActivity : ComponentActivity(), PermissionResultListener {
 
     private val viewModel : MainViewModel by viewModels()
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

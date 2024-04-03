@@ -291,9 +291,8 @@ fun ShowSearchIngredientDialog(
         ) {
             Surface(
                 modifier = Modifier
-                    .padding(16.dp)
                     .fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.extraLarge
             ){
                 Column(
                     modifier = Modifier
@@ -308,8 +307,8 @@ fun ShowSearchIngredientDialog(
                             viewModel.onToggleSearch()
                         },
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 40.dp),
+                            .fillMaxWidth(),
+
                         placeholder = {
                             TextComponent(
                                 text = SEARCH_INGREDIENT

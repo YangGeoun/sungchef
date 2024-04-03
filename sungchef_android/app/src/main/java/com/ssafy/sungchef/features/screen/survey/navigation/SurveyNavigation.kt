@@ -48,7 +48,6 @@ fun NavGraphBuilder.surveyScreen(
                     launchSingleTop = true
                 }
             )
-            navVisibility(true)
         }
     }
 }

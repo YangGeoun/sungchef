@@ -18,7 +18,8 @@ fun NavController.navigateStartReceipt(
 
 fun NavGraphBuilder.startReceiptScreen(
     navController: NavController,
-    onBackNavigate : () -> Unit
+    onBackNavigate : () -> Unit,
+    onChangeNav : () -> Unit
 ){
     composable(startReceiptNavigationRoute) {
         Log.d(TAG, "startReceiptScreen: 호출")
@@ -30,7 +31,8 @@ fun NavGraphBuilder.startReceiptScreen(
             onMoveRegisterIngredientPage = {
                 navController.navigateRegisterIngredient()
             },
-            onBackNavigate
+            onBackNavigate,
+            onChangeNav = onChangeNav
         )
     }
 }

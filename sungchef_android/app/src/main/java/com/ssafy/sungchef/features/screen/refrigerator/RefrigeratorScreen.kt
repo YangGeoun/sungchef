@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -55,8 +56,13 @@ val TAG = "RefrigeratorScreen_태그";
 @Composable
 fun RefrigeratorScreen(
     onMoveReceiptScreen : () -> Unit,
-    viewModel: RefrigeratorViewModel
+    viewModel: RefrigeratorViewModel,
+    onChange : () -> Unit
 ) {
+    LaunchedEffect(key1 = true){
+        onChange()
+    }
+
     val isRefrigeratorEmpty by viewModel.isRefrigeratorEmpty.collectAsState()
     val context = LocalContext.current
 
