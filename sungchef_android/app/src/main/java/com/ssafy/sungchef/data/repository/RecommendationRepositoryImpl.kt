@@ -22,7 +22,7 @@ class RecommendationRepositoryImpl @Inject constructor(
                     emit(DataState.Success(recommendation.data.data.toRecommendation()))
                 }
                 is DataState.Error -> {
-
+                    emit(DataState.Error(recommendation.apiError))
                 }
                 is DataState.Loading ->{
                     emit(DataState.Loading())
@@ -32,11 +32,18 @@ class RecommendationRepositoryImpl @Inject constructor(
 
     override suspend fun getUser(): Flow<DataState<UserInfo>> =
         flow {
-            val data = recommendationDataSource.getUser()
-            if (data is DataState.Success) {
-                emit(DataState.Success(data.data.data.toUserInfo()))
+            when(val data = recommendationDataSource.getUser()){
+                is DataState.Success->{
+                    emit(DataState.Success(data.data.data.toUserInfo()))
+                }
+                is DataState.Loading->{
+                    emit(DataState.Loading())
+                }
+                is DataState.Error ->{
+                    emit(DataState.Error(data.apiError))
+                }
             }
-        }
+        }.onStart { emit(DataState.Loading()) }
 
 
 }

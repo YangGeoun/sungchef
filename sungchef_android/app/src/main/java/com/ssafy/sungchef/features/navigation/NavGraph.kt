@@ -116,6 +116,7 @@ fun NavGraph(
 //            startDestination = signupRoute,
 //            startDestination = login_route,
             startDestination = startDestination,
+//            startDestination = homeNavigationRoute,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen(

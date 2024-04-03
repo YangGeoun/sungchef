@@ -47,6 +47,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ssafy.sungchef.data.model.responsedto.IngredientListData
+import com.ssafy.sungchef.domain.model.ingredient.IngredientId
+import com.ssafy.sungchef.domain.model.ingredient.IngredientList
 import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.OutlinedButtonComponentNotMax
 import com.ssafy.sungchef.features.component.TextComponent
@@ -64,6 +66,7 @@ fun RefrigeratorScreen(
     }
 
     val isRefrigeratorEmpty by viewModel.isRefrigeratorEmpty.collectAsState()
+    val isRefreshNeeded by viewModel.isRefreshNeeded.collectAsState()
     val context = LocalContext.current
 
 
@@ -76,6 +79,9 @@ fun RefrigeratorScreen(
         Log.d(TAG, "RefrigeratorScreen: isRefrigeratorEmpty")
         viewModel.setIsRefrigeratorEmptyFalse()
         Toast.makeText(context, "냉장고에 음식이 없습니다. 추가해보세요!", Toast.LENGTH_SHORT).show()
+    }
+    if(isRefreshNeeded){
+        viewModel.setIsRefreshNeeded()
     }
 }
 
@@ -319,10 +325,15 @@ fun RefridgeArray(
                         Button(onClick = {
                             showNestedDialog = false
                             showDialog = false
+                            var deleteList : IngredientList = IngredientList()
+                            selectedItems.forEach {
+                                deleteList.ingredientList.add(IngredientId(it.ingredientId))
+                            }
                             selectedItems.clear()
 
+                            Log.d(TAG, "RefridgeArray: 삭제리스트 : $deleteList")
                             //API 통신하여 삭제
-
+                            viewModel.deleteFridgeIngredient(deleteList)
                         }) {
                             Text("삭제")
                         }

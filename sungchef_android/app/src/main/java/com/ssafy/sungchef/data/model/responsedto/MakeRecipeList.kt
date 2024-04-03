@@ -13,6 +13,7 @@ data class MakeRecipeListData(
 )
 
 data class MakeRecipeDetailList(
+    val makeRecipeName : String,
     val makeRecipeImage : String,
     val makeRecipeCreateDate : String,
     val makeRecipeReview : String

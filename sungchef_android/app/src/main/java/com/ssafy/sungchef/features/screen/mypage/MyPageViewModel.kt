@@ -31,7 +31,6 @@ class MyPageViewModel @Inject constructor(
     val bookmarkRecipeListData: StateFlow<BookmarkRecipeList> = _bookmarkRecipeListData.asStateFlow()
 
 
-    var cnt = 0
 //    init {
 //        getUserSimple()
 //    }
@@ -53,7 +52,6 @@ class MyPageViewModel @Inject constructor(
             Log.d(TAG, "getMakeRecipeList: ")
             val updatedMakeRecipeList = _makeRecipeListData.value.data.makeRecipeList.toMutableList().apply {
                 makeRecipeListResponse.data.makeRecipeList.forEach {
-                    Log.d(TAG, "getMakeRecipeList: viewmodel : ${cnt++}")
                     add(it)
                 }
             }
@@ -71,7 +69,6 @@ class MyPageViewModel @Inject constructor(
             Log.d(TAG, "getBookmarkRecipeList: $bookmarkRecipeListResponse")
             val updatedBookmarkRecipeList = _bookmarkRecipeListData.value.data.bookmarkRecipeList.toMutableList().apply {
                 bookmarkRecipeListResponse.data.bookmarkRecipeList.forEach {
-                    Log.d(TAG, "getBookmarkRecipeList: viewmodel : ${cnt++}")
                     add(it)
                 }
             }

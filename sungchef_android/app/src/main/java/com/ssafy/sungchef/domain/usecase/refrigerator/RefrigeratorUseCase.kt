@@ -5,6 +5,7 @@ import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.responsedto.FridgeData
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
+import com.ssafy.sungchef.domain.model.ingredient.IngredientList
 import com.ssafy.sungchef.domain.repository.RefrigeratorRepository
 import com.ssafy.sungchef.features.screen.refrigerator.TAG
 import kotlinx.coroutines.flow.Flow
@@ -18,13 +19,10 @@ class RefrigeratorUseCase @Inject constructor(
     suspend fun getFridgeIngredientList(): Flow<DataState<ResponseDto<FridgeData>>> {
         Log.d(TAG, "RefrigeratorUseCase 시작 ")
         return refrigeratorRepository.getFridgeIngredientList()
-
-
-
     }
-    suspend fun deleteFridgeIngredientList(): Flow<DataState<APIError>> {
+    suspend fun deleteFridgeIngredientList(ingredientList : IngredientList): Flow<DataState<APIError>> {
         return flow{
-            refrigeratorRepository.deleteFridgeIngredientList()
+            refrigeratorRepository.deleteIngredient(ingredientList)
         }
     }
 

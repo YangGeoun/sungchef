@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.sungchef.R
@@ -34,6 +35,7 @@ fun MenuCardComponent(
     imageResource: Any,
     title: String,
     views: String,
+    bookmarks:String,
     servings: String,
     timer: String,
     painter: Painter = painterResource(id = R.drawable.bookmark),
@@ -42,7 +44,7 @@ fun MenuCardComponent(
     onClick: () -> (Unit),
     onBookMarkClick: (Boolean) -> (Unit),
 ) {
-    var bookMarkState by rememberSaveable{ mutableStateOf(bookmark) }
+    var bookMarkState by rememberSaveable { mutableStateOf(bookmark) }
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -72,8 +74,13 @@ fun MenuCardComponent(
                     modifier = modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    TextComponent(text = title)
-                    if (bookMarkState){
+                    TextComponent(
+                        modifier = modifier.weight(1f),
+                        text = title,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if (bookMarkState) {
                         Icon(
                             painter = painterResource(id = R.drawable.filled_bookmark),
                             contentDescription = "즐겨찾기",
@@ -85,7 +92,7 @@ fun MenuCardComponent(
                                 },
                             tint = Color.Green
                         )
-                    }else{
+                    } else {
                         Icon(
                             painter = painter,
                             contentDescription = "즐겨찾기",
@@ -99,18 +106,30 @@ fun MenuCardComponent(
                         )
                     }
                 }
-                IconTextRowComponent(
-                    painter = painterResource(id = R.drawable.visibility),
-                    text = views
-                )
-                IconTextRowComponent(
-                    painter = painterResource(id = R.drawable.groups),
-                    text = servings
-                )
-                IconTextRowComponent(
-                    painter = painterResource(id = R.drawable.timer),
-                    text = timer
-                )
+                Row {
+                    IconTextRowComponent(
+                        modifier = modifier.weight(1f),
+                        painter = painterResource(id = R.drawable.visibility),
+                        text = views
+                    )
+                    IconTextRowComponent(
+                        modifier = modifier.weight(1f),
+                        painter = painterResource(id = R.drawable.filled_bookmark),
+                        text = bookmarks
+                    )
+                }
+                Row {
+                    IconTextRowComponent(
+                        modifier = modifier.weight(1f),
+                        painter = painterResource(id = R.drawable.groups),
+                        text = servings
+                    )
+                    IconTextRowComponent(
+                        modifier = modifier.weight(1f),
+                        painter = painterResource(id = R.drawable.timer),
+                        text = timer
+                    )
+                }
             }
         }
     }
@@ -124,6 +143,7 @@ fun MenuCardComponentPreview() {
         imageResource = painterResource(id = R.drawable.test_image),
         title = "돼지 김치찌개",
         views = "9999",
+        bookmarks = "9999",
         servings = "2인분",
         timer = "15분 이내",
         painter = painterResource(id = R.drawable.filled_bookmark),

@@ -21,10 +21,11 @@ fun IconTextRowComponent(
     text: String,
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconComponent(painter = painter, size = size)
-        Spacer(modifier = modifier.size(2.dp))
+        Spacer(modifier = Modifier.size(2.dp))
         TextComponent(
             text = text,
             fontSize = 14.sp

@@ -15,7 +15,7 @@ class AuthInterceptor @Inject constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
 
-        var accessToken = runBlocking {
+        val accessToken = runBlocking {
             Log.d(TAG, "refreshToken: ${getToken.getToken()?.refreshToken}")
             getToken.getToken()?.accessToken ?: ""
         }
@@ -26,6 +26,10 @@ class AuthInterceptor @Inject constructor(
                 .addHeader("Authorization", accessToken)
                 .build()
         }
+//        request = chain.request()
+//            .newBuilder()
+//            .addHeader("Authorization", "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzNDExOTgxNzc0IiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTcxMjI5NTEyOH0.BZZfH-lmB4ip2WgYsh-sbjhcVXeJxaQjquvODEDGTpU")
+//            .build()
 
         return chain.proceed(request)
     }

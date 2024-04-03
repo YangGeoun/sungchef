@@ -2,6 +2,7 @@ package com.ssafy.sungchef.features.screen.cooking
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -56,6 +57,15 @@ fun CookingScreen(
         viewModel.getRecipeStep(id)
     }
 
+    if (uiState.isError){
+        Toast.makeText(LocalContext.current,"잠시 후 다시 시도해 주세요.",Toast.LENGTH_SHORT).show()
+        viewModel.setError()
+    }
+
+    if (uiState.isNavigateToDelete){
+        onNavigateDelete(id)
+    }
+
     if (uiState.isLoading) {
         TextComponent(text = "로딩중~~~")
     } else {
@@ -78,7 +88,7 @@ fun CookingScreen(
                         text = { TextComponent(text = "요리완료") },
                         icon = { /*TODO*/ },
                         onClick = {
-                            onNavigateDelete(id)
+                            viewModel.registerNeedIngredient(id)
                             viewModel.textToSpeech?.stop()
                         }
                     )

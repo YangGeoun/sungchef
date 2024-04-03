@@ -7,6 +7,7 @@ import com.ssafy.sungchef.data.datasource.BaseRemoteDataSource
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.responsedto.FridgeData
 import com.ssafy.sungchef.data.model.requestdto.IngredientRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.RecipeRequest
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
 import com.ssafy.sungchef.data.model.responsedto.ocr.OcrResponse
@@ -33,17 +34,19 @@ class RefrigeratorDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteFridgeIngredientList(): DataState<APIError> {
-        return getResult {
-            refrigeratorService.deleteFridgeIngredientList()
-        }
-    }
 
     override suspend fun registerIngredient(ingredientRequestDTO: IngredientRequestDTO): DataState<APIError> {
         return getResult {
             refrigeratorService.registerIngredient(ingredientRequestDTO)
         }
     }
+
+    override suspend fun deleteIngredient(ingredientRequestDTO: IngredientRequestDTO): DataState<APIError> =
+        getResult { refrigeratorService.deleteIngredient(ingredientRequestDTO) }
+
+    override suspend fun registerNeedIngredient(recipeRequest: RecipeRequest): DataState<APIError> =
+        getResult { refrigeratorService.registerNeedIngredient(recipeRequest) }
+
 
     override suspend fun registerReceipt(convertImage: MultipartBody.Part?): DataState<ResponseDto<String>> {
         return getResult {

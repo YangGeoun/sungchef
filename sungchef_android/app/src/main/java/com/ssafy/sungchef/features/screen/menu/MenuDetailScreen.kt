@@ -79,7 +79,7 @@ fun MenuDetailScreen(
             id = viewState.lackIngredient.recipeId,
             onChangeState = { isCook = false }
         ) {
-            onNavigateCooking(it)
+            onNavigateCooking(viewState.recipeDetail!!.recipeId)
         }
     }
 
