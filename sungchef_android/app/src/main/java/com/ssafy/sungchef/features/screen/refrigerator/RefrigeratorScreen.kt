@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -229,7 +231,8 @@ fun RefridgeArray(
                 color = Color.White,
                 shape = MaterialTheme.shapes.medium
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                val scrollableState = rememberScrollState()
+                Column(modifier = Modifier.padding(16.dp).verticalScroll(scrollableState)) {
                     Row(modifier = Modifier.padding(bottom = 10.dp)) {
 //                        ImageComponent(modifier = Modifier.padding(end = 10.dp), imageResource = items[selectedFoodCategory].painter)
                         Image(painter = painterResource(id = items[selectedFoodCategory].painter), contentDescription = "",
