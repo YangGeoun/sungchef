@@ -2,6 +2,7 @@ package com.ssafy.sungchef.data.api
 
 import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.requestdto.IngredientRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.RecipeRequest
 import com.ssafy.sungchef.data.model.responsedto.FridgeData
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
@@ -30,6 +31,13 @@ interface RefrigeratorService {
     @POST("fridge")
     suspend fun registerIngredient(
         @Body ingredientRequestDTO: IngredientRequestDTO
+    ): Response<APIError>
+
+    @POST("fridge/delete")
+    suspend fun deleteIngredient(@Body recipeRequest: IngredientRequestDTO): Response<APIError>
+
+    @POST("ingredient/need")
+    suspend fun registerNeedIngredient(@Body recipeRequest:RecipeRequest): Response<APIError>
     ) : Response<APIError>
 
     @Multipart

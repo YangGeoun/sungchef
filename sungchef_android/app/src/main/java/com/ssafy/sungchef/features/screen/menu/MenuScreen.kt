@@ -171,6 +171,7 @@ private fun Content(
                             imageResource = it1.recipeImage,
                             title = it1.recipeName,
                             views = it1.recipeVisitCount.toString(),
+                            bookmarks = it1.recipeBookmarkCount.toString(),
                             servings = it1.recipeVolume,
                             timer = it1.recipeCookingTime,
                             bookmark = it1.bookmark,

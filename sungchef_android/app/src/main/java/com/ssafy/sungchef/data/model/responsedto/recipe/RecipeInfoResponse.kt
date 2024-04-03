@@ -7,5 +7,6 @@ data class RecipeInfoResponse(
     val recipeImage: String,
     val recipeName: String,
     val recipeVisitCount: Int,
+    val recipeBookmarkCount: Int,
     val recipeVolume: String
 )

@@ -19,6 +19,7 @@ fun RecipeInfoResponse.toRecipeInfo(): RecipeInfo {
         this.recipeImage,
         this.recipeName,
         this.recipeVisitCount,
+        this.recipeBookmarkCount,
         this.recipeVolume
     )
 }

@@ -5,6 +5,7 @@ import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.data.model.responsedto.FridgeData
 
 import com.ssafy.sungchef.data.model.requestdto.IngredientRequestDTO
+import com.ssafy.sungchef.data.model.requestdto.RecipeRequest
 import com.ssafy.sungchef.data.model.responsedto.ResponseDto
 import com.ssafy.sungchef.data.model.responsedto.ingredient.search.SearchIngredientResponse
 
@@ -23,4 +24,8 @@ interface RefrigeratorDataSource {
     suspend fun registerIngredient(ingredientRequestDTO: IngredientRequestDTO) : DataState<APIError>
 
     suspend fun registerReceipt(convertImage : MultipartBody.Part?) : DataState<ResponseDto<String>>
+    suspend fun registerIngredient(ingredientRequestDTO: IngredientRequestDTO): DataState<APIError>
+    suspend fun deleteIngredient(ingredientRequestDTO: IngredientRequestDTO): DataState<APIError>
+
+    suspend fun registerNeedIngredient(recipeRequest: RecipeRequest): DataState<APIError>
 }
