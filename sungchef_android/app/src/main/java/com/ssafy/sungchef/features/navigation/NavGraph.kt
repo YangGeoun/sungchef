@@ -187,7 +187,9 @@ fun NavGraph(
                 navVisibility = true
             }
 
-            registerReceiptScreen(navController)
+            registerReceiptScreen(navController){
+                navVisibility = it
+            }
 
             deleteIngredientScreen(
                 onNavigateRegisterCook = { navController.navigateRegisterCook(id = it) }) {

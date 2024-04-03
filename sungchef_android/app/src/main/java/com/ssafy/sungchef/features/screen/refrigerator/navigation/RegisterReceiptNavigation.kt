@@ -5,6 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
 import com.ssafy.sungchef.features.screen.refrigerator.receipt.register.RegisterReceiptScreen
 import com.ssafy.sungchef.features.screen.refrigerator.receipt.start.StartReceiptScreen
 
@@ -17,13 +18,24 @@ fun NavController.navigateRegisterReceipt(
     this.navigate(registerReceiptNavigationRoute.plus("/$imageUrl"), navOptions)
 }
 
-fun NavGraphBuilder.registerReceiptScreen(navController: NavController){
+fun NavGraphBuilder.registerReceiptScreen(
+    navController: NavController,
+    navVisibility : (Boolean) -> Unit
+){
     composable(registerReceiptNavigationRoute.plus("/{imageUrl}")) {
 
         val imageUrl = it.arguments?.getString("imageUrl")
         RegisterReceiptScreen(
             viewModel = hiltViewModel(),
-            imageUrl = imageUrl!!
+            imageUrl = imageUrl!!,
+            onMovePage = {
+                navController.navigateRefrigerator(
+                    navOptions {
+                        popUpTo(refrigeratorNavigationRoute)
+                    }
+                )
+                navVisibility(true)
+            }
         )
     }
 }

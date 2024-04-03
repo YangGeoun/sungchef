@@ -1,6 +1,7 @@
 package com.ssafy.sungchef.features.screen.refrigerator.receipt.register
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -23,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,10 +62,19 @@ private const val TAG = "RegisterReceiptScreen_성식당"
 fun RegisterReceiptScreen(
     viewModel : RegisterReceiptViewModel,
     imageUrl : String,
+    onMovePage : () -> Unit
 ) {
     var initState by remember { mutableStateOf(true) }
     val ingredientMap by viewModel.ingredientMap.collectAsState()
     val ingredientIdList by viewModel.ingredientIdList.collectAsState()
+    val registerState by viewModel.registerState.collectAsState()
+
+    val context = LocalContext.current
+
+    CheckUiState(
+        uiState = registerState,
+        onMovePage = onMovePage
+    )
 
     Log.d(TAG, "RegisterReceiptScreen: $ingredientIdList")
 
@@ -178,7 +190,11 @@ fun RegisterReceiptScreen(
                 .align(Alignment.BottomCenter),
             text = REGISTER_INGREDIENT_BUTTON
         ) {
-
+            if (ingredientMap.containsKey("NOT_CONVERTED")) {
+                Toast.makeText(context, "수정 사항을 확인해주세요.", Toast.LENGTH_SHORT).show()
+            } else {
+                viewModel.registerIngredient()
+            }
         }
     }
 }
@@ -273,52 +289,58 @@ fun ShowSearchIngredientDialog(
                 onCancel()
             }
         ) {
-            Column(
+            Surface(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp)
-            ) {
-                SearchBar(
-                    query = searchText,
-                    onQueryChange = viewModel::onSearchTextChange,
-                    onSearch = viewModel::onSearchTextChange,
-                    active = isSearching,
-                    onActiveChange = {
-                        viewModel.onToggleSearch()
-                    },
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium
+            ){
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 40.dp),
-                    placeholder = {
-                        TextComponent(
-                            text = SEARCH_INGREDIENT
-                        )
-                    },
-                    colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.background)
                 ) {
-                    LazyColumn{
-                        itemsIndexed(searchResult) { _, value ->
-                            Row(
-                                modifier = Modifier
-                                    .padding(start = 10.dp, end = 10.dp, top = 10.dp)
-                                    .clickable {
-                                        viewModel.onToggleSearch()
-                                        viewModel.addIngredient(value)
-                                        onCancel()
-                                    }
-                            ){
-                                ImageComponent(
+                    SearchBar(
+                        query = searchText,
+                        onQueryChange = viewModel::onSearchTextChange,
+                        onSearch = viewModel::onSearchTextChange,
+                        active = isSearching,
+                        onActiveChange = {
+                            viewModel.onToggleSearch()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 40.dp),
+                        placeholder = {
+                            TextComponent(
+                                text = SEARCH_INGREDIENT
+                            )
+                        },
+                        colors = SearchBarDefaults.colors(containerColor = MaterialTheme.colorScheme.background)
+                    ) {
+                        LazyColumn{
+                            itemsIndexed(searchResult) { _, value ->
+                                Row(
                                     modifier = Modifier
-                                        .size(30.dp)
-                                        .clip(CircleShape),
-                                    imageResource = IngredientType.ingredientType[value.ingredientType] ?: R.drawable.etc
-                                )
+                                        .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+                                        .clickable {
+                                            viewModel.onToggleSearch()
+                                            viewModel.addIngredient(value)
+                                            onCancel()
+                                        }
+                                ){
+                                    ImageComponent(
+                                        modifier = Modifier
+                                            .size(30.dp)
+                                            .clip(CircleShape),
+                                        imageResource = IngredientType.ingredientType[value.ingredientType] ?: R.drawable.etc
+                                    )
 
-                                TextComponent(
-                                    modifier = Modifier
-                                        .padding(start = 10.dp),
-                                    text = value.ingredientName
-                                )
+                                    TextComponent(
+                                        modifier = Modifier
+                                            .padding(start = 10.dp),
+                                        text = value.ingredientName
+                                    )
+                                }
                             }
                         }
                     }
@@ -333,6 +355,7 @@ fun ShowSearchIngredientDialog(
 fun RegisterReceiptPreview() {
     RegisterReceiptScreen(
         hiltViewModel(),
-        ""
+        "",
+        {}
     )
 }

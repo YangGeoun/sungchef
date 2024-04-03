@@ -4,9 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.sungchef.commons.DataState
+import com.ssafy.sungchef.commons.RETRY_SEARCH
+import com.ssafy.sungchef.commons.SERVER_INSTABILITY
 import com.ssafy.sungchef.data.model.responsedto.ocr.ConvertInfo
+import com.ssafy.sungchef.domain.model.refrigerator.RegisterIngredientState
 import com.ssafy.sungchef.domain.model.refrigerator.SearchIngredient
 import com.ssafy.sungchef.domain.usecase.refrigerator.GetOcrIngredientUseCase
+import com.ssafy.sungchef.domain.usecase.refrigerator.RegisterIngredientUseCase
 import com.ssafy.sungchef.domain.usecase.refrigerator.SearchIngredientUseCase
 import com.ssafy.sungchef.util.IngredientType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,6 +18,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,7 +26,8 @@ private const val TAG = "RegisterReceiptViewMode_성식당"
 @HiltViewModel
 class RegisterReceiptViewModel @Inject constructor(
     private val getOcrIngredientUseCase: GetOcrIngredientUseCase,
-    private val searchIngredientUseCase : SearchIngredientUseCase
+    private val searchIngredientUseCase : SearchIngredientUseCase,
+    private val registerIngredientUseCase: RegisterIngredientUseCase
 ) : ViewModel(){
 
     private val _isSearching = MutableStateFlow(false)
@@ -41,6 +47,9 @@ class RegisterReceiptViewModel @Inject constructor(
 
     private val _searchIngredientList = MutableStateFlow<List<SearchIngredient>>(listOf())
     val searchIngredientList = _searchIngredientList.asStateFlow()
+
+    private val _registerState = MutableStateFlow(RegisterIngredientState())
+    val registerState = _registerState.asStateFlow()
 
     private var searchJob: Job? = null
 
@@ -103,6 +112,47 @@ class RegisterReceiptViewModel @Inject constructor(
 
                     is DataState.Error -> {
 
+                    }
+                }
+            }
+        }
+    }
+
+    fun registerIngredient() {
+        viewModelScope.launch {
+            registerIngredientUseCase.registerIngredient(_ingredientIdList.value).collect {
+                when (it) {
+                    is DataState.Success -> {
+                        Log.d(TAG, "registerIngredient: ${it.data}")
+                        _registerState.emit(
+                            RegisterIngredientState(
+                                it.data.code.toInt()
+                            )
+                        )
+                    }
+
+                    is DataState.Loading -> {
+
+                    }
+
+                    is DataState.Error -> {
+                        when (it.apiError.code) {
+                            400L -> {
+                                _registerState.emit(
+                                    RegisterIngredientState(400, RETRY_SEARCH)
+                                )
+                            }
+
+                            500L -> {
+                                _registerState.emit(
+                                    RegisterIngredientState(500, SERVER_INSTABILITY)
+                                )
+                            }
+
+                            else -> {
+
+                            }
+                        }
                     }
                 }
             }

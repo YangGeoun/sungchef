@@ -232,6 +232,9 @@ fun DialogContext(
                 // TODO 서버에 사진을 보내는 로직 필요
                 onCancel()
 //                onMoveRegisterReceiptPage() // 영수증 등록화면으로 이동
+                cameraImageUri?.let {
+                    viewModel.registerReceipt(it, context)
+                }
                 Log.d(TAG, "cameraImageUri: $cameraImageUri")
             }
         }
@@ -246,7 +249,6 @@ fun DialogContext(
             onCancel()
             // 서버에 사진을 보냅니다.
             viewModel.registerReceipt(it, context)
-//            onMoveRegisterReceiptPage() // 영수증 등록화면으로 이동
         }
     }
 
