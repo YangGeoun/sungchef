@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.core.os.bundleOf
@@ -140,6 +141,11 @@ class CookingViewModel @Inject constructor(
     }
 
     fun deleteIngredient(ingredient: Ingredient) {
+        var deleteList : IngredientList = IngredientList()
+
+        deleteList.ingredientList.add(IngredientId(ingredient.recipeIngredientId))
+        Log.d("TAG", "deleteIngredient: 재료 삭제 : $deleteList")
+
         viewModelScope.launch {
             deleteIngredientUseCase(IngredientList(mutableListOf(IngredientId(ingredient.recipeIngredientId)))).collect { dataState ->
                 when (dataState) {
