@@ -33,10 +33,8 @@ fun NavGraphBuilder.registerCookScreen(
         RegisterCookScreen(hiltViewModel(parentEntry)) {
             navController.navigateHome(navOptions = navOptions {
                 popUpTo(homeNavigationRoute) {
-                    saveState = true
                 }
                 launchSingleTop = true
-                restoreState = true
             }
             )
         }

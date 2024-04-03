@@ -125,15 +125,32 @@ class CookingViewModel @Inject constructor(
             registerNeedIngredientUseCase(id).collect {
                 when (it) {
                     is DataState.Success -> {
-                        setState { currentState.copy(isLoading = false, isNavigateToDelete = true) }
+                        setState {
+                            currentState.copy(
+                                isRegistration = false,
+                                isNavigateToDelete = true
+                            )
+                        }
                     }
 
                     is DataState.Loading -> {
-//                        setState { currentState.copy(isLoading = true) }
+                        setState { currentState.copy(isRegistration = true) }
                     }
 
                     is DataState.Error -> {
-                        setState { currentState.copy(isLoading = false, isNavigateToDelete = true) }
+                        if (it.apiError.code == 200.toLong())
+                            setState {
+                                currentState.copy(
+                                    isRegistration = false,
+                                    isNavigateToDelete = true
+                                )
+                            }
+                        else
+                            setState {
+                                currentState.copy(
+                                    isRegistration = false,
+                                )
+                            }
                     }
                 }
             }
@@ -141,7 +158,7 @@ class CookingViewModel @Inject constructor(
     }
 
     fun deleteIngredient(ingredient: Ingredient) {
-        var deleteList : IngredientList = IngredientList()
+        var deleteList: IngredientList = IngredientList()
 
         deleteList.ingredientList.add(IngredientId(ingredient.recipeIngredientId))
         Log.d("TAG", "deleteIngredient: 재료 삭제 : $deleteList")
@@ -182,25 +199,27 @@ class CookingViewModel @Inject constructor(
                 registerCookingUseCase(file.value!!, id, description).collect {
                     when (it) {
                         is DataState.Success -> {
+                            Log.d("TAG", "registerCooking: ${it.data}")
                             setState {
                                 currentState.copy(
                                     isLoading = false,
+                                    isRegistration = false,
                                     isNavigateToHome = true
                                 )
                             }
                         }
+
                         is DataState.Error -> {
-                            if (it.apiError.code==200.toLong()){
-                                setState { currentState.copy(
+                            setState {
+                                currentState.copy(
                                     isLoading = false,
-                                    isNavigateToHome = true
-                                ) }
+                                    isRegistration = false
+                                )
                             }
-                            setState { currentState.copy(isLoading = false) }
                         }
 
                         is DataState.Loading -> {
-                            setState { currentState.copy(isLoading = true) }
+                            setState { currentState.copy(isLoading = true, isRegistration = true) }
                         }
                     }
                 }

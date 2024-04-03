@@ -28,14 +28,8 @@ class CookingDataSourceImpl @Inject constructor(
 
     override suspend fun registerCook(
         file: MultipartBody.Part?,
-        map: HashMap<String,RequestBody>
+        map: HashMap<String, RequestBody>
     ): DataState<APIError> {
-        val data = cookingService.registerCooking(file, params = map)
-        return if (data.isSuccessful) {
-            if (data.body() != null) DataState.Success(data.body()!!)
-            else DataState.Error(APIError(-1, "오류입니다."))
-        } else {
-            DataState.Error(APIError(-1, "오류입니다."))
-        }
+        return getResult { cookingService.registerCooking(file, params = map) }
     }
 }

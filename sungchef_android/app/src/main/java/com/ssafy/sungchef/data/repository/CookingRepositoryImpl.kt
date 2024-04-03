@@ -1,5 +1,6 @@
 package com.ssafy.sungchef.data.repository
 
+import android.util.Log
 import com.google.gson.Gson
 import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.datasource.cooking.CookingDataSource
@@ -75,6 +76,7 @@ class CookingRepositoryImpl @Inject constructor(
             when (val result =
                 cookingDataSource.registerCook(requestImage, requestMap )) {
                 is DataState.Success -> {
+                    Log.d("TAG", "registerCook: ${result.data}")
                     emit(DataState.Success(result.data.toBaseModel()))
                 }
 

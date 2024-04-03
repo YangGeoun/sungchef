@@ -68,23 +68,35 @@ fun RegisterCookScreen(
 ) {
     val uiState = viewModel.uiState.collectAsState().value
 
-    if (uiState.isNavigateToHome){
+    if (uiState.isNavigateToHome && !uiState.isRegistration) {
+        Log.d("TAG", "들어옴?: ${uiState.isNavigateToHome}")
         navigateHome()
     }
-    
-    Scaffold(
-        topBar = { TopAppBarComponent(title = { TextComponent(text = "내가 만든 음식", style = MaterialTheme.typography.titleLarge) }) }
-    ) { paddingValues ->
-        Content(
-            paddingValues = paddingValues,
-            setBitmap = {
-                        viewModel.setBitmap(it)
-            },
-            setFile = {
-                viewModel.setFile(it)
+
+    if (uiState.isRegistration) {
+        LottieAnimationComponent(id = R.raw.loading_animation)
+    } else {
+        Scaffold(
+            topBar = {
+                TopAppBarComponent(title = {
+                    TextComponent(
+                        text = "내가 만든 음식",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                })
             }
-        ) {
-            viewModel.registerCooking(uiState.usedIngredient!!.recipeId, it)
+        ) { paddingValues ->
+            Content(
+                paddingValues = paddingValues,
+                setBitmap = {
+                    viewModel.setBitmap(it)
+                },
+                setFile = {
+                    viewModel.setFile(it)
+                }
+            ) {
+                viewModel.registerCooking(uiState.usedIngredient!!.recipeId, it)
+            }
         }
     }
 }

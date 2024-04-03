@@ -15,6 +15,7 @@ data class CookingViewState(
     val recipeDetailList: List<RecipeDetailInfo> = listOf(),
     val usedIngredient: LackIngredient? = null,
     val usingIngredient: List<Ingredient> = listOf(),
+    val isRegistration:Boolean = false,
     val isNavigateToDelete:Boolean = false,
     val isNavigateToHome:Boolean = false
 ) : ViewState

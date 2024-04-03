@@ -2,6 +2,7 @@ package com.ssafy.sungchef.features.screen.cooking
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -100,10 +102,11 @@ private fun Content(
             modifier = modifier
                 .weight(1f)
                 .padding(horizontal = 20.dp)
+                .background(color = Color.White)
         ) {
             itemsIndexed(usingIngredient) { index, item ->
                 IngredientSelectComponent(
-                    modifier = modifier.padding(bottom = 5.dp),
+                    modifier = modifier,
                     name = item.recipeIngredientName,
                     onDelete = { onDeleteIngredient(item) }
                 )

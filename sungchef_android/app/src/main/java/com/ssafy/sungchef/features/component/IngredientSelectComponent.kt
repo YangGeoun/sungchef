@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -18,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ssafy.sungchef.R
 import com.ssafy.sungchef.commons.DELETE_ALL
 
@@ -30,17 +33,27 @@ fun IngredientSelectComponent(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .padding(vertical = 5.dp)
             .background(color = Color.White),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TextComponent(
             modifier = modifier
                 .weight(1f),
-            text = name
+            text = name,
+            fontSize = 16.sp
         )
-        IconButtonComponent(
-            onClick = { onDelete() },
-            painter = painterResource(id = R.drawable.icon_delete)
+        Button(
+            onClick = onDelete,
+            modifier = modifier.padding(end = 10.dp),
+            content = {
+                TextComponent(
+                    modifier = modifier,
+                    text = "삭제",
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
+            }
         )
     }
 }
