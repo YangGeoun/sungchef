@@ -90,7 +90,7 @@ fun MenuCardComponent(
                                     bookMarkState = !bookMarkState
                                     onBookMarkClick(bookMarkState)
                                 },
-                            tint = Color.Green
+                            tint = Color(0xFF9FD18D)
                         )
                     } else {
                         Icon(

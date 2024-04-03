@@ -169,7 +169,9 @@ fun DialogComponent(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = modifier.background(Color.White).padding(top = 10.dp)
+            modifier = modifier
+                .background(Color.White)
+                .padding(top = 10.dp)
         ) {
             TextComponent(
                 text = text,
@@ -181,15 +183,17 @@ fun DialogComponent(
                     modifier = modifier.height(200.dp)
                 ) {
                     itemsIndexed(ingredientList) { _, item ->
-                        IngredientCardComponent(
-                            classification = item.recipeIngredientType,
-                            id = item.image,
-                            recipeIngredients = item.recipeIngredientList
-                        )
+                        if (item.recipeIngredientList.isNotEmpty()) {
+                            IngredientCardComponent(
+                                classification = item.recipeIngredientType,
+                                id = item.image,
+                                recipeIngredients = item.recipeIngredientList
+                            )
+                        }
                     }
                 }
             } else {
-                Box(modifier = modifier.height(100.dp), contentAlignment = Alignment.Center){
+                Box(modifier = modifier.height(100.dp), contentAlignment = Alignment.Center) {
                     TextComponent(text = "요리를 시작하시겠습니까?")
                 }
             }

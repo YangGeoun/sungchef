@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +54,7 @@ fun IngredientCardComponent(
                     .fillMaxWidth()
                     .wrapContentHeight(align = Alignment.CenterVertically),
                 text = classification,
+                style = MaterialTheme.typography.titleMedium,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start
             )
