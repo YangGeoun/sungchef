@@ -173,7 +173,7 @@ fun MyPageScreen(navController: NavController, viewModel: MyPageViewModel){
                             onClick = {
                                 Log.d(     TAG,     "MyPage1: $it"    )
                                 showDialog = true;
-//                                recipeTitle = it.
+                                recipeTitle = it.makeRecipeName
                                 recipeImage = it.makeRecipeImage
                                 recipeDate = it.makeRecipeCreateDate
                                 recipeDescription = it.makeRecipeReview
