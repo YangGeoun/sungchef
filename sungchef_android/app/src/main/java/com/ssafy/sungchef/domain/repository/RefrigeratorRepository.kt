@@ -17,8 +17,6 @@ interface RefrigeratorRepository {
 
     suspend fun searchIngredient(ingredientName: String): Flow<DataState<List<SearchIngredient>>>
 
-    suspend fun registerIngredient(ingredientIdList : List<Int>) : Flow<DataState<APIError>>
-
     suspend fun registerReceipt(imageFile : File) : Flow<DataState<RegisterReceiptState>>
 
     suspend fun getFridgeIngredientList() : Flow<DataState<ResponseDto<FridgeData>>>

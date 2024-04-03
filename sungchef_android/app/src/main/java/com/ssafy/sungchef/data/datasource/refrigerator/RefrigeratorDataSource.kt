@@ -15,17 +15,11 @@ import retrofit2.Response
 
 
 interface RefrigeratorDataSource {
-
     suspend fun getFridgeIngredientList() : DataState<ResponseDto<FridgeData>>
     suspend fun deleteFridgeIngredientList() : DataState<APIError>
-
     suspend fun searchIngredient(ingredientName : String) : DataState<ResponseDto<List<SearchIngredientResponse>>>
-
     suspend fun registerIngredient(ingredientRequestDTO: IngredientRequestDTO) : DataState<APIError>
-
     suspend fun registerReceipt(convertImage : MultipartBody.Part?) : DataState<ResponseDto<String>>
-    suspend fun registerIngredient(ingredientRequestDTO: IngredientRequestDTO): DataState<APIError>
     suspend fun deleteIngredient(ingredientRequestDTO: IngredientRequestDTO): DataState<APIError>
-
     suspend fun registerNeedIngredient(recipeRequest: RecipeRequest): DataState<APIError>
 }

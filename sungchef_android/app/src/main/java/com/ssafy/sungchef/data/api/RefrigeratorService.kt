@@ -38,7 +38,6 @@ interface RefrigeratorService {
 
     @POST("ingredient/need")
     suspend fun registerNeedIngredient(@Body recipeRequest:RecipeRequest): Response<APIError>
-    ) : Response<APIError>
 
     @Multipart
     @POST("ingredient/ocr/convert")
