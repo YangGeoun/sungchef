@@ -207,7 +207,7 @@ private fun RecommendRecipeBody(
             style = MaterialTheme.typography.titleLarge,
             modifier = modifier.padding(top = 10.dp, bottom = 10.dp, start = 20.dp)
         )
-        if (!dataList.isNotEmpty()) {
+        if (dataList.isNotEmpty()) {
             LazyRow(
                 modifier = modifier
                     .fillMaxWidth()

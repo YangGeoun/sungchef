@@ -138,7 +138,7 @@ class CookingViewModel @Inject constructor(
                     }
 
                     is DataState.Error -> {
-                        if (it.apiError.code == 200.toLong())
+                        if (it.apiError.code == 204.toLong())
                             setState {
                                 currentState.copy(
                                     isRegistration = false,

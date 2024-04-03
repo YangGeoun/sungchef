@@ -97,11 +97,11 @@ private fun Content(
             text = "소진된 재료를 선택해주세요.\n메뉴 추천이 더욱 정확해져요.",
             fontSize = 18.sp
         )
-        Spacer(modifier = modifier.padding(10.dp))
         LazyColumn(
             modifier = modifier
                 .weight(1f)
                 .padding(horizontal = 20.dp)
+                .padding(vertical = 10.dp)
                 .background(color = Color.White)
         ) {
             itemsIndexed(usingIngredient) { index, item ->

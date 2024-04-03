@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -36,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -167,13 +169,17 @@ fun DialogComponent(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = modifier.background(Color.White)
+            modifier = modifier.background(Color.White).padding(top = 10.dp)
         ) {
-            TextComponent(text = text, style = MaterialTheme.typography.titleMedium)
-            LazyColumn(
-                modifier = modifier.height(200.dp)
-            ) {
-                if (ingredientList.isNotEmpty()) {
+            TextComponent(
+                text = text,
+                style = MaterialTheme.typography.titleMedium,
+                fontSize = 22.sp
+            )
+            if (ingredientList.isNotEmpty()) {
+                LazyColumn(
+                    modifier = modifier.height(200.dp)
+                ) {
                     itemsIndexed(ingredientList) { _, item ->
                         IngredientCardComponent(
                             classification = item.recipeIngredientType,
@@ -181,10 +187,10 @@ fun DialogComponent(
                             recipeIngredients = item.recipeIngredientList
                         )
                     }
-                } else {
-                    item(1){
-                        TextComponent(text = "요리를 시작하시겠습니까?")
-                    }
+                }
+            } else {
+                Box(modifier = modifier.height(100.dp), contentAlignment = Alignment.Center){
+                    TextComponent(text = "요리를 시작하시겠습니까?")
                 }
             }
             Row {

@@ -39,9 +39,10 @@ fun IngredientSelectComponent(
     ) {
         TextComponent(
             modifier = modifier
-                .weight(1f),
+                .weight(1f)
+                .padding(start = 10.dp),
             text = name,
-            fontSize = 16.sp
+            fontSize = 18.sp
         )
         Button(
             onClick = onDelete,

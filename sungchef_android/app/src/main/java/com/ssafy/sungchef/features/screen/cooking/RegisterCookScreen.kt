@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -83,7 +84,9 @@ fun RegisterCookScreen(
                         text = "내가 만든 음식",
                         style = MaterialTheme.typography.titleLarge
                     )
-                })
+                }, actions = { TextButton(onClick = { navigateHome() }) {
+                    TextComponent(text = "다음에 하기")
+                }})
             }
         ) { paddingValues ->
             Content(
@@ -138,38 +141,41 @@ private fun Content(
         // Manifest의 authority와 FileProvider.getUriForFile의 authority를 통일 시켜야함
         FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
     }
-    Column(
-        modifier = modifier
-            .padding(paddingValues)
-            .padding(top = 10.dp)
-            .padding(horizontal = 20.dp)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Box(
+    Column {
+        Column(
             modifier = modifier
-                .fillMaxHeight(0.3f)
-                .fillMaxWidth()
-                .clickable {
-                    cameraImageUri = createImageUri().also {
-                        it?.let { uri ->
-                            takePictureLauncher.launch(uri)
-                        }
-                    }
-                },
-            contentAlignment = Alignment.Center
+                .padding(paddingValues)
+                .padding(top = 10.dp)
+                .padding(horizontal = 20.dp)
+                .weight(1f),
+            verticalArrangement = Arrangement.Top
         ) {
-            if (bitmap == null) {
-                LottieAnimationComponent(id = R.raw.photo_animation)
-            } else {
-                Image(
-                    modifier = modifier.fillMaxSize(),
-                    bitmap = bitmap!!.asImageBitmap(),
-                    contentDescription = "dlalsl"
-                )
+            Box(
+                modifier = modifier
+                    .fillMaxHeight(0.3f)
+                    .fillMaxWidth()
+                    .padding(top = 15.dp)
+                    .clickable {
+                        cameraImageUri = createImageUri().also {
+                            it?.let { uri ->
+                                takePictureLauncher.launch(uri)
+                            }
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                if (bitmap == null) {
+                    LottieAnimationComponent(id = R.raw.photo_animation)
+                } else {
+                    Image(
+                        modifier = modifier.fillMaxSize(),
+                        bitmap = bitmap!!.asImageBitmap(),
+                        contentDescription = "dlalsl"
+                    )
+                }
             }
+            TextFieldComponent(value = text, onValueChange = { text = it }, hintText = "한 줄 평을 입력하세요.")
         }
-        TextFieldComponent(value = text, onValueChange = { text = it }, hintText = "한 줄 평을 입력하세요.")
         FilledButtonComponent(text = "등록") {
             registerCooking(text)
         }
