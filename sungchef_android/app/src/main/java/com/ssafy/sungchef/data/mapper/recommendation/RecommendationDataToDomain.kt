@@ -62,9 +62,9 @@ fun UserSettingInfoData.toUserInfo(): UserInfo {
     val age = today.get(Calendar.YEAR) - this.userBirthdate.substring(0, 4).toInt() + 1
     var result = ""
     if (floor(age.toDouble() / 10) == 0.0) {
-        result="미취학"
+        result="미취학 아동이"
     }else{
-        result = (floor(age.toDouble() / 10) * 10).toInt().toString().plus("대")
+        result = (floor(age.toDouble() / 10) * 10).toInt().toString().plus("대가")
     }
 
     return UserInfo(

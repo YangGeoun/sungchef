@@ -135,7 +135,7 @@ private fun Content(
             if (recommendedFoodList != null)
                 RecommendFoodBody(
                     modifier = modifier,
-                    text = "${userInfo.birthdate}가 좋아하는 음식",
+                    text = "${userInfo.birthdate} 좋아하는 음식",
                     dataList = recommendedFoodList[3].recommendedFoodList,
                     size = 120
                 ) {
