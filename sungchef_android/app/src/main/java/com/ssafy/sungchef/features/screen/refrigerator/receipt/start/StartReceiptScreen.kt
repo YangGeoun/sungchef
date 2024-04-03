@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.FileProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ssafy.sungchef.commons.REGISTER_INGREDIENT
 import com.ssafy.sungchef.commons.START_RECEIPT_TITLE
 import com.ssafy.sungchef.features.component.AlertDialogComponent
@@ -42,6 +43,7 @@ import com.ssafy.sungchef.features.component.FilledButtonComponent
 import com.ssafy.sungchef.features.component.PrimaryContainerButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.screen.login.ShowLoadingDialog
+import com.ssafy.sungchef.features.screen.refrigerator.receipt.register.RegisterReceiptScreen
 import com.ssafy.sungchef.features.ui.theme.dialogBackgroundColor
 import java.io.File
 import java.text.SimpleDateFormat
@@ -136,7 +138,7 @@ fun StartReceiptScreen(
 
         Spacer(
             modifier = Modifier
-                .weight(0.3f)
+                .weight(0.5f)
         )
 
         Column(
@@ -338,5 +340,17 @@ fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null
+}
+
+@Preview
+@Composable
+fun StartReceiptPreview() {
+    StartReceiptScreen(
+        hiltViewModel(),
+        {},
+        {},
+        {},
+        {}
+    )
 }
 

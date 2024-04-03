@@ -53,6 +53,7 @@ import com.ssafy.sungchef.features.screen.refrigerator.navigation.navigateStartR
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.refrigeratorScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerIngredientScreen
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.registerReceiptScreen
+import com.ssafy.sungchef.features.screen.refrigerator.navigation.startReceiptNavigationRoute
 import com.ssafy.sungchef.features.screen.refrigerator.navigation.startReceiptScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupGraph
 import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute

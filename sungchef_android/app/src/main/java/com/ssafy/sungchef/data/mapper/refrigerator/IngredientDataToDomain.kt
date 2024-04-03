@@ -58,22 +58,24 @@ fun OcrResponse.toMapIngredient() : Map<String, List<ConvertInfo>> {
     notConverted?.let {
 //        ingredientMap[it.ingredientType] = listOf()
 
-        val notConvertList = it.convertProductList
-        val tempList = mutableListOf<ConvertInfo>()
-        var tempId = -1
+        if (it.convertProductList.isNotEmpty()) {
+            val notConvertList = it.convertProductList
+            val tempList = mutableListOf<ConvertInfo>()
+            var tempId = -1
 
-        // 고유한 id를 갖도록 음수 id를 바꿔줌
-        for (notConvert in notConvertList) {
-            val tempConvertInfo = ConvertInfo(
-                notConvert.convertedName,
-                tempId,
-                notConvert.converted
-            )
-            tempList.add(tempConvertInfo)
-            tempId--
+            // 고유한 id를 갖도록 음수 id를 바꿔줌
+            for (notConvert in notConvertList) {
+                val tempConvertInfo = ConvertInfo(
+                    notConvert.convertedName,
+                    tempId,
+                    notConvert.converted
+                )
+                tempList.add(tempConvertInfo)
+                tempId--
+            }
+
+            ingredientMap[it.ingredientType] = tempList
         }
-
-        ingredientMap[it.ingredientType] = tempList
     }
 
 
