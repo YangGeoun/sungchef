@@ -75,7 +75,9 @@ fun RegisterCookScreen(
     }
 
     if (uiState.isRegistration) {
-        LottieAnimationComponent(id = R.raw.loading_animation)
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            LottieAnimationComponent(id = R.raw.loading_animation)
+        }
     } else {
         Scaffold(
             topBar = {
@@ -84,9 +86,11 @@ fun RegisterCookScreen(
                         text = "내가 만든 음식",
                         style = MaterialTheme.typography.titleLarge
                     )
-                }, actions = { TextButton(onClick = { navigateHome() }) {
-                    TextComponent(text = "다음에 하기")
-                }})
+                }, actions = {
+                    TextButton(onClick = { navigateHome() }) {
+                        TextComponent(text = "다음에 하기")
+                    }
+                })
             }
         ) { paddingValues ->
             Content(
@@ -174,7 +178,11 @@ private fun Content(
                     )
                 }
             }
-            TextFieldComponent(value = text, onValueChange = { text = it }, hintText = "한 줄 평을 입력하세요.")
+            TextFieldComponent(
+                value = text,
+                onValueChange = { text = it },
+                hintText = "한 줄 평을 입력하세요."
+            )
         }
         FilledButtonComponent(text = "등록") {
             registerCooking(text)
