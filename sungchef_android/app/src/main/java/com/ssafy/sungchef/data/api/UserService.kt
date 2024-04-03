@@ -68,14 +68,6 @@ interface UserService {
     suspend fun login(@Body userSnsIdRequestDTO: UserSnsIdRequestDTO) : Response<ResponseDto<LoginResponse>>
     @POST("user/contact")
     suspend fun userContact(@Body contactRequestDTO: ContactRequestDTO) : Response<APIError>
-//    @Multipart
-//    @PUT("/user")
-//    suspend fun updateUserInfo(
-//        @Part("userNickName") userNickName : String,
-//        @Part("userGender") userGender : Char,
-//        @Part userImage : MultipartBody.Part?,
-//        @Part("userBirthdate") userBirthdate : String,
-//    ) : Response<APIError>
 
     @Multipart
     @PUT("/user")

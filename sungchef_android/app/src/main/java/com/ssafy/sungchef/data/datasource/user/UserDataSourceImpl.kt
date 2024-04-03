@@ -113,13 +113,6 @@ class UserDataSourceImpl @Inject constructor(
         return userService.userContact(contactRequestDTO)
     }
     override suspend fun updateUserInfo(userUpdateRequestDTO: UserUpdateRequestDTO) : Response<APIError> {
-        val gson = Gson()
-        val productJson = gson.toJson(userUpdateRequestDTO)
-
-//        return userService.updateUserInfo(userUpdateRequestDTO.userNickName,
-//            userUpdateRequestDTO.userGender,
-//            userUpdateRequestDTO.userImage,
-//            userUpdateRequestDTO.userBirthDate)
 
         val map = HashMap<String, RequestBody>()
         val nickname = RequestBody.create("application/json".toMediaTypeOrNull(), userUpdateRequestDTO.userNickName)
@@ -131,7 +124,6 @@ class UserDataSourceImpl @Inject constructor(
         map["userBirthdate"] = birthDate
 
         return userService.updateUserInfo(userUpdateRequestDTO.userImage, map)
-//        return userService.updateUserInfo(userImage, userUpdateRequestDTO)
     }
 
     override suspend fun autoLogin(): DataState<APIError> {

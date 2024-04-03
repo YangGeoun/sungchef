@@ -94,8 +94,11 @@ class RefrigeratorViewModel @Inject constructor(
                             Log.d(TAG, "getFridgeInfo: Success")
                             var datalst = it.data.data.ingredientInfoList
                             for (idx in 0 until 8){
-                                items.value[idx].num = datalst[idx].ingredientResList.size
-                                datalst[idx].ingredientResList.forEach {detail ->
+                                Log.d(TAG, "getFridgeInfo: $idx 번째 : ${datalst[idx].ingredientResList.size}")
+                                var addlst = datalst[idx].ingredientResList.toSet().toList()
+
+                                items.value[idx].num = addlst.size
+                                addlst.forEach {detail ->
                                     items_detail.value[idx].add(IngredientListData( detail.ingredientName, detail.ingredientId,))
                                 }
                             }
@@ -122,8 +125,5 @@ class RefrigeratorViewModel @Inject constructor(
     fun setIsRefrigeratorEmptyFalse(){
         isRefrigeratorEmpty.value = false
     }
-
-
-
 
 }
