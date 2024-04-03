@@ -155,7 +155,6 @@ private fun Content(
     ) {
         RecipeInfo(
             modifier = modifier,
-            300,
             standard = standard,
             onVisitClick = { onVisitClick() },
             changeStandard = changeStandard,
@@ -189,7 +188,6 @@ private fun Content(
 @Composable
 private fun RecipeInfo(
     modifier: Modifier,
-    count: Int,
     standard: String,
     onVisitClick: () -> (Unit),
     changeStandard: (String) -> (Unit),
@@ -204,7 +202,7 @@ private fun RecipeInfo(
     ) {
         TextComponent(
             modifier = modifier,
-            text = "성식당 레시피($count)",
+            text = "성식당 레시피",
             color = Color.Black,
             fontSize = 16.sp
         )

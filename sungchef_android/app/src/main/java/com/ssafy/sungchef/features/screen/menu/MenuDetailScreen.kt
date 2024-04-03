@@ -60,6 +60,7 @@ fun MenuDetailScreen(
 ) {
     val context: Context = LocalContext.current
     var isCook by remember { mutableStateOf(false) }
+
     LaunchedEffect(key1 = true) {
         viewModel.getDetailRecipe(recipeId.toInt())
         onChangeNav()
@@ -72,14 +73,14 @@ fun MenuDetailScreen(
         }
     }
 
-    if (viewState.lackIngredient != null && isCook) {
+    if (viewState.isDialog && isCook) {
         DialogComponent(
             text = viewState.dialogTitle,
-            ingredientList = viewState.lackIngredient.ingredientInfo,
-            id = viewState.lackIngredient.recipeId,
+            ingredientList = viewState.lackIngredient?.ingredientInfo ?: listOf(),
+            id = recipeId.toInt(),
             onChangeState = { isCook = false }
         ) {
-            onNavigateCooking(viewState.recipeDetail!!.recipeId)
+            onNavigateCooking(recipeId.toInt())
         }
     }
 
@@ -179,6 +180,10 @@ fun DialogComponent(
                             id = item.image,
                             recipeIngredients = item.recipeIngredientList
                         )
+                    }
+                } else {
+                    item(1){
+                        TextComponent(text = "요리를 시작하시겠습니까?")
                     }
                 }
             }

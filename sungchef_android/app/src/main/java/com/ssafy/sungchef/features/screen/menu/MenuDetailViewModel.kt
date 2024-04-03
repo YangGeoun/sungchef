@@ -53,11 +53,11 @@ class MenuDetailViewModel @Inject constructor(
             getLackIngredientUseCase(id).collect(){
                 when (it) {
                     is DataState.Success -> {
-                        setState { currentState.copy(isLoading = false, lackIngredient = it.data, dialogTitle = "부족한 재료가 있습니다.") }
+                        setState { currentState.copy(isLoading = false, isDialog = true, lackIngredient = it.data, dialogTitle = "부족한 재료가 있습니다.") }
                     }
 
                     is DataState.Error -> {
-                        setState { currentState.copy(isError = true, isLoading = false, dialogTitle = "부족한 재료가 없습니다.") }
+                        setState { currentState.copy(isLoading = false, isDialog = true, dialogTitle = "부족한 재료가 없습니다.") }
                     }
 
                     is DataState.Loading -> {

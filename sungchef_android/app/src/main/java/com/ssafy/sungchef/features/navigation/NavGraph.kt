@@ -114,8 +114,8 @@ fun NavGraph(
             navController = navController,
 //            startDestination = signupRoute,
 //            startDestination = login_route,
-//            startDestination = startDestination,
-            startDestination = homeNavigationRoute,
+            startDestination = startDestination,
+//            startDestination = homeNavigationRoute,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
             homeScreen(
@@ -194,7 +194,9 @@ fun NavGraph(
                 onNavigateRegisterCook = { navController.navigateRegisterCook(id = it) }) {
                 navVisibility = false
             }
-            searchScreen {
+            searchScreen(
+                changeNav = {navVisibility = false}
+            ) {
                 navController.navigateMenuDetail(it)
                 navVisibility = false
             }

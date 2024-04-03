@@ -130,7 +130,7 @@ class RefrigeratorRepositoryImpl @Inject constructor(
                 }
 
                 is DataState.Error -> {
-
+                    emit(DataState.Error(APIError(result.apiError.code,"부족한 재료가 없습니다.")))
                 }
 
                 is DataState.Loading -> {

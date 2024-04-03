@@ -15,6 +15,7 @@ import com.ssafy.sungchef.domain.usecase.recipe.SearchFoodNameUseCase
 import com.ssafy.sungchef.domain.usecase.user.ChangeBookmarkRecipeUseCase
 import com.ssafy.sungchef.domain.viewstate.recipe.RecipeViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -67,7 +68,12 @@ class MenuViewModel @Inject constructor(
     }
 
     init {
+        setState { currentState.copy(isSearchLoading = true) }
         getSearchedVisitRecipeInfo(0, _searchText.value)
+        viewModelScope.launch {
+            delay(2000L)
+            setState { currentState.copy(isSearchLoading = false) }
+        }
     }
 
     fun getBookMarkRecipeInfo(page: Int) {

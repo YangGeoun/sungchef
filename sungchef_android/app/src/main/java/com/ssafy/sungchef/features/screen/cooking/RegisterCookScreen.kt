@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -70,10 +73,13 @@ fun RegisterCookScreen(
     }
     
     Scaffold(
-        topBar = { TopAppBarComponent(title = { TextComponent(text = "국가 권력급 김치찌개") }) }
+        topBar = { TopAppBarComponent(title = { TextComponent(text = "내가 만든 음식", style = MaterialTheme.typography.titleLarge) }) }
     ) { paddingValues ->
         Content(
             paddingValues = paddingValues,
+            setBitmap = {
+                        viewModel.setBitmap(it)
+            },
             setFile = {
                 viewModel.setFile(it)
             }
@@ -89,6 +95,7 @@ private fun Content(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
     setFile: (File) -> (Unit),
+    setBitmap: (Bitmap) -> (Unit),
     registerCooking: (String) -> (Unit)
 ) {
     val context = LocalContext.current
@@ -102,6 +109,7 @@ private fun Content(
         onResult = { success ->
             if (success) {
                 bitmap = setImgUri(cameraImageUri!!, context)
+                setBitmap(bitmap!!)
             }
         }
     )
@@ -121,8 +129,10 @@ private fun Content(
     Column(
         modifier = modifier
             .padding(paddingValues)
+            .padding(top = 10.dp)
             .padding(horizontal = 20.dp)
-            .fillMaxSize()
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Box(
             modifier = modifier
@@ -138,7 +148,7 @@ private fun Content(
             contentAlignment = Alignment.Center
         ) {
             if (bitmap == null) {
-                LottieAnimationComponent()
+                LottieAnimationComponent(id = R.raw.photo_animation)
             } else {
                 Image(
                     modifier = modifier.fillMaxSize(),
@@ -148,7 +158,7 @@ private fun Content(
             }
         }
         TextFieldComponent(value = text, onValueChange = { text = it }, hintText = "한 줄 평을 입력하세요.")
-        FilledButtonComponent(text = "다음") {
+        FilledButtonComponent(text = "등록") {
             registerCooking(text)
         }
     }
@@ -156,10 +166,12 @@ private fun Content(
 
 @Composable
 fun LottieAnimationComponent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Fit,
+    id: Int,
 ) {
     val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.photo_animation)
+        LottieCompositionSpec.RawRes(id)
     )
     val progress by animateLottieCompositionAsState(
         composition, true, iterations = LottieConstants.IterateForever, restartOnPlay = false
@@ -167,7 +179,8 @@ fun LottieAnimationComponent(
     LottieAnimation(
         composition = composition,
         progress = { progress },
-        modifier = modifier
+        modifier = modifier,
+        contentScale = contentScale,
     )
 }
 
