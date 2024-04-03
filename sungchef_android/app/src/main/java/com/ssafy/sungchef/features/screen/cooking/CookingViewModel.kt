@@ -39,11 +39,15 @@ class CookingViewModel @Inject constructor(
 
     private val file = mutableStateOf<File?>(null)
     private val bitmap = mutableStateOf<Bitmap?>(null)
+    private val ingredient = mutableStateOf<Ingredient?>(null)
     override fun createInitialState(): CookingViewState = CookingViewState()
     override fun onTriggerEvent(event: CookingEvent) {
         TODO("Not yet implemented")
     }
 
+    fun setIngredient(ingredient: Ingredient) {
+        this.ingredient.value = ingredient
+    }
     fun getRecipeStep(id: Int) {
         viewModelScope.launch {
             getRecipeStepUseCase(id).collect {
@@ -157,14 +161,9 @@ class CookingViewModel @Inject constructor(
         }
     }
 
-    fun deleteIngredient(ingredient: Ingredient) {
-        var deleteList: IngredientList = IngredientList()
-
-        deleteList.ingredientList.add(IngredientId(ingredient.recipeIngredientId))
-        Log.d("TAG", "deleteIngredient: 재료 삭제 : $deleteList")
-
+    fun deleteIngredient() {
         viewModelScope.launch {
-            deleteIngredientUseCase(IngredientList(mutableListOf(IngredientId(ingredient.recipeIngredientId)))).collect { dataState ->
+            deleteIngredientUseCase(IngredientList(mutableListOf(IngredientId(ingredient.value!!.recipeIngredientId)))).collect { dataState ->
                 when (dataState) {
                     is DataState.Success -> {
                         setState { currentState.copy(isLoading = false) }
@@ -176,7 +175,7 @@ class CookingViewModel @Inject constructor(
 
                     is DataState.Error -> {
                         val result = uiState.value.usingIngredient.toMutableList().apply {
-                            remove(ingredient)
+                            remove(ingredient.value)
                         }.toList()
                         setState { currentState.copy(isLoading = false, usingIngredient = result) }
                     }
