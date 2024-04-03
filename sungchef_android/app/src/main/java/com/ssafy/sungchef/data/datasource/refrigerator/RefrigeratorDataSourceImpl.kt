@@ -33,11 +33,6 @@ class RefrigeratorDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteFridgeIngredientList(): DataState<APIError> {
-        return getResult {
-            refrigeratorService.deleteFridgeIngredientList()
-        }
-    }
 
     override suspend fun registerIngredient(ingredientRequestDTO: IngredientRequestDTO): DataState<APIError> {
         return getResult {

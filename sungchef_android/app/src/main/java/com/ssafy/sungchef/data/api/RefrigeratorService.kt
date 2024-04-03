@@ -24,8 +24,6 @@ interface RefrigeratorService {
     ) : Response<ResponseDto<List<SearchIngredientResponse>>>
     @GET("fridge")
     suspend fun getFridgeIngredientList() : Response<ResponseDto<FridgeData>>
-    @DELETE("fridge")
-    suspend fun deleteFridgeIngredientList() : Response<APIError>
 
 
     @POST("fridge")

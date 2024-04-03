@@ -94,17 +94,12 @@ class RefrigeratorRepositoryImpl @Inject constructor(
             emit(refrigeratorDataSource.getFridgeIngredientList())
         }
     }
-    override suspend fun deleteFridgeIngredientList(): Flow<DataState<APIError>> {
-        return flow {
-            refrigeratorDataSource.deleteFridgeIngredientList()
-        }
-
-    }
     override suspend fun deleteIngredient(ingredientList: IngredientList): Flow<DataState<BaseModel>> =
         flow {
             when (val result =
                 refrigeratorDataSource.deleteIngredient(ingredientList.toIngredientRequestDTO())) {
                 is DataState.Success -> {
+                    Log.d("TAG", "Repo deleteIngredient: success")
                     if (result.data.code == 200.toLong()) {
                         emit(DataState.Success(result.data.toBaseModel()))
                     } else {
@@ -113,10 +108,14 @@ class RefrigeratorRepositoryImpl @Inject constructor(
                 }
 
                 is DataState.Error -> {
+                    Log.d("TAG", "Repo deleteIngredient: error")
+
                     emit(DataState.Error(result.apiError))
                 }
 
                 is DataState.Loading -> {
+                    Log.d("TAG", "Repo deleteIngredient: loading")
+
                     emit(DataState.Loading())
                 }
             }

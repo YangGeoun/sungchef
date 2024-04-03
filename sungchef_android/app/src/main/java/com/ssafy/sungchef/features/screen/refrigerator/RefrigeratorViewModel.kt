@@ -24,6 +24,10 @@ import com.ssafy.sungchef.data.model.responsedto.MakeRecipeListData
 import com.ssafy.sungchef.data.model.responsedto.UserProfile
 import com.ssafy.sungchef.data.model.responsedto.UserSimple
 import com.ssafy.sungchef.domain.model.base.BaseModel
+import com.ssafy.sungchef.domain.model.ingredient.Ingredient
+import com.ssafy.sungchef.domain.model.ingredient.IngredientId
+import com.ssafy.sungchef.domain.model.ingredient.IngredientList
+import com.ssafy.sungchef.domain.usecase.refrigerator.DeleteIngredientUseCase
 import com.ssafy.sungchef.domain.usecase.refrigerator.RefrigeratorUseCase
 import com.ssafy.sungchef.domain.usecase.signup.DuplicateNicknameUseCase
 import com.ssafy.sungchef.domain.usecase.user.SettingUseCase
@@ -42,13 +46,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RefrigeratorViewModel @Inject constructor(
-    private val refrigeratorUseCase: RefrigeratorUseCase
+    private val refrigeratorUseCase: RefrigeratorUseCase,
+    private val deleteIngredientUseCase : DeleteIngredientUseCase
 ) : ViewModel() {
 
 
     var items = MutableStateFlow(mutableListOf<IngredientItem>())
     var items_detail = MutableStateFlow(mutableListOf(mutableListOf<IngredientListData>()))
     var isRefrigeratorEmpty : MutableStateFlow<Boolean> = MutableStateFlow(false)
+    var isRefreshNeeded : MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 
     init {
@@ -83,7 +89,6 @@ class RefrigeratorViewModel @Inject constructor(
             )
         items_detail.value.addAll(detailitms)
 
-        //API통신으로 데이터 가져오기
         viewModelScope.launch {
             refrigeratorUseCase.getFridgeIngredientList().collect(){
                 Log.d(TAG, "viewModelScope.launch 시작 ")
@@ -102,6 +107,8 @@ class RefrigeratorViewModel @Inject constructor(
                                     items_detail.value[idx].add(IngredientListData( detail.ingredientName, detail.ingredientId,))
                                 }
                             }
+                            isRefreshNeeded.value = true
+
     //                        Log.d(TAG, "getFridgeInfo: ${ datalst}")
                         } else if(it.data.code == 204){
                             isRefrigeratorEmpty.value = true
@@ -122,8 +129,55 @@ class RefrigeratorViewModel @Inject constructor(
         }
     }
 
+//    fun deleteFridgeIngredient(ingredientList : IngredientList){
+//        viewModelScope.launch {
+//            Log.d(TAG, "deleteFridgeIngredient: collect 전")
+//            refrigeratorUseCase.deleteFridgeIngredientList(ingredientList).collect(){
+//                Log.d(TAG, "deleteFridgeIngredient: collect 후")
+//                when(it){
+//                    is DataState.Success -> {
+//                        Log.d(TAG, "재료삭제: Success")
+//                    }
+//
+//                    is DataState.Error -> {
+//                        Log.d(TAG, "재료삭제: Error")
+//                    }
+//
+//                    is DataState.Loading -> {
+//                        Log.d(TAG, "재료삭제: Loading")
+//
+//                    }
+//                }
+//            }
+//        }
+//    }
+    fun deleteFridgeIngredient(ingredientList: IngredientList) {
+        viewModelScope.launch {
+            deleteIngredientUseCase(ingredientList).collect { dataState ->
+                when (dataState) {
+                    is DataState.Success -> {
+                        Log.d(TAG, "재료삭제: Success")
+                        getFridgeInfo()
+                    }
+
+                    is DataState.Error -> {
+                        Log.d(TAG, "재료삭제: Error")
+                        getFridgeInfo()
+                    }
+
+                    is DataState.Loading -> {
+                        Log.d(TAG, "재료삭제: Loading")
+
+                    }
+                }
+            }
+        }
+    }
     fun setIsRefrigeratorEmptyFalse(){
         isRefrigeratorEmpty.value = false
+    }
+    fun setIsRefreshNeeded (){
+        isRefreshNeeded.value = false
     }
 
 }

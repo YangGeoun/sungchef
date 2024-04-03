@@ -20,7 +20,6 @@ interface RefrigeratorRepository {
     suspend fun registerReceipt(imageFile : File) : Flow<DataState<RegisterReceiptState>>
 
     suspend fun getFridgeIngredientList() : Flow<DataState<ResponseDto<FridgeData>>>
-    suspend fun deleteFridgeIngredientList() : Flow<DataState<APIError>>
     suspend fun registerIngredient(ingredientIdList: List<Int>): Flow<DataState<APIError>>
 
     suspend fun deleteIngredient(ingredientList: IngredientList): Flow<DataState<BaseModel>>
