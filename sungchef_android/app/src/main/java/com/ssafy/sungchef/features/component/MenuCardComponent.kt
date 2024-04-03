@@ -102,7 +102,7 @@ fun MenuCardComponent(
                                     bookMarkState = !bookMarkState
                                     onBookMarkClick(bookMarkState)
                                 },
-                            tint = color
+                            tint = Color(0xFF9FD18D)
                         )
                     }
                 }
