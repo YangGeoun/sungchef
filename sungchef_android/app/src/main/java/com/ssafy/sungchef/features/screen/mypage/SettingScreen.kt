@@ -55,7 +55,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -77,10 +76,7 @@ import com.ssafy.sungchef.features.component.SmallTextButtonComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
+import com.ssafy.sungchef.util.SocialLoginManager
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -91,7 +87,8 @@ import java.time.ZoneId
 fun SettingScreen(
     navController: NavController,
     viewModel: SettingViewModel,
-    onMoveSurveyPage : (Boolean) -> Unit
+    onMoveSurveyPage : (Boolean) -> Unit,
+    onMoveLoginPage : () -> Unit
 ){
 
     val userProfileImage by viewModel.userProfileImage.collectAsState()
@@ -173,7 +170,7 @@ fun SettingScreen(
                     Spacer(modifier = Modifier.height(10.dp))
                 }
                 Inquire(viewModel, onMoveSurveyPage)
-                Logout()
+                Logout(viewModel, onMoveLoginPage)
             }
         }
     }
@@ -454,13 +451,17 @@ fun Inquire(
 }
 
 @Composable
-fun Logout(){
+fun Logout(viewModel: SettingViewModel, onMoveLoginPage: () -> Unit) {
     Column(modifier = Modifier
         .padding(end = 20.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.End) {
         SmallTextButtonComponent(text = "로그아웃", color = Color.Gray,
-            modifier = Modifier.padding(bottom = 10.dp))
+            modifier = Modifier.padding(bottom = 10.dp)){
+            SocialLoginManager().kakaoLogout()
+            viewModel.logout()
+            onMoveLoginPage()
+        }
 //        SmallTextButtonComponent(text = "회원탈퇴", color = Color.Red)
 
     }
@@ -471,6 +472,6 @@ fun Logout(){
 @RequiresApi(Build.VERSION_CODES.O)
 fun SettingPreview(){
     val navController = rememberNavController()
-    SettingScreen(navController = navController, hiltViewModel(), {true})
+    SettingScreen(navController = navController, hiltViewModel(), {true}, {})
 }
 

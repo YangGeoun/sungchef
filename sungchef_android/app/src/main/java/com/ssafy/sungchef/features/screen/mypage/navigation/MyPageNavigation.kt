@@ -9,7 +9,9 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import androidx.navigation.navigation
+import com.ssafy.sungchef.features.screen.login.navigation.navigateLogin
 import com.ssafy.sungchef.features.screen.mypage.MyPageScreen
 import com.ssafy.sungchef.features.screen.mypage.SettingScreen
 import com.ssafy.sungchef.features.screen.signup.navigation.signupRoute
@@ -31,9 +33,19 @@ fun NavGraphBuilder.myPageScreen(navController : NavController){
 
     navigation(startDestination = myPageNavigationRoute, route = myPageRoute) {
         composable(myPageNavigationRoute) { MyPageScreen(navController, hiltViewModel()) }
-        composable(settingNavigationRoute) { SettingScreen(navController, hiltViewModel()){
-            navController.navigateSurvey(it)
-        } }
+        composable(settingNavigationRoute) {
+            SettingScreen(navController, hiltViewModel(),
+                {navController.navigateSurvey(it)},
+                {navController.navigateLogin(navOptions {
+                    popUpTo(navController.graph.id) {
+                        inclusive = true
+                    }
+
+                    // 새 화면을 백스택의 유일한 화면으로 만듭니다.
+                    launchSingleTop = true
+                })}
+            )
+        }
     }
 
 

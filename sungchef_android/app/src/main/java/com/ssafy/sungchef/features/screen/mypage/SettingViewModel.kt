@@ -13,6 +13,7 @@ import com.ssafy.sungchef.data.model.requestdto.ContactRequestDTO
 import com.ssafy.sungchef.data.model.requestdto.UserUpdateRequestDTO
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.usecase.signup.DuplicateNicknameUseCase
+import com.ssafy.sungchef.domain.usecase.token.DeleteTokenUseCase
 import com.ssafy.sungchef.domain.usecase.user.SettingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingViewModel @Inject constructor(
     private val settingUseCase: SettingUseCase,
-    private val duplicateNicknameUseCase: DuplicateNicknameUseCase
+    private val duplicateNicknameUseCase: DuplicateNicknameUseCase,
+    private val deleteTokenUseCase: DeleteTokenUseCase
 ) : ViewModel() {
 
     private val _userProfileImage = MutableStateFlow<String?>("")
@@ -178,6 +180,11 @@ class SettingViewModel @Inject constructor(
             400L -> WRONG_NICKNAME_FORMAT
             409L -> ALREADY_NICKNAME
             else -> SERVER_INSTABILITY
+        }
+    }
+    fun logout(){
+        viewModelScope.launch {
+            deleteTokenUseCase.deleteToken()
         }
     }
 
