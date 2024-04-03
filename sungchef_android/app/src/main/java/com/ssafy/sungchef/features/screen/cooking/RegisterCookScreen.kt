@@ -64,6 +64,10 @@ fun RegisterCookScreen(
     navigateHome: () -> (Unit)
 ) {
     val uiState = viewModel.uiState.collectAsState().value
+
+    if (uiState.isNavigateToHome){
+        navigateHome()
+    }
     
     Scaffold(
         topBar = { TopAppBarComponent(title = { TextComponent(text = "국가 권력급 김치찌개") }) }

@@ -36,9 +36,7 @@ class RecipeRepositoryImpl @Inject constructor(
                 }
 
                 is DataState.Loading -> {
-                    emit(
-                        DataState.Loading()
-                    )
+                    emit(DataState.Loading())
                 }
 
                 is DataState.Error -> {
@@ -115,32 +113,24 @@ class RecipeRepositoryImpl @Inject constructor(
                 }
 
                 is DataState.Loading -> {
-                    emit(
-                        DataState.Loading()
-                    )
+                    emit(DataState.Loading())
                 }
 
                 is DataState.Error -> {
                     emit(DataState.Error(recipeStep.apiError))
                 }
             }
-        }
+        }.onStart { emit(DataState.Loading()) }
 
     override suspend fun searchFoodName(foodName: String): Flow<DataState<List<FoodName>>> =
-        flow<DataState<List<FoodName>>> {
+        flow {
             when (val response = recipeDataSource.searchFoodName(foodName)) {
                 is DataState.Success -> {
-                    emit(
-                        DataState.Success(
-                            response.data.data.map {
-                                it.toFoodName()
-                            }
-                        )
-                    )
+                    emit(DataState.Success(response.data.data.map { it.toFoodName() }))
                 }
 
                 is DataState.Loading -> {
-
+                    emit(DataState.Loading())
                 }
 
                 is DataState.Error -> {

@@ -19,6 +19,7 @@ import com.ssafy.sungchef.domain.usecase.cooking.GetRecipeStepUseCase
 import com.ssafy.sungchef.domain.usecase.cooking.GetUsedIngredientUseCase
 import com.ssafy.sungchef.domain.usecase.cooking.RegisterCookingUseCase
 import com.ssafy.sungchef.domain.usecase.refrigerator.DeleteIngredientUseCase
+import com.ssafy.sungchef.domain.usecase.refrigerator.RegisterNeedIngredientUseCase
 import com.ssafy.sungchef.domain.viewstate.cooking.CookingViewState
 import com.ssafy.sungchef.features.screen.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,7 +39,8 @@ class CookingViewModel @Inject constructor(
     private val getUsedIngredientUseCase: GetUsedIngredientUseCase,
     private val getRecipeStepUseCase: GetRecipeStepUseCase,
     private val registerCookingUseCase: RegisterCookingUseCase,
-    private val deleteIngredientUseCase: DeleteIngredientUseCase
+    private val deleteIngredientUseCase: DeleteIngredientUseCase,
+    private val registerNeedIngredientUseCase: RegisterNeedIngredientUseCase
 ) : BaseViewModel<CookingViewState, CookingEvent>() {
     var textToSpeech: TextToSpeech? = null
 
@@ -109,9 +111,7 @@ class CookingViewModel @Inject constructor(
                             }
                         }
                         setState { currentState.copy(isLoading = false, usingIngredient = result) }
-                        setState {
-                            currentState.copy(isLoading = false, usedIngredient = it.data)
-                        }
+                        setState { currentState.copy(isLoading = false, usedIngredient = it.data) }
                     }
 
                     is DataState.Error -> {
@@ -120,6 +120,26 @@ class CookingViewModel @Inject constructor(
 
                     is DataState.Loading -> {
                         setState { currentState.copy(isLoading = true) }
+                    }
+                }
+            }
+        }
+    }
+
+    fun registerNeedIngredient(id: Int) {
+        viewModelScope.launch {
+            registerNeedIngredientUseCase(id).collect {
+                when (it) {
+                    is DataState.Success -> {
+                        setState { currentState.copy(isLoading = false, isNavigateToDelete = true) }
+                    }
+
+                    is DataState.Loading -> {
+                        setState { currentState.copy(isLoading = true) }
+                    }
+
+                    is DataState.Error -> {
+                        setState { currentState.copy(isLoading = false, isError = true) }
                     }
                 }
             }
@@ -159,7 +179,12 @@ class CookingViewModel @Inject constructor(
                 registerCookingUseCase(file.value!!, id, description).collect {
                     when (it) {
                         is DataState.Success -> {
-                            setState { currentState.copy(isLoading = false) }
+                            setState {
+                                currentState.copy(
+                                    isLoading = false,
+                                    isNavigateToHome = true
+                                )
+                            }
                         }
 
                         is DataState.Error -> {
@@ -173,5 +198,9 @@ class CookingViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun setError() {
+        setState { currentState.copy(isError = false) }
     }
 }

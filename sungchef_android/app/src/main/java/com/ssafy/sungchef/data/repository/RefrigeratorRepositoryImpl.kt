@@ -55,11 +55,15 @@ class RefrigeratorRepositoryImpl @Inject constructor(
             when (val result =
                 refrigeratorDataSource.deleteIngredient(ingredientList.toIngredientRequestDTO())) {
                 is DataState.Success -> {
-                    emit(DataState.Success(result.data.toBaseModel()))
+                    if (result.data.code == 200.toLong()) {
+                        emit(DataState.Success(result.data.toBaseModel()))
+                    } else {
+                        emit(DataState.Error(APIError(result.data.code, result.data.message)))
+                    }
                 }
 
                 is DataState.Error -> {
-
+                    emit(DataState.Error(result.apiError))
                 }
 
                 is DataState.Loading -> {

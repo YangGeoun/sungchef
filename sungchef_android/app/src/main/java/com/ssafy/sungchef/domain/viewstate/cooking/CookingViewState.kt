@@ -9,9 +9,12 @@ import com.ssafy.sungchef.domain.viewstate.ViewState
 @Stable
 data class CookingViewState(
     val isLoading: Boolean = false,
+    val isError: Boolean = false,
     val count: Int = 0,
     val recipeName: String = "",
     val recipeDetailList: List<RecipeDetailInfo> = listOf(),
     val usedIngredient: LackIngredient? = null,
-    val usingIngredient: List<Ingredient> = listOf()
+    val usingIngredient: List<Ingredient> = listOf(),
+    val isNavigateToDelete:Boolean = false,
+    val isNavigateToHome:Boolean = false
 ) : ViewState
