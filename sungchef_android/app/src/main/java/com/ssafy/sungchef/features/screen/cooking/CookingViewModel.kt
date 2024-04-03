@@ -1,20 +1,17 @@
 package com.ssafy.sungchef.features.screen.cooking
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.core.os.bundleOf
 import androidx.lifecycle.viewModelScope
 import com.ssafy.sungchef.commons.DataState
-import com.ssafy.sungchef.data.model.requestdto.RegisterCookingDTO
 import com.ssafy.sungchef.domain.model.ingredient.Ingredient
 import com.ssafy.sungchef.domain.model.ingredient.IngredientId
-import com.ssafy.sungchef.domain.model.ingredient.IngredientInfo
 import com.ssafy.sungchef.domain.model.ingredient.IngredientList
-import com.ssafy.sungchef.domain.model.ingredient.LackIngredient
 import com.ssafy.sungchef.domain.usecase.cooking.GetRecipeStepUseCase
 import com.ssafy.sungchef.domain.usecase.cooking.GetUsedIngredientUseCase
 import com.ssafy.sungchef.domain.usecase.cooking.RegisterCookingUseCase
@@ -23,13 +20,8 @@ import com.ssafy.sungchef.domain.usecase.refrigerator.RegisterNeedIngredientUseC
 import com.ssafy.sungchef.domain.viewstate.cooking.CookingViewState
 import com.ssafy.sungchef.features.screen.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.Collections
 import java.util.Locale
 import javax.inject.Inject
 
@@ -45,6 +37,7 @@ class CookingViewModel @Inject constructor(
     var textToSpeech: TextToSpeech? = null
 
     private val file = mutableStateOf<File?>(null)
+    private val bitmap = mutableStateOf<Bitmap?>(null)
     override fun createInitialState(): CookingViewState = CookingViewState()
     override fun onTriggerEvent(event: CookingEvent) {
         TODO("Not yet implemented")
@@ -135,11 +128,11 @@ class CookingViewModel @Inject constructor(
                     }
 
                     is DataState.Loading -> {
-                        setState { currentState.copy(isLoading = true) }
+//                        setState { currentState.copy(isLoading = true) }
                     }
 
                     is DataState.Error -> {
-                        setState { currentState.copy(isLoading = false, isError = true) }
+                        setState { currentState.copy(isLoading = false, isNavigateToDelete = true) }
                     }
                 }
             }
@@ -151,10 +144,7 @@ class CookingViewModel @Inject constructor(
             deleteIngredientUseCase(IngredientList(mutableListOf(IngredientId(ingredient.recipeIngredientId)))).collect { dataState ->
                 when (dataState) {
                     is DataState.Success -> {
-                        val result = uiState.value.usingIngredient.toMutableList().apply {
-                            remove(ingredient)
-                        }.toList()
-                        setState { currentState.copy(isLoading = false, usingIngredient = result) }
+                        setState { currentState.copy(isLoading = false) }
                     }
 
                     is DataState.Loading -> {
@@ -162,7 +152,10 @@ class CookingViewModel @Inject constructor(
                     }
 
                     is DataState.Error -> {
-                        setState { currentState.copy(isLoading = false) }
+                        val result = uiState.value.usingIngredient.toMutableList().apply {
+                            remove(ingredient)
+                        }.toList()
+                        setState { currentState.copy(isLoading = false, usingIngredient = result) }
                     }
                 }
             }
@@ -173,8 +166,12 @@ class CookingViewModel @Inject constructor(
         this.file.value = file
     }
 
+    fun setBitmap(bitmap: Bitmap) {
+        this.bitmap.value = bitmap
+    }
+
     fun registerCooking(id: Int, description: String) {
-        if (file.value != null && description != "") {
+        if (file.value != null && description != "" && bitmap.value != null) {
             viewModelScope.launch {
                 registerCookingUseCase(file.value!!, id, description).collect {
                     when (it) {
@@ -186,8 +183,13 @@ class CookingViewModel @Inject constructor(
                                 )
                             }
                         }
-
                         is DataState.Error -> {
+                            if (it.apiError.code==200.toLong()){
+                                setState { currentState.copy(
+                                    isLoading = false,
+                                    isNavigateToHome = true
+                                ) }
+                            }
                             setState { currentState.copy(isLoading = false) }
                         }
 

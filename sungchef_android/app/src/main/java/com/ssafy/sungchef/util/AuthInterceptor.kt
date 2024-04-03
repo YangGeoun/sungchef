@@ -26,11 +26,6 @@ class AuthInterceptor @Inject constructor(
                 .addHeader("Authorization", accessToken)
                 .build()
         }
-//        request = chain.request()
-//            .newBuilder()
-//            .addHeader("Authorization", "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzNDExOTgxNzc0IiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTcxMjI5NTEyOH0.BZZfH-lmB4ip2WgYsh-sbjhcVXeJxaQjquvODEDGTpU")
-//            .build()
-
         return chain.proceed(request)
     }
 }

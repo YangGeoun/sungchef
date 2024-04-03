@@ -103,6 +103,7 @@ private fun Content(
         ) {
             itemsIndexed(usingIngredient) { index, item ->
                 IngredientSelectComponent(
+                    modifier = modifier.padding(bottom = 5.dp),
                     name = item.recipeIngredientName,
                     onDelete = { onDeleteIngredient(item) }
                 )

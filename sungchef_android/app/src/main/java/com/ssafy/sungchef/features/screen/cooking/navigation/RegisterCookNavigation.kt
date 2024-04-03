@@ -17,7 +17,7 @@ const val registerCookRoute = "registerCook_screen"
 
 fun NavController.navigateRegisterCook(
     navOptions: NavOptions? = null,
-    id:Int
+    id: Int
 ) {
     this.navigate(registerCookRoute.plus("/$id"), navOptions)
 }
@@ -28,10 +28,15 @@ fun NavGraphBuilder.registerCookScreen(
 ) {
     composable(route = registerCookRoute.plus("/{recipeId}")) {
         val id = it.arguments!!.getString("recipeId")
-        val parentEntry = remember(it) { navController.getBackStackEntry(deleteIngredientRoute.plus("/id")) }
+        val parentEntry =
+            remember(it) { navController.getBackStackEntry(deleteIngredientRoute.plus("/id")) }
         RegisterCookScreen(hiltViewModel(parentEntry)) {
             navController.navigateHome(navOptions = navOptions {
-                popUpTo(homeNavigationRoute)
+                popUpTo(homeNavigationRoute) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
             }
             )
         }

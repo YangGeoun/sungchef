@@ -21,6 +21,7 @@ fun NavController.navigateSearch(
 }
 
 fun NavGraphBuilder.searchScreen(
+    changeNav: () -> (Unit),
     navigateToMenuDetail: (Int) -> (Unit)
 ) {
     composable(searchNavigationRoute.plus("/{menu}")) {
@@ -32,6 +33,7 @@ fun NavGraphBuilder.searchScreen(
         SearchMenuScreen(
             hiltViewModel(),
             menu = menu!!,
+            changeNav = changeNav
         ) { recipeId ->
             navigateToMenuDetail(recipeId)
         }

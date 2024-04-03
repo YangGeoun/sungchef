@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Stable
 data class RecipeViewState(
     val isLoading: Boolean = false,
+    val isSearchLoading: Boolean = false,
     val isError: Boolean = false,
     val pagedData: Flow<PagingData<RecipeInfo>>? = null,
     val foodList: List<FoodName> = listOf()

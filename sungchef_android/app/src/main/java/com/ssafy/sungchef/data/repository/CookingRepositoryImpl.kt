@@ -5,6 +5,7 @@ import com.ssafy.sungchef.commons.DataState
 import com.ssafy.sungchef.data.datasource.cooking.CookingDataSource
 import com.ssafy.sungchef.data.mapper.ingredient.toLackIngredient
 import com.ssafy.sungchef.data.mapper.user.toBaseModel
+import com.ssafy.sungchef.data.model.APIError
 import com.ssafy.sungchef.domain.model.base.BaseModel
 import com.ssafy.sungchef.domain.model.ingredient.LackIngredient
 import com.ssafy.sungchef.domain.repository.CookingRepository
@@ -36,7 +37,7 @@ class CookingRepositoryImpl @Inject constructor(
                 }
 
                 is DataState.Error -> {
-
+                    emit(DataState.Error(APIError(ingredient.apiError.code,"부족한 재료 없음")))
                 }
             }
         }.onStart { emit(DataState.Loading()) }
@@ -53,7 +54,7 @@ class CookingRepositoryImpl @Inject constructor(
                 }
 
                 is DataState.Error -> {
-
+                    emit(DataState.Error(ingredient.apiError))
                 }
             }
         }.onStart { emit(DataState.Loading()) }
@@ -82,7 +83,7 @@ class CookingRepositoryImpl @Inject constructor(
                 }
 
                 is DataState.Error -> {
-
+                    emit(DataState.Error(result.apiError))
                 }
             }
         }.onStart { emit(DataState.Loading()) }

@@ -5,9 +5,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,8 +30,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -48,12 +53,17 @@ import com.ssafy.sungchef.features.component.IconComponent
 import com.ssafy.sungchef.features.component.MenuCardComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TextFieldComponent
+import com.ssafy.sungchef.features.component.TopAppBarComponent
+import com.ssafy.sungchef.features.screen.cooking.LottieAnimationComponent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchMenuScreen(
     viewModel: MenuViewModel,
     menu: String,
+    changeNav: () -> (Unit),
     navigateDetailScreen: (Int) -> (Unit)
 ) {
     val viewState = viewModel.uiState.collectAsState().value
@@ -61,27 +71,37 @@ fun SearchMenuScreen(
     var standard by remember { mutableStateOf("조회순") }
 
     LaunchedEffect(true) {
-        viewModel.onSearchTextChange(menu)
         viewModel.getSearchedVisitRecipeInfo(0, menu)
+        changeNav()
     }
 
-    Scaffold{ paddingValues ->
-        Content(
-            paddingValues,
-            viewState.pagedData,
-            menu = menu,
-            standard = standard,
-            changeStandard = { standard = it },
-            onVisitClick = { viewModel.getVisitRecipeInfo(0) },
-            onBookMarkClick = {
-                if (searchText == "") viewModel.getBookMarkRecipeInfo(0) else viewModel.getSearchedBookmarkRecipeInfo(
-                    0,
-                    searchText
-                )
-            },
-            onClick = { navigateDetailScreen(it) }
-        ) { recipeId, bookmark ->
-            viewModel.changeBookmarkRecipe(recipeId, bookmark)
+    Scaffold(
+        topBar = { TopAppBarComponent(title = { TextComponent(text = menu, fontSize = 22.sp) }) }
+    ) { paddingValues ->
+        if (viewState.isSearchLoading) {
+            LottieAnimationComponent(
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit,
+                id = R.raw.loading_animation
+            )
+        } else {
+            Content(
+                paddingValues,
+                viewState.pagedData,
+                menu = menu,
+                standard = standard,
+                changeStandard = { standard = it },
+                onVisitClick = { viewModel.getVisitRecipeInfo(0) },
+                onBookMarkClick = {
+                    if (searchText == "") viewModel.getBookMarkRecipeInfo(0) else viewModel.getSearchedBookmarkRecipeInfo(
+                        0,
+                        searchText
+                    )
+                },
+                onClick = { navigateDetailScreen(it) }
+            ) { recipeId, bookmark ->
+                viewModel.changeBookmarkRecipe(recipeId, bookmark)
+            }
         }
     }
 }
@@ -155,14 +175,8 @@ private fun RecipeInfo(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.End
     ) {
-        TextComponent(
-            modifier = modifier,
-            text = menu,
-            color = Color.Black,
-            fontSize = 16.sp
-        )
         Row(
             modifier = modifier.clickable { menuVisibility = !menuVisibility },
             horizontalArrangement = Arrangement.End

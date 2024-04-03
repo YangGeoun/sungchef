@@ -1,25 +1,31 @@
 package com.ssafy.sungchef.features.screen.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ssafy.sungchef.R
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedFood
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedFoodList
 import com.ssafy.sungchef.domain.model.recommendation.RecommendedRecipe
@@ -28,6 +34,7 @@ import com.ssafy.sungchef.domain.model.recommendation.UserInfo
 import com.ssafy.sungchef.features.component.ImageTextColumnComponent
 import com.ssafy.sungchef.features.component.TextComponent
 import com.ssafy.sungchef.features.component.TopAppBarComponent
+import com.ssafy.sungchef.features.screen.cooking.LottieAnimationComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,8 +54,13 @@ fun HomeScreen(
     Scaffold(
         topBar = { TopAppBarComponent() }
     ) { paddingValues ->
-        if (viewState.user == null) {
-            TextComponent(text = "정보를 가져오는중~~")
+        if (viewState.user == null || viewState.recommendFood == null || viewState.recommendRecipe == null) {
+            LottieAnimationComponent(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+                id = R.raw.loading_animation
+            )
         } else {
             Content(
                 paddingValues = paddingValues,
@@ -194,12 +206,12 @@ private fun RecommendRecipeBody(
             style = MaterialTheme.typography.titleLarge,
             modifier = modifier.padding(top = 10.dp, bottom = 10.dp, start = 20.dp)
         )
-        LazyRow(
-            modifier = modifier
-                .fillMaxWidth()
-                .background(Color.White)
-        ) {
-            if (dataList.isNotEmpty()) {
+        if (dataList.isNotEmpty()) {
+            LazyRow(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
                 items(dataList) { item ->
                     ImageTextColumnComponent(
                         modifier = modifier
@@ -212,6 +224,15 @@ private fun RecommendRecipeBody(
                         onClick(item.recipeId)
                     }
                 }
+            }
+        }else{
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                TextComponent(text = "냉장고에 재료를 넣어주세요.")
+                LottieAnimationComponent(id = R.raw.fridge_loading_animation)
             }
         }
     }

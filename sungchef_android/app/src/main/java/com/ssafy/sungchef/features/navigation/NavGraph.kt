@@ -204,7 +204,9 @@ fun NavGraph(
                 onNavigateRegisterCook = { navController.navigateRegisterCook(id = it) }) {
                 navVisibility = false
             }
-            searchScreen {
+            searchScreen(
+                changeNav = {navVisibility = false}
+            ) {
                 navController.navigateMenuDetail(it)
                 navVisibility = false
             }
