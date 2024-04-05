@@ -1,10 +1,11 @@
 package com.ssafy.sungchef.util
 
+import android.content.Context
 import android.util.Log
 import com.kakao.sdk.user.UserApiClient
 
 private const val TAG = "SocialLoginManager_성식당"
-class SocialLoginManager {
+class SocialLoginManager(private val context : Context) {
 
     fun kakaoLogout() {
         // 연결 끊기

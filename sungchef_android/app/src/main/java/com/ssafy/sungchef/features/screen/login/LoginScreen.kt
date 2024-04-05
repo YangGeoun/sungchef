@@ -311,7 +311,6 @@ fun showMovePageDialog(
             initUiState = initLoginState
         )
     }
-
 }
 
 // authenticate() 를 이용한 로그인
